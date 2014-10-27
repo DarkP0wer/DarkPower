@@ -5,12 +5,11 @@ require("libs.ScriptConfig")
 local config = ScriptConfig.new()
 config:SetParameter("Rand", false)
 config:SetParameter("RUS", false)
-config:SetParameter("SAYTEAM", false)
 config:Load()
 
 rand = config.Rand
 rus = config.RUS
-sayt = config.SAYTEAM
+sayt = false
 _colors = {
                 0x00FF00FF,
                 0xFF00FFFF,
@@ -86,12 +85,12 @@ function Key(msg,code)
 				rus=true
 			end
 		elseif code == 9 then
-			if sayt then
-				GenerateSideMessage("Say To All!")
-				sayt=false
+			if rus then
+				GenerateSideMessage("ENG TEXT")
+				rus=false
 			else
-				GenerateSideMessage("Say To TEAM!")
-				sayt=true
+				GenerateSideMessage("RUS TEXT")
+				rus=true
 			end
 		elseif code == 187 then
 			if IsKeyDown(16) then
