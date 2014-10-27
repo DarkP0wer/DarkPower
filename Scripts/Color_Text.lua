@@ -1,4 +1,4 @@
-﻿--<< Colored script by DarkPower v0.7 >>
+--<< Colored script by DarkPower v0.8 >>
 --it's my first script for ensage.
 require("libs.ScriptConfig")
 
@@ -246,6 +246,9 @@ function Key(msg,code)
 			end
 			client:ExecuteCmd("bind enter say")
 		else
+			if IsKeyDown(16) then sayt = false
+			else sayt = true
+			end
 			test = " "
 			text.text = "Record"
 			record = true
