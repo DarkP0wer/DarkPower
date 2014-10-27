@@ -1,4 +1,4 @@
-﻿--<<Colored script by DarkPower v0.7>>
+﻿--<< Colored script by DarkPower v0.7 >>
 --it's my first script for ensage.
 require("libs.ScriptConfig")
 
