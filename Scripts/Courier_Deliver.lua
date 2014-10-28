@@ -1,4 +1,4 @@
---<< Сourier_Deliver v0.1 >>
+--<< Сourier_Deliver v0.2 >>
 require("libs.ScriptConfig")
 
 local config = ScriptConfig.new()
@@ -17,7 +17,7 @@ function GenerateSideMessage(msg)
 	sidemsg:AddElement(drawMgr:CreateText(85,20,-1," " .. msg,drawMgr:CreateFont("F17","Tahoma",17,550)))
 end
 function Key(msg,code)
-	if msg ~= KEY_DOWN or not client.connected or client.loading then
+	if msg ~= KEY_DOWN or not client.connected or client.loading or client.chat then
 		return
 	end
 	if code == HotKey then
