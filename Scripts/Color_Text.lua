@@ -47,7 +47,7 @@ defaultText = "Open Chat and record text"
 text = drawMgr:CreateText(x,y,-1,defaultText,font)
 
 function GenerateSideMessage(msg)
-	local sidemsg = sideMessage:CreateMessage(200,60,0x111111C0,0x444444FF,150,1000)
+	local sidemsg = sideMessage:CreateMessage(200,60,0xFFFF00FF,0x00FFFFFF,150,1000)
 	sidemsg:AddElement(drawMgr:CreateText(85,20,-1,"  " .. msg,drawMgr:CreateFont("F17","Tahoma",17,550)))
 end
 
