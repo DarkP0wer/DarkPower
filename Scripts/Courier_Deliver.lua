@@ -1,5 +1,6 @@
 --<< Сourier_Deliver v0.2 >>
 require("libs.ScriptConfig")
+require("libs.SideMessage")
 
 local config = ScriptConfig.new()
 config:SetParameter("HotKey", "L", config.TYPE_HOTKEY)
