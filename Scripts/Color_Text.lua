@@ -1,7 +1,7 @@
 --<< Colored script by DarkPower v0.8 >>
 --it's my first script for ensage.
 require("libs.ScriptConfig")
-
+require("libs.SideMessage")
 local config = ScriptConfig.new()
 config:SetParameter("Rand", false)
 config:SetParameter("RUS", false)
