@@ -1,4 +1,4 @@
---<< Health and Percent of health and PA enemy >>
+--<< Health and Percent of health and PA enemy v0.2 >>
 require("libs.ScriptConfig")
 require("libs.Utils")
 
