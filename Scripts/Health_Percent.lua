@@ -1,4 +1,5 @@
 require("libs.ScriptConfig")
+require("libs.Utils")
 
 config = ScriptConfig.new()
 config:SetParameter("PosX", -100)
