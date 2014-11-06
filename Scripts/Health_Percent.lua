@@ -1,6 +1,7 @@
 --<< Health and Percent of health and PA enemy v0.2 >>
 require("libs.ScriptConfig")
 require("libs.Utils")
+require("libs.SideMessage")
 
 local config = ScriptConfig.new()
 config:SetParameter("PosX", -100)
@@ -13,7 +14,6 @@ local F14 = drawMgr:CreateFont("F14","Calibri",config.Font,500)
 local hero = {}
 
 local Bro = nil
-
 function math_round( roundIn , roundDig )
      local mul = math.pow( 10, roundDig )
      return ( math.floor( ( roundIn * mul ) + 0.5 )/mul )
@@ -24,19 +24,18 @@ function Tick( tick )
 		local me = entityList:GetMyHero()
 		if not me then return end
 		local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
+		local EnemyH = true
 		
-		local EnemyH = true	
-		if me.healthbarOffset ~= -1 and not me:IsIllusion() and me.name == "npc_dota_hero_phantom_assassin" then
+		if me.healthbarOffset ~= -1 and not me:IsIllusion() and me.name == "npc_dota_hero_phantom_assassin"then
 			if not Bro then
-				Bro = drawMgr:CreateText(20,0-45, 0xFFFFFF99, "",F14) 
+				Bro = drawMgr:CreateText(20,0-45, 0xFFFFFF99, " NONE",F14) 
 				Bro.visible = false 
 				Bro.entity = me 
 				Bro.entityPosition = Vector(config.PosX,config.PosY,me.healthbarOffset)
 			end
 			Bro.visible = true
-				
 			local my_modifiers = me.modifiers
-			if my_modifiers and #my_modifiers > 0 then
+			if my_modifiers and #my_modifiers > 0 and me.alive and me:GetAbility(3).level ~= 0 then
 				for i, z in ipairs(my_modifiers) do
 					if z.name == "modifier_phantom_assassin_blur_active" then 
 						EnemyH = false
@@ -44,6 +43,7 @@ function Tick( tick )
 				end
 				if EnemyH then
 					Bro.text = "ENEMY"
+					Bro.visible = true
 					Bro.color = _Colors[math.random(1,3)]
 				else 
 					Bro.text = "NONE"
