@@ -1,4 +1,4 @@
---<< Colored script by DarkPower v0.8 >>
+--<< Colored script by DarkPower v0.9 >>
 --it's my first script for ensage.
 require("libs.ScriptConfig")
 require("libs.SideMessage")
@@ -26,6 +26,7 @@ _colors = {
 				0x00FFFFFF
         }
 c={"","","","","","","","","","","","",""}
+cr={"","","","","","","","","","","","","","","","","",""}
 t1={"0","1","2","3","4","5","6","7","8","9"}
 t3={")","!","@","#","$","%","^","&","*","("}
 t5={"ф","и","с","в","у","а","п","р","ш","о","л","д","ь","т","щ","з","й","к","ы","е","г","м","ц","ч","н","я"}
@@ -52,7 +53,7 @@ function GenerateSideMessage(msg)
 end
 
 function Inc_r()
-	if r == 13 then r = 1
+	if r == 18 then r = 1
 	else r =r +1
 	end
 end
@@ -111,7 +112,7 @@ function Key(msg,code)
 					test=test.."э"
 				end
 			end
-		if rand then test=test..c[r] Inc_r() end
+		if rand then test=test..cr[r] Inc_r() end
 		elseif code == 186 then
 			if rus then
 				if IsKeyDown(16) then
@@ -126,7 +127,7 @@ function Key(msg,code)
 					test=test..";"
 				end
 			end
-		if rand then test=test..c[r] Inc_r() end
+		if rand then test=test..cr[r] Inc_r() end
 		elseif code == 188 then
 			if rus then
 				if IsKeyDown(16) then
@@ -141,14 +142,14 @@ function Key(msg,code)
 					test=test..","
 				end
 			end
-		if rand then test=test..c[r] Inc_r() end
+		if rand then test=test..cr[r] Inc_r() end
 		elseif code == 189 then
 			if IsKeyDown(16) then
 				test=test.."_"
 			else
 				test=test.."-"
 			end
-		if rand then test=test..c[r] Inc_r() end
+		if rand then test=test..cr[r] Inc_r() end
 		elseif code == 190 then
 			if rus then
 				if IsKeyDown(16) then
@@ -163,7 +164,7 @@ function Key(msg,code)
 					test=test.."."
 				end
 			end
-		if rand then test=test..c[r] Inc_r() end
+		if rand then test=test..cr[r] Inc_r() end
 		elseif code == 219 then
 			if rus then
 				if IsKeyDown(16) then
@@ -178,7 +179,7 @@ function Key(msg,code)
 					test=test.."["
 				end
 			end
-		if rand then test=test..c[r] Inc_r() end
+		if rand then test=test..cr[r] Inc_r() end
 		elseif code == 221 then
 			if rus then
 				if IsKeyDown(16) then
@@ -193,7 +194,7 @@ function Key(msg,code)
 					test=test.."]"
 				end
 			end
-		if rand then test=test..c[r] Inc_r() end
+		if rand then test=test..cr[r] Inc_r() end
 		elseif code == 191 then
 			if IsKeyDown(16) then
 				test=test.."?"
@@ -214,7 +215,7 @@ function Key(msg,code)
 			else
 				test=test..t1[code-48+1]
 			end	
-			if rand then test=test..c[r] Inc_r() end
+			if rand then test=test..cr[r] Inc_r() end
 		end
 		if code >= 65 and code <= 90 then
 			if rus then
@@ -230,7 +231,7 @@ function Key(msg,code)
 					test=test..t2[code-65+1]
 				end
 			end
-			if rand then test=test..c[r] Inc_r() end
+			if rand then test=test..cr[r] Inc_r() end
 		end
 		text.text = test
 	end
