@@ -66,7 +66,8 @@ function Tick( tick )
 				FarmPos = Vector(-1422,-4503,496)
 				SpawnPos = Vector(-7077,-6780,496)
 			elseif me.team == 3 then
-				FarmPos = Vector(-1294,2356,496)
+				--FarmPos = Vector(-1294,2356,496)
+				FarmPos = Vector(-1422,-4503,496)
 				SpawnPos = Vector(7145,6344,496)
 			else print("error team = "..me.team)
 			end
