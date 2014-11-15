@@ -182,6 +182,7 @@ function Tick( tick )
 end
 
 function CurDeliver()
+	local me = entityList:GetMyHero()
 	local Kyras = entityList:FindEntities({type=LuaEntity.TYPE_NPC,alive=true,visible=true,team = me.team})
 	for i,v in ipairs(Kyras) do
 		if kyra == nil then
