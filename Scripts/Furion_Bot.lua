@@ -70,7 +70,6 @@ function Tick( tick )
 				SpawnPos = Vector(7145,6344,496)
 			else print("error team = "..me.team)
 			end
-			return
 		end
 	
 		if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 then
