@@ -223,13 +223,6 @@ function Key(msg,code)
 	local me = entityList:GetMyHero()
 	if IsKeyDown(Hotkey) then
 		client:ExecuteCmd("say state = "..state.." inpos = "..(inpos and 1 or 0))
-		for d = 5,8 do
-					if me:GetAbility(d) ~= nil then
-						if me:GetAbility(d).name == "attribute_bonus" then
-							print("bonus ="..me:GetAbility(d))
-						end
-					end
-				end
 		print("X="..client.mousePosition.x.."; Y="..client.mousePosition.y.."; Team="..me.team)
 	end
 end
