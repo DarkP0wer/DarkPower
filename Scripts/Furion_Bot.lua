@@ -70,6 +70,7 @@ function Tick( tick )
 				SpawnPos = Vector(7145,6344,496)
 			else print("error team = "..me.team)
 			end
+			return
 		end
 	
 		if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 then
@@ -174,7 +175,7 @@ function Tick( tick )
 		
 		if state == 2 and me:GetAbility(2).state == -1  then
 			if inpos == false then
-				entityList:GetMyPlayer():UseAbility(me:GetAbility(2), Vector(-1422,-4503,496))
+				entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
 			end
 			state = 3
 		end
