@@ -21,8 +21,10 @@ function InRangeX_Y(im)
 	Xc = -1422
 	Yc = -4503
     else
-	Xc = -1294
-	Yc = 2356
+	--Xc = -1294
+	--Yc = 2356
+	Xc = -1422
+	Yc = -4503
 	end
 	r = config.Radius
 	if (((x - Xc) * (x - Xc) + (y - Yc) * (y - Yc)) < r * r) then
