@@ -2,16 +2,17 @@
 require("libs.Utils")
 require("libs.ScriptConfig")
 
-minHealth = 150
 LVL = 0
 state = 1
 inpos = false
 local config = ScriptConfig.new()
-config:SetParameter("Hot", "L", config.TYPE_HOTKEY)
+config:SetParameter("Test", "L", config.TYPE_HOTKEY)
+config:SetParameter("minHealth", 150)
+config:SetParameter("Radius", 200)
 config:Load()
 
-local Hotkey = config.Hot
-
+local Hotkey = config.Test
+local minHealth = config.minHealth
 function InRangeX_Y(im)
 	x = im.position.x
 	y = im.position.y
@@ -23,8 +24,7 @@ function InRangeX_Y(im)
 	Xc = -1294
 	Yc = 2356
 	end
-	
-	r = 200
+	r = config.Radius
 	if (((x - Xc) * (x - Xc) + (y - Yc) * (y - Yc)) < r * r) then
 		return true
 	elseif (((x - Xc) * (x - Xc) + (y - Yc) * (y - Yc)) == r * r) then
