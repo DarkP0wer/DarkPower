@@ -137,9 +137,10 @@ function Tick( tick )
 				return
 			end
 		else
-			if gold >= 750 and state == 3 then
-				entityList:GetMyPlayer():BuyItem(28)
-				entityList:GetMyPlayer():BuyItem(12)
+			if gold >= 2375 and state == 3 then
+				entityList:GetMyPlayer():BuyItem(3)
+				entityList:GetMyPlayer():BuyItem(2)
+				entityList:GetMyPlayer():BuyItem(148)
 				Sleep(200)
 				CurDeliver()
 				state = 4
