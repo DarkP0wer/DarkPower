@@ -10,11 +10,13 @@ config:SetParameter("Test", "L", config.TYPE_HOTKEY)
 config:SetParameter("minHealth", 150)
 config:SetParameter("Radius", 200)
 config:SetParameter("Midas", true)
+config:SetParameter("Ult", 1) -- 1 = CD; 2 = still; 3 = none
 config:Load()
 
 local Hotkey = config.Test
 local minHealth = config.minHealth
 local BuyMidas = config.Midas
+local Ult = config.Ult
 levels = {2,5,2,5,2,4,2,5,5,5,4,5,5,3,5,4,5,3,3,3,1,1,1,1,5}
 function InRangeX_Y(im)
 	x = im.position.x
@@ -78,7 +80,7 @@ function Tick( tick )
 			end
 		end
 	
-		if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 then
+		if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 and Ult == 1 then
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(4), FarmPos)
 			return
 		end
@@ -244,8 +246,8 @@ function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	local me = entityList:GetMyHero()
 	if IsKeyDown(Hotkey) then
-		--client:ExecuteCmd("say state = "..state.." inpos = "..(inpos and 1 or 0).."TIME ="..client.gameTime)
-		--print("X="..client.mousePosition.x.."; Y="..client.mousePosition.y.."; Team="..me.team)
+		client:ExecuteCmd("say state = "..state.." inpos = "..(inpos and 1 or 0).."TIME ="..client.gameTime)
+		print("X="..client.mousePosition.x.."; Y="..client.mousePosition.y.."; Team="..me.team)
 	end
 end
 
