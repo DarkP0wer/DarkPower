@@ -244,9 +244,8 @@ function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	local me = entityList:GetMyHero()
 	if IsKeyDown(Hotkey) then
-		client:ExecuteCmd("say state = "..state.." inpos = "..(inpos and 1 or 0).."TIME ="..client.gameTime)
-		print("X="..client.mousePosition.x.."; Y="..client.mousePosition.y.."; Team="..me.team)
-		me:EmitSound("match_ready_no_focus.wav",me)
+		--client:ExecuteCmd("say state = "..state.." inpos = "..(inpos and 1 or 0).."TIME ="..client.gameTime)
+		--print("X="..client.mousePosition.x.."; Y="..client.mousePosition.y.."; Team="..me.team)
 	end
 end
 
