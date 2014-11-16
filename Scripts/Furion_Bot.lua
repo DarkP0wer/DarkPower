@@ -45,7 +45,6 @@ function StartBuy(im)
 		entityList:GetMyPlayer():BuyItem(182)
 		entityList:GetMyPlayer():BuyItem(182)
 		entityList:GetMyPlayer():BuyItem(16)
-		entityList:GetMyPlayer():BuyItem(16)
 		--entityList:GetMyPlayer():BuyItem(27)
 		--entityList:GetMyPlayer():BuyItem(16)
 		--entityList:GetMyPlayer():BuyItem(93)
@@ -137,35 +136,50 @@ function Tick( tick )
 				return
 			end
 		else
-			if gold >= 2375 and state == 3 then
+			if gold >= 1420 and state == 3 then
 				entityList:GetMyPlayer():BuyItem(3)
-				entityList:GetMyPlayer():BuyItem(2)
-				entityList:GetMyPlayer():BuyItem(148)
 				Sleep(200)
 				CurDeliver()
 				state = 4
 				return
 			end
 		end
-		if gold >= 1600 and state == 7 then
-			entityList:GetMyPlayer():BuyItem(8)
+		if gold >= 450 and state == 5 then
+			entityList:GetMyPlayer():BuyItem(2)
+			Sleep(200)
+			CurDeliver()
+			state = 6
+			return
+		end
+		if gold >= 500 and state == 7 then
+			entityList:GetMyPlayer():BuyItem(148)
 			Sleep(200)
 			CurDeliver()
 			state = 8
 			return
 		end
-		if gold >= 900 and state == 9 then
-			entityList:GetMyPlayer():BuyItem(167)
-			Sleep(200)
-			CurDeliver()
-			state = 10
-			return
-		end
-		if gold >= 1600 and state == 5 then
+				
+				
+			
+		if gold >= 1600 and state == 11 then
 			entityList:GetMyPlayer():BuyItem(8)
 			Sleep(200)
 			CurDeliver()
-			state = 6
+			state = 12
+			return
+		end
+		if gold >= 900 and state == 13 then
+			entityList:GetMyPlayer():BuyItem(167)
+			Sleep(200)
+			CurDeliver()
+			state = 14
+			return
+		end
+		if gold >= 1600 and state == 9 then
+			entityList:GetMyPlayer():BuyItem(8)
+			Sleep(200)
+			CurDeliver()
+			state = 10
 			return
 		end
 		
@@ -200,7 +214,7 @@ function CurDeliver()
 		end
 	end
 	client:ExecuteCmd("dota_courier_deliver")
-	if kyra:IsFlying() then
+	if kyra.flying then --IsFlying()
 		client:ExecuteCmd("dota_courier_burst")
 	elseif state == 3 or state == 4 then
 		entityList:GetMyPlayer():BuyItem(84)
@@ -213,7 +227,7 @@ function FindTarget(Tick)
 	local neutrals = entityList:FindEntities({classId=CDOTA_BaseNPC_Creep_Neutral,alive=true,visible=true})
 	for i,v in ipairs(neutrals) do
 		distance = GetDistance2D(me,v)
-		if distance <= 800 and v.alive and v.visible and v.spawned then 
+		if distance <= 600 and v.alive and v.visible and v.spawned then 
 			if lowenemy == nil then
 				lowenemy = v
 			elseif (lowenemy.health) > (v.health) then
@@ -229,8 +243,9 @@ function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	local me = entityList:GetMyHero()
 	if IsKeyDown(Hotkey) then
-		client:ExecuteCmd("say state = "..state.." inpos = "..(inpos and 1 or 0))
+		client:ExecuteCmd("say state = "..state.." inpos = "..(inpos and 1 or 0).."TIME ="..client.gameTime)
 		print("X="..client.mousePosition.x.."; Y="..client.mousePosition.y.."; Team="..me.team)
+		me:EmitSound("match_ready_no_focus.wav",me)
 	end
 end
 
