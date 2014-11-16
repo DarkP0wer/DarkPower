@@ -9,12 +9,13 @@ local config = ScriptConfig.new()
 config:SetParameter("Test", "L", config.TYPE_HOTKEY)
 config:SetParameter("minHealth", 150)
 config:SetParameter("Radius", 200)
+config:SetParameter("Midas", true)
 config:Load()
 
 local Hotkey = config.Test
 local minHealth = config.minHealth
-
-levels = {2,5,2,5,2,4,2,5,5,5,4,5,5,1,5,4,5,1,1,1,3,3,3,3,5}
+local BuyMidas = config.Midas
+levels = {2,5,2,5,2,4,2,5,5,5,4,5,5,3,5,4,5,3,3,3,1,1,1,1,5}
 function InRangeX_Y(im)
 	x = im.position.x
 	y = im.position.y
@@ -58,6 +59,7 @@ function Tick( tick )
 	if client.gameState == Client.STATE_PICK then 
 		client:ExecuteCmd("dota_select_hero npc_dota_hero_furion")
 		LVL = 0
+		state = 1
 		return
 	end
 	local me = entityList:GetMyHero()
@@ -96,7 +98,7 @@ function Tick( tick )
 		
 		local player = entityList:GetEntities({classId=CDOTA_PlayerResource})[1]
 		
-		if state >= 4 then
+		if state >= 4 and BuyMidas then
 			local midas = me:FindItem("item_hand_of_midas")
 			if midas ~= nil then
 				if   midas:CanBeCasted() and me:CanUseItems() then 
@@ -125,15 +127,25 @@ function Tick( tick )
 		end
 		
 		local gold = player:GetGold(me.playerId)
-		if gold >= 2300 and state == 3 then
-			entityList:GetMyPlayer():BuyItem(64)
-			entityList:GetMyPlayer():BuyItem(25)
-			Sleep(200)
-			CurDeliver()
-			state = 4
-			return
+		if BuyMidas then
+			if gold >= 2300 and state == 3 then
+				entityList:GetMyPlayer():BuyItem(64)
+				entityList:GetMyPlayer():BuyItem(25)
+				Sleep(200)
+				CurDeliver()
+				state = 4
+				return
+			end
+		else
+			if gold >= 750 and state == 3 then
+				entityList:GetMyPlayer():BuyItem(28)
+				entityList:GetMyPlayer():BuyItem(12)
+				Sleep(200)
+				CurDeliver()
+				state = 4
+				return
+			end
 		end
-		
 		if gold >= 1600 and state == 7 then
 			entityList:GetMyPlayer():BuyItem(8)
 			Sleep(200)
