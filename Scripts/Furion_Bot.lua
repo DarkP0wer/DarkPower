@@ -13,6 +13,8 @@ config:Load()
 
 local Hotkey = config.Test
 local minHealth = config.minHealth
+
+levels = {2,5,2,5,2,4,2,5,5,5,4,5,5,1,5,4,5,1,1,1,3,3,3,3,5}
 function InRangeX_Y(im)
 	x = im.position.x
 	y = im.position.y
@@ -35,7 +37,7 @@ function InRangeX_Y(im)
 		return false
 	end
 end
-
+--1243.15234375; Y=2308.2580566406;
 function StartBuy(im)
 	level = im.level
 	if level == 1 then
@@ -118,23 +120,7 @@ function Tick( tick )
 		if LVL ~= me.level then		
 			local ability = me.abilities
 			local prev = SelectUnit(me)
-			--entityList:GetMyPlayer():LearnAbility(me:GetAbility(levels[me.level]))
-			if me.level == 2 or me.level == 4 or me.level == 8 or me.level == 9 or me.level == 10  or me.level == 12 or me.level == 13 or me.level == 25 or me.level == 15 or me.level == 17 then
-				for d = 5,8 do
-					if me:GetAbility(d) ~= nil then
-						if me:GetAbility(d).name == "attribute_bonus" then
-							entityList:GetMyPlayer():LearnAbility(me:GetAbility(d))
-						end
-					end
-				end
-			elseif me.level == 1 or me.level == 3 or me.level == 5 or me.level == 7 then
-					entityList:GetMyPlayer():LearnAbility(me:GetAbility(2))
-			elseif me.level == 6 or me.level == 11 or me.level == 16 then
-					entityList:GetMyPlayer():LearnAbility(me:GetAbility(4))
-			elseif me.level == 14 or me.level == 19  or me.level == 20 or me.level == 21 then
-				entityList:GetMyPlayer():LearnAbility(me:GetAbility(1))
-			else entityList:GetMyPlayer():LearnAbility(me:GetAbility(3))
-			end
+			entityList:GetMyPlayer():LearnAbility(me:GetAbility(levels[me.level]))
 			SelectBack(prev)
 		end
 		
@@ -147,15 +133,23 @@ function Tick( tick )
 			state = 4
 			return
 		end
-		--[[if gold >= 1850 and state == 7 then
-			entityList:GetMyPlayer():BuyItem(164)
+		
+		if gold >= 1600 and state == 7 then
+			entityList:GetMyPlayer():BuyItem(8)
 			Sleep(200)
 			CurDeliver()
 			state = 8
 			return
-		end]]
-		if gold >= 1850 and state == 5 then
-			entityList:GetMyPlayer():BuyItem(164)
+		end
+		if gold >= 900 and state == 9 then
+			entityList:GetMyPlayer():BuyItem(167)
+			Sleep(200)
+			CurDeliver()
+			state = 10
+			return
+		end
+		if gold >= 1600 and state == 5 then
+			entityList:GetMyPlayer():BuyItem(8)
 			Sleep(200)
 			CurDeliver()
 			state = 6
@@ -195,7 +189,7 @@ function CurDeliver()
 	client:ExecuteCmd("dota_courier_deliver")
 	if kyra:IsFlying() then
 		client:ExecuteCmd("dota_courier_burst")
-	else 
+	elseif state == 3 or state == 4 
 		entityList:GetMyPlayer():BuyItem(84)
 	end
 end
