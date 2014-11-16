@@ -189,7 +189,7 @@ function CurDeliver()
 	client:ExecuteCmd("dota_courier_deliver")
 	if kyra:IsFlying() then
 		client:ExecuteCmd("dota_courier_burst")
-	elseif state == 3 or state == 4 
+	elseif state == 3 or state == 4 then
 		entityList:GetMyPlayer():BuyItem(84)
 	end
 end
