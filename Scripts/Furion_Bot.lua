@@ -44,12 +44,15 @@ end
 function StartBuy(im)
 	level = im.level
 	if level == 1 then
+		--[[entityList:GetMyPlayer():BuyItem(182)
 		entityList:GetMyPlayer():BuyItem(182)
-		entityList:GetMyPlayer():BuyItem(182)
+		entityList:GetMyPlayer():BuyItem(16)]]
+		entityList:GetMyPlayer():BuyItem(27)
 		entityList:GetMyPlayer():BuyItem(16)
-		--entityList:GetMyPlayer():BuyItem(27)
+		entityList:GetMyPlayer():BuyItem(16)
+		entityList:GetMyPlayer():BuyItem(16)
+		entityList:GetMyPlayer():BuyItem(16)
 		--entityList:GetMyPlayer():BuyItem(16)
-		--entityList:GetMyPlayer():BuyItem(93)
 	end
 	state = 2
 end
@@ -140,16 +143,19 @@ function Tick( tick )
 		elseif state == 3 then state = 5
 		end
 		
-		if gold >= 1420 and state == 5 then
+		if gold >= 1620 and state == 5 then
 				entityList:GetMyPlayer():BuyItem(3)
+				entityList:GetMyPlayer():BuyItem(93)
 				Sleep(200)
 				CurDeliver()
 				state = 6
 				return
 			end
 		
-		if gold >= 450 and state == 7 then
+		if gold >= 800 and state == 7 then
 			entityList:GetMyPlayer():BuyItem(2)
+			entityList:GetMyPlayer():BuyItem(34)
+			entityList:GetMyPlayer():BuyItem(35)
 			Sleep(200)
 			CurDeliver()
 			state = 8
@@ -162,7 +168,7 @@ function Tick( tick )
 			state = 10
 			return
 		end
-				
+		
 		if gold >= 1600 and state == 11 then
 			entityList:GetMyPlayer():BuyItem(8)
 			Sleep(200)
