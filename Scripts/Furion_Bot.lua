@@ -135,51 +135,52 @@ function Tick( tick )
 				state = 4
 				return
 			end
-		else
-			if gold >= 1420 and state == 3 then
+		elseif state == 3 then state = 5
+		end
+		
+		if gold >= 1420 and state == 5 then
 				entityList:GetMyPlayer():BuyItem(3)
 				Sleep(200)
 				CurDeliver()
-				state = 4
+				state = 6
 				return
 			end
-		end
-		if gold >= 450 and state == 5 then
+		
+		if gold >= 450 and state == 7 then
 			entityList:GetMyPlayer():BuyItem(2)
-			Sleep(200)
-			CurDeliver()
-			state = 6
-			return
-		end
-		if gold >= 500 and state == 7 then
-			entityList:GetMyPlayer():BuyItem(148)
 			Sleep(200)
 			CurDeliver()
 			state = 8
 			return
 		end
+		if gold >= 500 and state == 9 then
+			entityList:GetMyPlayer():BuyItem(148)
+			Sleep(200)
+			CurDeliver()
+			state = 10
+			return
+		end
 				
-				
-			
 		if gold >= 1600 and state == 11 then
 			entityList:GetMyPlayer():BuyItem(8)
 			Sleep(200)
 			CurDeliver()
 			state = 12
 			return
-		end
-		if gold >= 900 and state == 13 then
-			entityList:GetMyPlayer():BuyItem(167)
+		end		
+			
+		if gold >= 1600 and state == 13 then
+			entityList:GetMyPlayer():BuyItem(8)
 			Sleep(200)
 			CurDeliver()
 			state = 14
 			return
 		end
-		if gold >= 1600 and state == 9 then
-			entityList:GetMyPlayer():BuyItem(8)
+		if gold >= 900 and state == 15 then
+			entityList:GetMyPlayer():BuyItem(167)
 			Sleep(200)
 			CurDeliver()
-			state = 10
+			state = 16
 			return
 		end
 		
