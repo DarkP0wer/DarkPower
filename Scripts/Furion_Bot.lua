@@ -128,7 +128,7 @@ function Tick( tick )
 	if inPosition and state >= 3 and not isAttacking(me) then
 		target = FindTarget()
 		if target ~= nil then entityList:GetMyPlayer():Attack(target) end
-		sleep(1000)
+		Sleep(1000)
 	end
 
 	if currentLevel ~= me.level then
