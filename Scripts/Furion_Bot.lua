@@ -28,6 +28,7 @@ local minHealth = config.minHealth
 local buyMidas = config.Midas
 local useUlt = config.Ult
 local levels = {2,5,2,5,2,4,2,5,5,5,4,5,5,3,5,4,5,3,3,3,1,1,1,1,5}
+local purchaseStartingItems = {27, 16, 16, 16, 16} -- Ring of regen, 4x iron branches
 
 function InRangeX_Y(im)
 	local x = im.position.x
@@ -53,15 +54,9 @@ end
 --1243.15234375; Y=2308.2580566406;
 function StartBuy(im)
 	if im.level == 1 then
-		--[[entityList:GetMyPlayer():BuyItem(182)
-		entityList:GetMyPlayer():BuyItem(182)
-		entityList:GetMyPlayer():BuyItem(16)]]
-		entityList:GetMyPlayer():BuyItem(27) -- item_ring_of_regen
-		entityList:GetMyPlayer():BuyItem(16) -- item_branches
-		entityList:GetMyPlayer():BuyItem(16) -- item_branches
-		entityList:GetMyPlayer():BuyItem(16) -- item_branches
-		entityList:GetMyPlayer():BuyItem(16) -- item_branches
-		--entityList:GetMyPlayer():BuyItem(16)
+		for i, itemID in ipairs(purchaseStartingItems) do
+			entityList:GetMyPlayer():BuyItem(itemID)
+		end
 	end
 	state = 2
 end
