@@ -27,7 +27,7 @@ local inPosition = false
 local Hotkey = config.Test
 local minHealth = config.minHealth
 local buyMidas = config.Midas
-local Ult = config.Ult
+local useUlt = config.Ult
 local levels = {2,5,2,5,2,4,2,5,5,5,4,5,5,3,5,4,5,3,3,3,1,1,1,1,5}
 
 function InRangeX_Y(im)
@@ -96,7 +96,7 @@ function Tick( tick )
 			end
 		end
 
-		if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 and Ult == 1 then
+		if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 and useUlt == 1 then
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(4), FarmPos)
 			return
 		end
