@@ -32,11 +32,10 @@ local levels = {2,5,2,5,2,4,2,5,5,5,4,5,5,3,5,4,5,3,3,3,1,1,1,1,5}
 function InRangeX_Y(im)
 	local x = im.position.x
 	local y = im.position.y
-	local me = entityList:GetMyHero()
 	local Xc = -1422
 	local Yc = -4503
 
-	if me.team == 2 then
+	if im.team == 2 then
 		Xc = -1422
 		Yc = -4503
 	end
