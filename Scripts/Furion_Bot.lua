@@ -105,6 +105,7 @@ function Tick( tick )
 	if me.health == me.maxHealth and inPosition == false and me:GetAbility(2).state == -1 and state >= 3 and not me:IsChanneling() then
 		entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
 		inPosition = true
+		Sleep(500)
 		return
 	end
 
