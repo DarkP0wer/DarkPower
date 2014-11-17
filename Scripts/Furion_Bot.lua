@@ -54,8 +54,7 @@ end
 
 --1243.15234375; Y=2308.2580566406;
 function StartBuy(im)
-	level = im.level
-	if level == 1 then
+	if im.level == 1 then
 		--[[entityList:GetMyPlayer():BuyItem(182)
 		entityList:GetMyPlayer():BuyItem(182)
 		entityList:GetMyPlayer():BuyItem(16)]]
