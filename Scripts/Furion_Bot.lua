@@ -87,7 +87,7 @@ function Tick( tick )
 			--FarmPos = Vector(-1294,2356,496)
 			FarmPos = Vector(-1422,-4503,496)
 			SpawnPos = Vector(7145,6344,496)
-		else print("error team = "..me.team)
+			else print("error team = "..me.team)
 		end
 	end
 
@@ -127,9 +127,10 @@ function Tick( tick )
 		inPosition = false
 	end
 
-	if inPosition and state >= 3 then
+	if inPosition and state >= 3 and not isAttacking(me) then
 		target = FindTarget()
 		if target ~= nil then entityList:GetMyPlayer():Attack(target) end
+		sleep(1000)
 	end
 
 	if currentLevel ~= me.level then
@@ -220,6 +221,10 @@ function Tick( tick )
 		end
 		state = 3
 	end
+end
+
+function isAttacking(ent)
+	return ent.activity == LuaEntityNPC.ACTIVITY_ATTACK or ent.activity == LuaEntityNPC.ACTIVITY_ATTACK1 or ent.activity == LuaEntityNPC.ACTIVITY_ATTACK2
 end
 
 function DeliverByCourier()
