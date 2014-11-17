@@ -17,9 +17,9 @@ config:SetParameter("Midas", true)
 config:SetParameter("Ult", 1) -- 1 = CD; 2 = still; 3 = none
 config:Load()
 
-LVL = 0
-state = 1
-inpos = false
+local LVL = 0
+local state = 1
+local inpos = false
 
 --===================--
 --       CODE        --
@@ -28,21 +28,22 @@ local Hotkey = config.Test
 local minHealth = config.minHealth
 local BuyMidas = config.Midas
 local Ult = config.Ult
-levels = {2,5,2,5,2,4,2,5,5,5,4,5,5,3,5,4,5,3,3,3,1,1,1,1,5}
+local levels = {2,5,2,5,2,4,2,5,5,5,4,5,5,3,5,4,5,3,3,3,1,1,1,1,5}
+
 function InRangeX_Y(im)
-	x = im.position.x
-	y = im.position.y
+	local x = im.position.x
+	local y = im.position.y
 	local me = entityList:GetMyHero()
+
 	if me.team == 2 then
-	Xc = -1422
-	Yc = -4503
+		local Xc = -1422
+		local Yc = -4503
     else
-	--Xc = -1294
-	--Yc = 2356
-	Xc = -1422
-	Yc = -4503
+		local Xc = -1422
+		local Yc = -4503
 	end
-	r = config.Radius
+
+	local r = config.Radius
 	if (((x - Xc) * (x - Xc) + (y - Yc) * (y - Yc)) < r * r) then
 		return true
 	elseif (((x - Xc) * (x - Xc) + (y - Yc) * (y - Yc)) == r * r) then
@@ -51,6 +52,7 @@ function InRangeX_Y(im)
 		return false
 	end
 end
+
 --1243.15234375; Y=2308.2580566406;
 function StartBuy(im)
 	level = im.level
