@@ -149,7 +149,7 @@ function Tick( tick )
 				entityList:GetMyPlayer():BuyItem(64)
 				entityList:GetMyPlayer():BuyItem(25)
 				Sleep(200)
-				CurDeliver()
+				DeliverByCourier()
 				state = 4
 				return
 			end
@@ -160,7 +160,7 @@ function Tick( tick )
 				entityList:GetMyPlayer():BuyItem(3)
 				entityList:GetMyPlayer():BuyItem(93)
 				Sleep(200)
-				CurDeliver()
+				DeliverByCourier()
 				state = 6
 				return
 			end
@@ -170,14 +170,14 @@ function Tick( tick )
 			entityList:GetMyPlayer():BuyItem(34)
 			entityList:GetMyPlayer():BuyItem(35)
 			Sleep(200)
-			CurDeliver()
+			DeliverByCourier()
 			state = 8
 			return
 		end
 		if gold >= 500 and state == 9 then
 			entityList:GetMyPlayer():BuyItem(148)
 			Sleep(200)
-			CurDeliver()
+			DeliverByCourier()
 			state = 10
 			return
 		end
@@ -185,7 +185,7 @@ function Tick( tick )
 		if gold >= 1600 and state == 11 then
 			entityList:GetMyPlayer():BuyItem(8)
 			Sleep(200)
-			CurDeliver()
+			DeliverByCourier()
 			state = 12
 			return
 		end
@@ -193,14 +193,14 @@ function Tick( tick )
 		if gold >= 1600 and state == 13 then
 			entityList:GetMyPlayer():BuyItem(8)
 			Sleep(200)
-			CurDeliver()
+			DeliverByCourier()
 			state = 14
 			return
 		end
 		if gold >= 900 and state == 15 then
 			entityList:GetMyPlayer():BuyItem(167)
 			Sleep(200)
-			CurDeliver()
+			DeliverByCourier()
 			state = 16
 			return
 		end
@@ -227,7 +227,7 @@ function Tick( tick )
 	end
 end
 
-function CurDeliver()
+function DeliverByCourier()
 	local me = entityList:GetMyHero()
 	local Kyras = entityList:FindEntities({type=LuaEntity.TYPE_NPC,alive=true,visible=true,team = me.team})
 	for i,v in ipairs(Kyras) do
