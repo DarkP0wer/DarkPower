@@ -33,13 +33,12 @@ function InRangeX_Y(im)
 	local x = im.position.x
 	local y = im.position.y
 	local me = entityList:GetMyHero()
+	local Xc = -1422
+	local Yc = -4503
 
 	if me.team == 2 then
-		local Xc = -1422
-		local Yc = -4503
-    else
-		local Xc = -1422
-		local Yc = -4503
+		Xc = -1422
+		Yc = -4503
 	end
 
 	local r = config.Radius
