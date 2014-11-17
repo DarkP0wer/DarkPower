@@ -24,7 +24,6 @@ local inPosition = false
 --===================--
 --       CODE        --
 --===================--
-local Hotkey = config.Test
 local minHealth = config.minHealth
 local buyMidas = config.Midas
 local useUlt = config.Ult
@@ -263,8 +262,8 @@ end
 --test work status of script
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
-	local me = entityList:GetMyHero()
-	if IsKeyDown(Hotkey) then
+	if IsKeyDown(config.Test) then
+		local me = entityList:GetMyHero()
 		client:ExecuteCmd("say state = "..state.." inPosition = "..(inPosition and 1 or 0).."TIME ="..client.gameTime)
 		print("X="..client.mousePosition.x.."; Y="..client.mousePosition.y.."; Team="..me.team)
 	end
