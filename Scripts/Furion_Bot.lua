@@ -17,7 +17,7 @@ config:SetParameter("Midas", true)
 config:SetParameter("Ult", 1) -- 1 = CD; 2 = still; 3 = none
 config:Load()
 
-local LVL = 0
+local currentLevel = 0
 local state = 1
 local inpos = false
 
@@ -75,13 +75,13 @@ function Tick( tick )
 	if not SleepCheck() then return end Sleep(200)
 	if client.gameState == Client.STATE_PICK then
 		client:ExecuteCmd("dota_select_hero npc_dota_hero_furion")
-		LVL = 0
+		currentLevel = 0
 		state = 1
 		return
 	end
 	local me = entityList:GetMyHero()
 	if PlayingGame() and me.alive then
-		if LVL == 0 then
+		if currentLevel == 0 then
 			FarmPos = Vector(-1422,-4503,496)
 			SpawnPos = Vector(-7077,-6780,496)
 
@@ -136,7 +136,7 @@ function Tick( tick )
 			if target ~= nil then entityList:GetMyPlayer():Attack(target) end
 		end
 
-		if LVL ~= me.level then
+		if currentLevel ~= me.level then
 			local ability = me.abilities
 			local prev = SelectUnit(me)
 			entityList:GetMyPlayer():LearnAbility(me:GetAbility(levels[me.level]))
@@ -211,7 +211,7 @@ function Tick( tick )
 			client:ExecuteCmd("dota_courier_deliver")
 			state = state + 1
 		end
-		LVL = me.level
+		currentLevel = me.level
 
 		if state == 1 then
 			StartBuy(me)
