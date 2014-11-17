@@ -19,14 +19,14 @@ config:Load()
 
 local currentLevel = 0
 local state = 1
-local inpos = false
+local inPosition = false
 
 --===================--
 --       CODE        --
 --===================--
 local Hotkey = config.Test
 local minHealth = config.minHealth
-local BuyMidas = config.Midas
+local buyMidas = config.Midas
 local Ult = config.Ult
 local levels = {2,5,2,5,2,4,2,5,5,5,4,5,5,3,5,4,5,3,3,3,1,1,1,1,5}
 
@@ -102,20 +102,20 @@ function Tick( tick )
 		end
 
 		if me.health <= minHealth and me:GetAbility(2).state == -1 then
-			inpos = false
+			inPosition = false
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(2), SpawnPos)
 			return
 		end
 
-		if me.health == me.maxHealth and inpos == false and me:GetAbility(2).state == -1 and state >= 3 then
+		if me.health == me.maxHealth and inPosition == false and me:GetAbility(2).state == -1 and state >= 3 then
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
-			inpos = true
+			inPosition = true
 			return
 		end
 
 		local player = entityList:GetEntities({classId=CDOTA_PlayerResource})[1]
 
-		if state >= 4 and BuyMidas then
+		if state >= 4 and buyMidas then
 			local midas = me:FindItem("item_hand_of_midas")
 			if midas ~= nil then
 				if   midas:CanBeCasted() and me:CanUseItems() then
@@ -126,12 +126,12 @@ function Tick( tick )
 			end
 		end
 		if InRangeX_Y(me) then
-			inpos = true
+			inPosition = true
 		else
-			inpos = false
+			inPosition = false
 		end
 
-		if inpos and state >= 3 then
+		if inPosition and state >= 3 then
 			target = FindTarget()
 			if target ~= nil then entityList:GetMyPlayer():Attack(target) end
 		end
@@ -144,7 +144,7 @@ function Tick( tick )
 		end
 
 		local gold = player:GetGold(me.playerId)
-		if BuyMidas then
+		if buyMidas then
 			if gold >= 2300 and state == 3 then
 				entityList:GetMyPlayer():BuyItem(64)
 				entityList:GetMyPlayer():BuyItem(25)
@@ -219,7 +219,7 @@ function Tick( tick )
 		end
 
 		if state == 2 and me:GetAbility(2).state == -1  then
-			if inpos == false then
+			if inPosition == false then
 				entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
 			end
 			state = 3
@@ -265,7 +265,7 @@ function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	local me = entityList:GetMyHero()
 	if IsKeyDown(Hotkey) then
-		client:ExecuteCmd("say state = "..state.." inpos = "..(inpos and 1 or 0).."TIME ="..client.gameTime)
+		client:ExecuteCmd("say state = "..state.." inPosition = "..(inPosition and 1 or 0).."TIME ="..client.gameTime)
 		print("X="..client.mousePosition.x.."; Y="..client.mousePosition.y.."; Team="..me.team)
 	end
 end
