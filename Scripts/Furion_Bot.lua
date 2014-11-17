@@ -117,11 +117,7 @@ function Tick( tick )
 		end
 	end
 
-	if InRangeX_Y(me) then
-		inPosition = true
-	else
-		inPosition = false
-	end
+	inPosition = InRangeX_Y(me)
 
 	if inPosition and state >= 3 and not isAttacking(me) and not SleepCheck("Attack") then
 		target = FindTarget()
