@@ -71,157 +71,163 @@ end
 function Tick( tick )
 	if client.loading then return end
 	if not SleepCheck() then return end Sleep(200)
+
 	if client.gameState == Client.STATE_PICK then
 		client:ExecuteCmd("dota_select_hero npc_dota_hero_furion")
 		currentLevel = 0
 		state = 1
 		return
 	end
+
 	local me = entityList:GetMyHero()
-	if PlayingGame() and me.alive then
-		if currentLevel == 0 then
+
+	if not PlayingGame() or not me.alive then
+		Sleep(200)
+		return
+	end
+
+	if currentLevel == 0 then
+		FarmPos = Vector(-1422,-4503,496)
+		SpawnPos = Vector(-7077,-6780,496)
+
+		if me.team == 2 then
 			FarmPos = Vector(-1422,-4503,496)
 			SpawnPos = Vector(-7077,-6780,496)
+		elseif me.team == 3 then
+			--FarmPos = Vector(-1294,2356,496)
+			FarmPos = Vector(-1422,-4503,496)
+			SpawnPos = Vector(7145,6344,496)
+		else print("error team = "..me.team)
+		end
+	end
 
-			if me.team == 2 then
-				FarmPos = Vector(-1422,-4503,496)
-				SpawnPos = Vector(-7077,-6780,496)
-			elseif me.team == 3 then
-				--FarmPos = Vector(-1294,2356,496)
-				FarmPos = Vector(-1422,-4503,496)
-				SpawnPos = Vector(7145,6344,496)
-			else print("error team = "..me.team)
+	if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 and useUlt == 1 then
+		entityList:GetMyPlayer():UseAbility(me:GetAbility(4), FarmPos)
+		return
+	end
+
+	if me.health <= minHealth and me:GetAbility(2).state == -1 then
+		inPosition = false
+		entityList:GetMyPlayer():UseAbility(me:GetAbility(2), SpawnPos)
+		return
+	end
+
+	if me.health == me.maxHealth and inPosition == false and me:GetAbility(2).state == -1 and state >= 3 then
+		entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
+		inPosition = true
+		return
+	end
+
+	local player = entityList:GetEntities({classId=CDOTA_PlayerResource})[1]
+
+	if state >= 4 and buyMidas then
+		local midas = me:FindItem("item_hand_of_midas")
+		if midas ~= nil then
+			if   midas:CanBeCasted() and me:CanUseItems() then
+				target = FindTarget()
+				if target ~= nil then me:CastAbility(midas,target) end
+				return
 			end
 		end
+	end
+	if InRangeX_Y(me) then
+		inPosition = true
+	else
+		inPosition = false
+	end
 
-		if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 and useUlt == 1 then
-			entityList:GetMyPlayer():UseAbility(me:GetAbility(4), FarmPos)
+	if inPosition and state >= 3 then
+		target = FindTarget()
+		if target ~= nil then entityList:GetMyPlayer():Attack(target) end
+	end
+
+	if currentLevel ~= me.level then
+		local ability = me.abilities
+		local prev = SelectUnit(me)
+		entityList:GetMyPlayer():LearnAbility(me:GetAbility(levels[me.level]))
+		SelectBack(prev)
+	end
+
+	local gold = player:GetGold(me.playerId)
+	if buyMidas then
+		if gold >= 2300 and state == 3 then
+			entityList:GetMyPlayer():BuyItem(64)
+			entityList:GetMyPlayer():BuyItem(25)
+			Sleep(200)
+			DeliverByCourier()
+			state = 4
+			return
+		end
+	elseif state == 3 then state = 5
+	end
+
+	if gold >= 1620 and state == 5 then
+			entityList:GetMyPlayer():BuyItem(3)
+			entityList:GetMyPlayer():BuyItem(93)
+			Sleep(200)
+			DeliverByCourier()
+			state = 6
 			return
 		end
 
-		if me.health <= minHealth and me:GetAbility(2).state == -1 then
-			inPosition = false
-			entityList:GetMyPlayer():UseAbility(me:GetAbility(2), SpawnPos)
-			return
-		end
+	if gold >= 800 and state == 7 then
+		entityList:GetMyPlayer():BuyItem(2)
+		entityList:GetMyPlayer():BuyItem(34)
+		entityList:GetMyPlayer():BuyItem(35)
+		Sleep(200)
+		DeliverByCourier()
+		state = 8
+		return
+	end
+	if gold >= 500 and state == 9 then
+		entityList:GetMyPlayer():BuyItem(148)
+		Sleep(200)
+		DeliverByCourier()
+		state = 10
+		return
+	end
 
-		if me.health == me.maxHealth and inPosition == false and me:GetAbility(2).state == -1 and state >= 3 then
+	if gold >= 1600 and state == 11 then
+		entityList:GetMyPlayer():BuyItem(8)
+		Sleep(200)
+		DeliverByCourier()
+		state = 12
+		return
+	end
+
+	if gold >= 1600 and state == 13 then
+		entityList:GetMyPlayer():BuyItem(8)
+		Sleep(200)
+		DeliverByCourier()
+		state = 14
+		return
+	end
+	if gold >= 900 and state == 15 then
+		entityList:GetMyPlayer():BuyItem(167)
+		Sleep(200)
+		DeliverByCourier()
+		state = 16
+		return
+	end
+
+	if state >= 4 and state % 2 == 0 then
+		client:ExecuteCmd("dota_courier_deliver")
+		client:ExecuteCmd("dota_courier_burst")
+		client:ExecuteCmd("dota_courier_deliver")
+		state = state + 1
+	end
+	currentLevel = me.level
+
+	if state == 1 then
+		StartBuy(me)
+		client:ExecuteCmd("dota_player_units_auto_attack 1")
+	end
+
+	if state == 2 and me:GetAbility(2).state == -1  then
+		if inPosition == false then
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
-			inPosition = true
-			return
 		end
-
-		local player = entityList:GetEntities({classId=CDOTA_PlayerResource})[1]
-
-		if state >= 4 and buyMidas then
-			local midas = me:FindItem("item_hand_of_midas")
-			if midas ~= nil then
-				if   midas:CanBeCasted() and me:CanUseItems() then
-					target = FindTarget()
-					if target ~= nil then me:CastAbility(midas,target) end
-					return
-				end
-			end
-		end
-		if InRangeX_Y(me) then
-			inPosition = true
-		else
-			inPosition = false
-		end
-
-		if inPosition and state >= 3 then
-			target = FindTarget()
-			if target ~= nil then entityList:GetMyPlayer():Attack(target) end
-		end
-
-		if currentLevel ~= me.level then
-			local ability = me.abilities
-			local prev = SelectUnit(me)
-			entityList:GetMyPlayer():LearnAbility(me:GetAbility(levels[me.level]))
-			SelectBack(prev)
-		end
-
-		local gold = player:GetGold(me.playerId)
-		if buyMidas then
-			if gold >= 2300 and state == 3 then
-				entityList:GetMyPlayer():BuyItem(64)
-				entityList:GetMyPlayer():BuyItem(25)
-				Sleep(200)
-				DeliverByCourier()
-				state = 4
-				return
-			end
-		elseif state == 3 then state = 5
-		end
-
-		if gold >= 1620 and state == 5 then
-				entityList:GetMyPlayer():BuyItem(3)
-				entityList:GetMyPlayer():BuyItem(93)
-				Sleep(200)
-				DeliverByCourier()
-				state = 6
-				return
-			end
-
-		if gold >= 800 and state == 7 then
-			entityList:GetMyPlayer():BuyItem(2)
-			entityList:GetMyPlayer():BuyItem(34)
-			entityList:GetMyPlayer():BuyItem(35)
-			Sleep(200)
-			DeliverByCourier()
-			state = 8
-			return
-		end
-		if gold >= 500 and state == 9 then
-			entityList:GetMyPlayer():BuyItem(148)
-			Sleep(200)
-			DeliverByCourier()
-			state = 10
-			return
-		end
-
-		if gold >= 1600 and state == 11 then
-			entityList:GetMyPlayer():BuyItem(8)
-			Sleep(200)
-			DeliverByCourier()
-			state = 12
-			return
-		end
-
-		if gold >= 1600 and state == 13 then
-			entityList:GetMyPlayer():BuyItem(8)
-			Sleep(200)
-			DeliverByCourier()
-			state = 14
-			return
-		end
-		if gold >= 900 and state == 15 then
-			entityList:GetMyPlayer():BuyItem(167)
-			Sleep(200)
-			DeliverByCourier()
-			state = 16
-			return
-		end
-
-		if state >= 4 and state % 2 == 0 then
-			client:ExecuteCmd("dota_courier_deliver")
-			client:ExecuteCmd("dota_courier_burst")
-			client:ExecuteCmd("dota_courier_deliver")
-			state = state + 1
-		end
-		currentLevel = me.level
-
-		if state == 1 then
-			StartBuy(me)
-			client:ExecuteCmd("dota_player_units_auto_attack 1")
-		end
-
-		if state == 2 and me:GetAbility(2).state == -1  then
-			if inPosition == false then
-				entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
-			end
-			state = 3
-		end
+		state = 3
 	end
 end
 
