@@ -108,12 +108,10 @@ function Tick( tick )
 		return
 	end
 
-	local player = entityList:GetEntities({classId=CDOTA_PlayerResource})[1]
-
 	if state >= 4 and config.Midas then
 		local midas = me:FindItem("item_hand_of_midas")
 		if midas ~= nil then
-			if   midas:CanBeCasted() and me:CanUseItems() then
+			if midas:CanBeCasted() and me:CanUseItems() then
 				target = FindTarget()
 				if target ~= nil then me:CastAbility(midas,target) end
 				return
@@ -140,7 +138,9 @@ function Tick( tick )
 		SelectBack(prev)
 	end
 
+	local playerEntity = entityList:GetEntities({classId=CDOTA_PlayerResource})[1]
 	local gold = player:GetGold(me.playerId)
+
 	if config.Midas then
 		if gold >= 2300 and state == 3 then
 			entityList:GetMyPlayer():BuyItem(64)
