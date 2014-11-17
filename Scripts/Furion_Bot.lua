@@ -139,7 +139,7 @@ function Tick( tick )
 	end
 
 	local playerEntity = entityList:GetEntities({classId=CDOTA_PlayerResource})[1]
-	local gold = player:GetGold(me.playerId)
+	local gold = playerEntity:GetGold(me.playerId)
 
 	if config.Midas then
 		if gold >= 2300 and state == 3 then
