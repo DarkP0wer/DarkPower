@@ -24,9 +24,6 @@ local inPosition = false
 --===================--
 --       CODE        --
 --===================--
-local minHealth = config.minHealth
-local buyMidas = config.Midas
-local useUlt = config.Ult
 local levels = {2,5,2,5,2,4,2,5,5,5,4,5,5,3,5,4,5,3,3,3,1,1,1,1,5}
 local purchaseStartingItems = {27, 16, 16, 16, 16} -- Ring of regen, 4x iron branches
 
@@ -94,12 +91,12 @@ function Tick( tick )
 		end
 	end
 
-	if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 and useUlt == 1 then
+	if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 and config.Ult == 1 then
 		entityList:GetMyPlayer():UseAbility(me:GetAbility(4), FarmPos)
 		return
 	end
 
-	if me.health <= minHealth and me:GetAbility(2).state == -1 then
+	if me.health <= config.minHealth and me:GetAbility(2).state == -1 then
 		inPosition = false
 		entityList:GetMyPlayer():UseAbility(me:GetAbility(2), SpawnPos)
 		return
@@ -113,7 +110,7 @@ function Tick( tick )
 
 	local player = entityList:GetEntities({classId=CDOTA_PlayerResource})[1]
 
-	if state >= 4 and buyMidas then
+	if state >= 4 and config.Midas then
 		local midas = me:FindItem("item_hand_of_midas")
 		if midas ~= nil then
 			if   midas:CanBeCasted() and me:CanUseItems() then
@@ -142,7 +139,7 @@ function Tick( tick )
 	end
 
 	local gold = player:GetGold(me.playerId)
-	if buyMidas then
+	if config.Midas then
 		if gold >= 2300 and state == 3 then
 			entityList:GetMyPlayer():BuyItem(64)
 			entityList:GetMyPlayer():BuyItem(25)
