@@ -39,13 +39,9 @@ function InRangeX_Y(im)
 	end
 
 	local r = config.Radius
-	if (((x - Xc) * (x - Xc) + (y - Yc) * (y - Yc)) < r * r) then
-		return true
-	elseif (((x - Xc) * (x - Xc) + (y - Yc) * (y - Yc)) == r * r) then
-		return true
-	else
-		return false
-	end
+	local z = ((x - Xc) * (x - Xc) + (y - Yc) * (y - Yc));
+
+	return (z < r * r) or (z == r * r)
 end
 
 --1243.15234375; Y=2308.2580566406;
@@ -55,6 +51,7 @@ function StartBuy(im)
 			entityList:GetMyPlayer():BuyItem(itemID)
 		end
 	end
+
 	state = 2
 end
 
