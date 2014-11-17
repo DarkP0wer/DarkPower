@@ -95,12 +95,12 @@ function Tick( tick )
 
 	if me.health <= config.minHealth and me:GetAbility(2).state == -1 then
 		inPosition = false
-		entityList:GetMyPlayer():UseAbility(me:GetAbility(2), SpawnPos)
+		me:SafeCastAbility(me:GetAbility(2), SpawnPos)
 		return
 	end
 
-	if me.health == me.maxHealth and inPosition == false and me:GetAbility(2).state == -1 and state >= 3 and not me:IsChanneling() then
-		entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
+	if me.health == me.maxHealth and inPosition == false and me:GetAbility(2).state == -1 and state >= 3 then
+		me:SafeCastAbility(me:GetAbility(2), FarmPos)
 		inPosition = true
 		Sleep(500)
 		return
@@ -123,10 +123,12 @@ function Tick( tick )
 		inPosition = false
 	end
 
-	if inPosition and state >= 3 and not isAttacking(me) then
+	if inPosition and state >= 3 and not isAttacking(me) and not SleepCheck("Attack") then
 		target = FindTarget()
-		if target ~= nil then entityList:GetMyPlayer():Attack(target) end
-		Sleep(1000)
+		if target ~= nil then
+			entityList:GetMyPlayer():Attack(target)
+			Sleep(1000, "Attack")
+		end
 	end
 
 	if currentLevel ~= me.level then
@@ -213,9 +215,9 @@ function Tick( tick )
 		client:ExecuteCmd("dota_player_units_auto_attack 1")
 	end
 
-	if state == 2 and me:GetAbility(2).state == -1  then
+	if state == 2 and me:GetAbility(2).state == -1 then
 		if inPosition == false then
-			entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
+			me:SafeCastAbility(me:GetAbility(2), FarmPos)
 		end
 		state = 3
 	end
