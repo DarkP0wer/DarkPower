@@ -40,18 +40,13 @@ function Tick(tick)
 	end
 	if Wait >= WaitT then 
 		local me = entityList:GetMyHero()
-		local courier = entityList:GetEntities({type=LuaEntity.TYPE_COURIER, team = me.team, alive=true})
-		for i,v in ipairs(courier) do
-			if cur == nil and v.alive then
-				cur = v
-			end
-		end
+		local cour = entityList:FindEntities({classId = CDOTA_Unit_Courier,team = me.team,alive = true})[1]
 		
-		if cur ~= nil then
-			client:ExecuteCmd("dota_select_courier")
-			client:ExecuteCmd("dota_ability_execute 0")
-			--client:ExecuteCmd("dota_select_all")
-			client:ExecuteCmd("+dota_camera_follow")
+		if cour then
+			if cour:GetAbility(6).state == LuaEntityAbility.STATE_READY then
+				cour:CastAbility(cour:GetAbility(6))
+			end
+			cour:CastAbility(cour:GetAbility(1))
 		end
 		Wait = 0
 	else 
