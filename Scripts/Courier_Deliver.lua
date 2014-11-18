@@ -59,21 +59,21 @@ end
 
 function Tick(tick)
 	if work == 1 then
-		if Wait == WaitT then 
+		if Wait >= WaitT then 
 			client:ExecuteCmd("dota_courier_deliver")
 			Wait = 0
 		else 
 			Wait = Wait + 1
 		end
 	elseif work == 2 then
-		if Wait == WaitT then
+		if Wait >= WaitT then
 			local me = entityList:GetMyHero()
 			local cour = entityList:FindEntities({classId = CDOTA_Unit_Courier,team = me.team,alive = true})[1]
 			if cour ~= nil and cour.alive then
+				cour:CastAbility(cour:GetAbility(1))
 				if cour:GetAbility(6).state == LuaEntityAbility.STATE_READY then
 					cour:CastAbility(cour:GetAbility(6))
 				end
-				cour:CastAbility(cour:GetAbility(1))
 			end
 			Wait = 0
 		else 
