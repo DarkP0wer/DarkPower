@@ -69,7 +69,7 @@ function Tick(tick)
 		if Wait == WaitT then
 			local me = entityList:GetMyHero()
 			local cour = entityList:FindEntities({classId = CDOTA_Unit_Courier,team = me.team,alive = true})[1]
-			if cour then
+			if cour ~= nil and cour.alive then
 				if cour:GetAbility(6).state == LuaEntityAbility.STATE_READY then
 					cour:CastAbility(cour:GetAbility(6))
 				end
