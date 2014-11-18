@@ -1,16 +1,15 @@
---<< Сourier_Deliver v0.2 >>
+--<< Сourier_Deliver v0.3 >>
 require("libs.ScriptConfig")
 require("libs.SideMessage")
 
 local config = ScriptConfig.new()
 config:SetParameter("HotKey", "L", config.TYPE_HOTKEY)
+config:SetParameter("SaveKey", "K", config.TYPE_HOTKEY)
 config:SetParameter("WaitT", 3)
 config:Load()
-
-HotKey = config.HotKey
-Work = false
-WaitT = config.WaitT
-Wait = 0
+local WaitT = config.WaitT
+local Work = 0
+local Wait = 0
 registered = false
 
 function GenerateSideMessage(msg)
@@ -21,27 +20,65 @@ function Key(msg,code)
 	if msg ~= KEY_DOWN or not client.connected or client.loading or client.chat then
 		return
 	end
-	if code == HotKey then
-		if work then 
-			work = false
-			GenerateSideMessage("Cur Dissabled")
+	if code == 109 then
+		if WaitT > 1 then 
+			WaitT = WaitT - 1
+		else 
+			WaitT = 1
+		end
+		GenerateSideMessage("Wait Time: "..WaitT)
+	end
+	if code == 107 then
+		if WaitT < 8 then 
+			WaitT = WaitT + 1
+		else 
+			WaitT = 8
+		end
+		GenerateSideMessage("Wait Time: "..WaitT)
+	end
+	if code == config.HotKey then
+		if work == 1 then 
+			work = 0
+			GenerateSideMessage("Deliver OFF")
 		else 
 			Wait = 0
-			work =true
-			GenerateSideMessage("Cur Enabled")
+			work = 1
+			GenerateSideMessage("Deliver ON")
 		end
-	end	
+	elseif code == config.SaveKey then
+		if work == 2 then
+			work = 0 
+			GenerateSideMessage("Save Cur OFF")
+		else
+			wait = 0
+			work = 2
+			GenerateSideMessage("Save Cur ON")
+		end
+	end
 end
 
 function Tick(tick)
-	if not work then
-		return
-	end
-	if Wait == WaitT then 
-		client:ExecuteCmd("dota_courier_deliver")
-		Wait = 0
-	else 
-		Wait = Wait + 1
+	if work == 1 then
+		if Wait == WaitT then 
+			client:ExecuteCmd("dota_courier_deliver")
+			Wait = 0
+		else 
+			Wait = Wait + 1
+		end
+	elseif work == 2 then
+		if Wait == WaitT then
+			local me = entityList:GetMyHero()
+			local cour = entityList:FindEntities({classId = CDOTA_Unit_Courier,team = me.team,alive = true})[1]
+			if cour then
+				if cour:GetAbility(6).state == LuaEntityAbility.STATE_READY then
+					cour:CastAbility(cour:GetAbility(6))
+				end
+				cour:CastAbility(cour:GetAbility(1))
+			end
+			Wait = 0
+		else 
+			Wait = Wait + 1
+		end
 	end
 end
 
