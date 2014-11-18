@@ -1,10 +1,14 @@
---<< Bot on Furion beta version >>
+--<< Automatically play Nature's Prophet (beta) >>
+
+--===================--
+--     LIBRARIES     --
+--===================--
 require("libs.Utils")
 require("libs.ScriptConfig")
 
-LVL = 0
-state = 1
-inpos = false
+--===================--
+--      CONFIG       --
+--===================--
 local config = ScriptConfig.new()
 config:SetParameter("Test", "L", config.TYPE_HOTKEY)
 config:SetParameter("minHealth", 150)
@@ -12,47 +16,39 @@ config:SetParameter("Radius", 200)
 config:SetParameter("Midas", true)
 config:SetParameter("Ult", 1) -- 1 = CD; 2 = still; 3 = none
 config:Load()
-
-local Hotkey = config.Test
-local minHealth = config.minHealth
-local BuyMidas = config.Midas
-local Ult = config.Ult
-levels = {2,5,2,5,2,4,2,5,5,5,4,5,5,3,5,4,5,3,3,3,1,1,1,1,5}
+local currentLevel = 0
+local state = 1
+local inPosition = false
+local levels = {2,5,2,5,2,4,2,5,5,5,4,5,5,3,5,4,5,3,3,3,1,1,1,1,5}
+local purchaseStartingItems = {27, 16, 16, 16, 16} -- Ring of regen, 4x iron branches
+--===================--
+--       CODE        --
+--===================--
 function InRangeX_Y(im)
-	x = im.position.x
-	y = im.position.y
-	local me = entityList:GetMyHero()
-	if me.team == 2 then
-	Xc = -1422
-	Yc = -4503
+	local x = im.position.x
+	local y = im.position.y
+	local Xc = -1422
+	local Yc = -4503
+	if im.team == 2 then
+		local Xc = -1422
+		local Yc = -4503
     else
 	--Xc = -1294
 	--Yc = 2356
-	Xc = -1422
-	Yc = -4503
+		local Xc = -1422
+		local Yc = -4503
 	end
-	r = config.Radius
-	if (((x - Xc) * (x - Xc) + (y - Yc) * (y - Yc)) < r * r) then
-		return true
-	elseif (((x - Xc) * (x - Xc) + (y - Yc) * (y - Yc)) == r * r) then
-		return true
-	else
-		return false
-	end
+	local r = config.Radius
+	local z = ((x - Xc) * (x - Xc) + (y - Yc) * (y - Yc));
+	return (z < r * r) or (z == r * r)
 end
---1243.15234375; Y=2308.2580566406;
+
 function StartBuy(im)
 	level = im.level
 	if level == 1 then
-		--[[entityList:GetMyPlayer():BuyItem(182)
-		entityList:GetMyPlayer():BuyItem(182)
-		entityList:GetMyPlayer():BuyItem(16)]]
-		entityList:GetMyPlayer():BuyItem(27)
-		entityList:GetMyPlayer():BuyItem(16)
-		entityList:GetMyPlayer():BuyItem(16)
-		entityList:GetMyPlayer():BuyItem(16)
-		entityList:GetMyPlayer():BuyItem(16)
-		--entityList:GetMyPlayer():BuyItem(16)
+		for i, itemID in ipairs(purchaseStartingItems) do
+			entityList:GetMyPlayer():BuyItem(itemID)
+		end
 	end
 	state = 2
 end
@@ -62,13 +58,13 @@ function Tick( tick )
 	if not SleepCheck() then return end Sleep(200)
 	if client.gameState == Client.STATE_PICK then 
 		client:ExecuteCmd("dota_select_hero npc_dota_hero_furion")
-		LVL = 0
+		currentLevel = 0
 		state = 1
 		return
 	end
 	local me = entityList:GetMyHero()
 	if PlayingGame() and me.alive then
-		if LVL == 0 then
+		if currentLevel == 0 then
 			FarmPos = Vector(-1422,-4503,496)
 			SpawnPos = Vector(-7077,-6780,496)
 			
@@ -82,27 +78,35 @@ function Tick( tick )
 			else print("error team = "..me.team)
 			end
 		end
+		
+		if currentLevel ~= me.level then		
+			local ability = me.abilities
+			local prev = SelectUnit(me)
+			entityList:GetMyPlayer():LearnAbility(me:GetAbility(levels[me.level]))
+			SelectBack(prev)
+		end
 	
-		if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 and Ult == 1 then
+		if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 and config.Ult == 1 then
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(4), FarmPos)
 			return
 		end
 		
-		if me.health <= minHealth and me:GetAbility(2).state == -1 then
-			inpos = false
+		if me.health <= config.minHealth and me:GetAbility(2).state == -1 then
+			inPosition = false
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(2), SpawnPos)
 			return
 		end
 		
-		if me.health == me.maxHealth and inpos == false and me:GetAbility(2).state == -1 and state >= 3 then
+		if me.health == me.maxHealth and inPosition == false and me:GetAbility(2).state == -1 and state >= 3 then
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
-			inpos = true
+			inPosition = true
+			Sleep(500)
 			return
 		end
 		
-		local player = entityList:GetEntities({classId=CDOTA_PlayerResource})[1]
-		
-		if state >= 4 and BuyMidas then
+		inPosition = InRangeX_Y(me)
+
+		if state >= 4 and config.Midas then
 			local midas = me:FindItem("item_hand_of_midas")
 			if midas ~= nil then
 				if   midas:CanBeCasted() and me:CanUseItems() then 
@@ -112,31 +116,23 @@ function Tick( tick )
 				end
 			end
 		end
-		if InRangeX_Y(me) then 
-			inpos = true
-		else 
-			inpos = false
-		end
 		
-		if inpos and state >= 3 then
+		if inPosition and state >= 3 and not isAttacking(me) then
 			target = FindTarget()
-			if target ~= nil then entityList:GetMyPlayer():Attack(target) end
+			if target ~= nil then 
+				entityList:GetMyPlayer():Attack(target)
+				Sleep(1000)
+			end
 		end
 		
-		if LVL ~= me.level then		
-			local ability = me.abilities
-			local prev = SelectUnit(me)
-			entityList:GetMyPlayer():LearnAbility(me:GetAbility(levels[me.level]))
-			SelectBack(prev)
-		end
-		
-		local gold = player:GetGold(me.playerId)
-		if BuyMidas then
+		local playerEntity = entityList:GetEntities({classId=CDOTA_PlayerResource})[1]
+		local gold = playerEntity:GetGold(me.playerId)
+		if config.Midas then
 			if gold >= 2300 and state == 3 then
 				entityList:GetMyPlayer():BuyItem(64)
 				entityList:GetMyPlayer():BuyItem(25)
 				Sleep(200)
-				CurDeliver()
+				DeliverByCourier()
 				state = 4
 				return
 			end
@@ -147,7 +143,7 @@ function Tick( tick )
 				entityList:GetMyPlayer():BuyItem(3)
 				entityList:GetMyPlayer():BuyItem(93)
 				Sleep(200)
-				CurDeliver()
+				DeliverByCourier()
 				state = 6
 				return
 			end
@@ -157,14 +153,14 @@ function Tick( tick )
 			entityList:GetMyPlayer():BuyItem(34)
 			entityList:GetMyPlayer():BuyItem(35)
 			Sleep(200)
-			CurDeliver()
+			DeliverByCourier()
 			state = 8
 			return
 		end
 		if gold >= 500 and state == 9 then
 			entityList:GetMyPlayer():BuyItem(148)
 			Sleep(200)
-			CurDeliver()
+			DeliverByCourier()
 			state = 10
 			return
 		end
@@ -172,7 +168,7 @@ function Tick( tick )
 		if gold >= 1600 and state == 11 then
 			entityList:GetMyPlayer():BuyItem(8)
 			Sleep(200)
-			CurDeliver()
+			DeliverByCourier()
 			state = 12
 			return
 		end		
@@ -180,14 +176,14 @@ function Tick( tick )
 		if gold >= 1600 and state == 13 then
 			entityList:GetMyPlayer():BuyItem(8)
 			Sleep(200)
-			CurDeliver()
+			DeliverByCourier()
 			state = 14
 			return
 		end
 		if gold >= 900 and state == 15 then
 			entityList:GetMyPlayer():BuyItem(167)
 			Sleep(200)
-			CurDeliver()
+			DeliverByCourier()
 			state = 16
 			return
 		end
@@ -198,7 +194,7 @@ function Tick( tick )
 			client:ExecuteCmd("dota_courier_deliver")			
 			state = state + 1 
 		end
-		LVL = me.level
+		currentLevel = me.level
 		
 		if state == 1 then
 			StartBuy(me)
@@ -206,7 +202,7 @@ function Tick( tick )
 		end
 		
 		if state == 2 and me:GetAbility(2).state == -1  then
-			if inpos == false then
+			if inPosition == false then
 				entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
 			end
 			state = 3
@@ -214,19 +210,20 @@ function Tick( tick )
 	end
 end
 
-function CurDeliver()
+function isAttacking(ent)
+	return ent.activity == LuaEntityNPC.ACTIVITY_ATTACK or ent.activity == LuaEntityNPC.ACTIVITY_ATTACK1 or ent.activity == LuaEntityNPC.ACTIVITY_ATTACK2
+end
+
+function DeliverByCourier()
 	local me = entityList:GetMyHero()
-	local Kyras = entityList:FindEntities({type=LuaEntity.TYPE_NPC,alive=true,visible=true,team = me.team})
-	for i,v in ipairs(Kyras) do
-		if kyra == nil then
-			kyra = v
+	local cour = entityList:FindEntities({classId = CDOTA_Unit_Courier,team = me.team,alive = true})[1]
+	if cour then
+		client:ExecuteCmd("dota_courier_deliver")
+		if cour.flying and cour.alive then
+			client:ExecuteCmd("dota_courier_burst")
+		elseif not cour.flying then
+			entityList:GetMyPlayer():BuyItem(84)
 		end
-	end
-	client:ExecuteCmd("dota_courier_deliver")
-	if kyra.flying then --IsFlying()
-		client:ExecuteCmd("dota_courier_burst")
-	elseif state == 3 or state == 4 then
-		entityList:GetMyPlayer():BuyItem(84)
 	end
 end
 
@@ -250,9 +247,9 @@ end
 --test work status of script
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
-	local me = entityList:GetMyHero()
-	if IsKeyDown(Hotkey) then
-		client:ExecuteCmd("say state = "..state.." inpos = "..(inpos and 1 or 0).."TIME ="..client.gameTime)
+	if IsKeyDown(config.Test) then
+		local me = entityList:GetMyHero()
+		client:ExecuteCmd("say state = "..state.." inPosition = "..(inPosition and 1 or 0).."TIME ="..client.gameTime)
 		print("X="..client.mousePosition.x.."; Y="..client.mousePosition.y.."; Team="..me.team)
 	end
 end
