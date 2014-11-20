@@ -27,16 +27,14 @@ function Key(msg,code)
 			WaitT = 1
 		end
 		GenerateSideMessage("Wait Time: "..WaitT)
-	end
-	if code == 107 then
+	elseif code == 107 then
 		if WaitT < 8 then 
 			WaitT = WaitT + 1
 		else 
 			WaitT = 8
 		end
 		GenerateSideMessage("Wait Time: "..WaitT)
-	end
-	if code == config.HotKey then
+	elseif code == config.HotKey then
 		if work == 1 then 
 			work = 0
 			GenerateSideMessage("Deliver OFF")
