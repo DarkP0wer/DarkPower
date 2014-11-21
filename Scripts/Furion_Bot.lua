@@ -258,20 +258,15 @@ function FindTarget(Tick)
 	return lowenemy
 end
 
-function GetDistance3D(Pos1,Pos2)
+--[[function GetDistance3D(Pos1,Pos2)
 	local AB
 	AB = math.sqrt ((Pos2.x-Pos1.x)^2+(Pos2.y-Pos1.y)^2+(Pos2.z-Pos1.z)^2)
 	return AB
-end
+end]]
 
 --test work status of script
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
-	if IsKeyDown(57) then
-		local me = entityList:GetMyHero()
-		dist = GetDistance2D(me,Vector(client.mousePosition.x,client.mousePosition.y,0))
-		client:ExecuteCmd("say "..dist)
-	end
 	if IsKeyDown(config.Test) then
 		local me = entityList:GetMyHero()
 		client:ExecuteCmd("say state = "..state.." inPosition = "..(inPosition and 1 or 0).."TIME ="..client.gameTime)
