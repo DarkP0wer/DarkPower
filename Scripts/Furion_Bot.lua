@@ -30,7 +30,7 @@ local inPosition = false
 function IsInPos(im,Pos)
 	local x = im.position.x
 	local y = im.position.y
-	if im:GetAbility(3).level >= 2 and im.hero then
+	if im:GetAbility(3).level >= 2 and im.hero and im.team == 3 then
 		Pos.x = 3845
 		Pos.y = -1235
 		FarmPos = Vector(Pos.x,Pos.y,1)
