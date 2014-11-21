@@ -157,7 +157,6 @@ function Tick( tick )
 		end
 		
 		if gold >= 1550 and state == 7 then
-			entityList:GetMyPlayer():BuyItem(26)
 			entityList:GetMyPlayer():BuyItem(25)
 			entityList:GetMyPlayer():BuyItem(2)
 			entityList:GetMyPlayer():BuyItem(150)
