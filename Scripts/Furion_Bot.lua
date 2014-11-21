@@ -156,8 +156,11 @@ function Tick( tick )
 			return
 		end
 		
-		if gold >= 900 and state == 7 then
+		if gold >= 1550 and state == 7 then
 			entityList:GetMyPlayer():BuyItem(26)
+			entityList:GetMyPlayer():BuyItem(25)
+			entityList:GetMyPlayer():BuyItem(2)
+			entityList:GetMyPlayer():BuyItem(150)
 			state = 8
 			DeliverByCourier(2)
 			return
@@ -248,7 +251,7 @@ function FindTarget(Tick)
 	for i,v in ipairs(neutrals) do
 		distance = GetDistance2D(me.position,v.position)
 		if distance <= 650 and v.alive and v.visible and v.spawned then 
-			if lowenemydist == nil then
+			if lowenemy == nil then
 				lowenemy = v
 			elseif (lowenemy.health) > (v.health) then
 				lowenemy = v
