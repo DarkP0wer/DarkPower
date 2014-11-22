@@ -1,4 +1,4 @@
---<< Automatically play Nature's Prophet (beta) >>
+--<< Automatically play Nature's Prophet v0.1 >>
 
 --===================--
 --     LIBRARIES     --
@@ -14,14 +14,16 @@ config:SetParameter("Test", "L", config.TYPE_HOTKEY)
 config:SetParameter("minHealth", 150)
 config:SetParameter("Radius", 200)
 config:SetParameter("Midas", true)
-config:SetParameter("Ult", 1) -- 1 = CD; 2 = still; 3 = none
+config:SetParameter("MaxNotFindTarget", 2)
+config:SetParameter("Ult", 1) -- 1 = CD; 2 = none
 config:Load()
-
 local levels = {2,3,2,3,2,4,2,5,3,5,4,5,5,5,5,4,5,5,5,3,1,1,1,1,5}
 local purchaseStartingItems = {27, 12, 16} -- Ring of regen, Ring of Protection, branches
 --===================--
 --       CODE        --
 --===================--
+local NotFindTarget = 0
+local Minuta = 0
 local TimeUseTree = 0
 local currentLevel = 0
 state = 1
@@ -59,6 +61,8 @@ function Tick( tick )
 		currentLevel = 0
 		state = 1
 		TimeUseTree = 0
+		NotFindTarget = 0
+		Minuta = 0
 		return
 	end
 	local me = entityList:GetMyHero()
@@ -133,8 +137,16 @@ function Tick( tick )
 					entityList:GetMyPlayer():Move(Vector(3900, -1392, 1))
 				end
 				Sleep(1000)
+				MaxNotFindTarget = 0
 			elseif target == nil and me:GetAbility(3).level >= 2 then
 				entityList:GetMyPlayer():Move(FarmPos)
+			elseif target == nil and GetSeconds() <=10 and GetMinuts() ~= Minuta then
+				NotFindTarget = NotFindTarget+1
+				Minuta = GetMinuts()
+				if (MaxNotFindTarget == config.MaxNotFindTarget) then
+					--ChangeFarmPos(FarmPos)
+					print("block spawn neutrals")
+				end
 			end
 		end
 		
@@ -269,16 +281,17 @@ end
 	return AB
 end]]
 
+function GetSeconds() 
+	return math.floor(client.gameTime-math.floor(client.gameTime/60)*60)
+end
+
+function GetMinuts() 
+	return math.floor(client.gameTime/60)
+end
+
 --test work status of script
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
-	if IsKeyDown(57) then
-		local me = entityList:GetMyHero()
-		Tests = math.floor(client.gameTime/60)
-		Tests = client.gameTime-Tests*60
-		client:ExecuteCmd("say "..Tests)
-		print("X="..me.position.x.."; Y="..me.position.y.."; Team="..me.team)
-	end
 	if IsKeyDown(config.Test) then
 		local me = entityList:GetMyHero()
 		client:ExecuteCmd("say state = "..state.." inPosition = "..(inPosition and 1 or 0).."TIME ="..client.gameTime)
