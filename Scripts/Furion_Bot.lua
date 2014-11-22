@@ -32,7 +32,7 @@ local inPosition = false
 function IsInPos(im,Pos)
 	local x = im.position.x
 	local y = im.position.y
-	if im:GetAbility(3).level >= 2 and im.hero then--and im.team == 3 
+	if im:GetAbility(3).level >= 1 and im.hero then--and im.team == 3 
 		Pos.x = 3898
 		Pos.y = -1196
 		FarmPos = Vector(Pos.x,Pos.y,1)
@@ -103,7 +103,7 @@ function Tick( tick )
 			return
 		end
 		
-		if me.health == me.maxHealth and inPosition == false and me:GetAbility(2).state == -1 and state >= 3 and not me:IsChanneling() then
+		if me.health >= me.maxHealth-100 and inPosition == false and me:GetAbility(2).state == -1 and state >= 3 and not me:IsChanneling() then
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
 			inPosition = true
 			Sleep(500)
@@ -112,10 +112,9 @@ function Tick( tick )
 		
 		inPosition = IsInPos(me,FarmPos)
 		
-		if me:GetAbility(3).level >= 2 and me:GetAbility(3).state == -1 and client.gameTime >= TimeUseTree and inPosition and not me:IsChanneling() then
+		if me:GetAbility(3).level >= 1 and me:GetAbility(3).state == -1 and client.gameTime >= TimeUseTree and inPosition and not me:IsChanneling() then
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
 			TimeUseTree = client.gameTime+4*60
-			return
 		end
 
 		if state >= 4 and config.Midas then
@@ -133,19 +132,26 @@ function Tick( tick )
 			target = FindTarget()
 			if target ~= nil then 
 				entityList:GetMyPlayer():Attack(target)
-				if me.health <= 350 and me:GetAbility(3).level >= 2 then 
+				if me.health <= 400 and me:GetAbility(3).level >= 1 then 
 					entityList:GetMyPlayer():Move(Vector(3900, -1392, 1))
 				end
 				Sleep(1000)
 				MaxNotFindTarget = 0
-			elseif target == nil and me:GetAbility(3).level >= 2 then
+			else
 				entityList:GetMyPlayer():Move(FarmPos)
-			elseif target == nil and GetSeconds() <=10 and GetMinuts() ~= Minuta then
-				NotFindTarget = NotFindTarget+1
-				Minuta = GetMinuts()
-				if (MaxNotFindTarget == config.MaxNotFindTarget) then
-					--ChangeFarmPos(FarmPos)
-					print("block spawn neutrals")
+				if GetSeconds() <=10 and GetMinuts() ~= Minuta then
+					Minuta = GetMinuts()
+					if (NotFindTarget == 1) then
+						if me:GetAbility(3).level >= 1 and me:GetAbility(3).state == -1 and not me:IsChanneling() then
+							entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
+							TimeUseTree = client.gameTime+4*60
+						end
+					end
+					NotFindTarget = NotFindTarget+1
+					if (NotFindTarget == config.MaxNotFindTarget) then
+						--ChangeFarmPos(FarmPos)
+						print("block spawn neutrals")
+					end
 				end
 			end
 		end
@@ -164,9 +170,10 @@ function Tick( tick )
 		elseif state == 3 then state = 5
 		end
 		
-		if gold >= 1400 and state == 5 then
+		if gold >= 1625 and state == 5 then
 			entityList:GetMyPlayer():BuyItem(6)
 			entityList:GetMyPlayer():BuyItem(93)
+			entityList:GetMyPlayer():BuyItem(11)
 			state = 6
 			DeliverByCourier(2) 
 			return
@@ -260,7 +267,6 @@ end
 function FindTarget(Tick)
 	local me = entityList:GetMyHero()
 	local lowenemy = nil
-	local dist = 0
 	local neutrals = entityList:FindEntities({classId=CDOTA_BaseNPC_Creep_Neutral,alive=true,visible=true})
 	for i,v in ipairs(neutrals) do
 		distance = GetDistance2D(me.position,v.position)
