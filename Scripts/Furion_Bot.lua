@@ -17,8 +17,8 @@ config:SetParameter("Midas", true)
 config:SetParameter("Ult", 1) -- 1 = CD; 2 = still; 3 = none
 config:Load()
 
-local levels = {2,3,2,3,2,4,2,3,3,5,4,5,5,5,5,4,5,5,5,5,1,1,1,1,5}
-local purchaseStartingItems = {27, 182} -- Ring of regen, 4x iron branches
+local levels = {2,3,2,3,2,4,2,5,3,5,4,5,5,5,5,4,5,5,5,3,1,1,1,1,5}
+local purchaseStartingItems = {27, 12, 16} -- Ring of regen, Ring of Protection, branches
 --===================--
 --       CODE        --
 --===================--
@@ -30,9 +30,9 @@ local inPosition = false
 function IsInPos(im,Pos)
 	local x = im.position.x
 	local y = im.position.y
-	if im:GetAbility(3).level >= 2 and im.hero and im.team == 3 then
-		Pos.x = 3845
-		Pos.y = -1235
+	if im:GetAbility(3).level >= 2 and im.hero then--and im.team == 3 
+		Pos.x = 3898
+		Pos.y = -1196
 		FarmPos = Vector(Pos.x,Pos.y,1)
 	end
 	local r = config.Radius
@@ -108,9 +108,9 @@ function Tick( tick )
 		
 		inPosition = IsInPos(me,FarmPos)
 		
-		if me.team == 3 and me:GetAbility(3).level >= 2 and me:GetAbility(3).state == -1 and client.gameTime >= TimeUseTree and inPosition and not me:IsChanneling() then
+		if me:GetAbility(3).level >= 2 and me:GetAbility(3).state == -1 and client.gameTime >= TimeUseTree and inPosition and not me:IsChanneling() then
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
-			TimeUseTree = client.gameTime+5*60
+			TimeUseTree = client.gameTime+4*60
 			return
 		end
 
@@ -129,7 +129,12 @@ function Tick( tick )
 			target = FindTarget()
 			if target ~= nil then 
 				entityList:GetMyPlayer():Attack(target)
+				if me.health <= 350 and me:GetAbility(3).level >= 2 then 
+					entityList:GetMyPlayer():Move(Vector(3900, -1392, 1))
+				end
 				Sleep(1000)
+			elseif target == nil and me:GetAbility(3).level >= 2 then
+				entityList:GetMyPlayer():Move(FarmPos)
 			end
 		end
 		
@@ -149,7 +154,6 @@ function Tick( tick )
 		
 		if gold >= 1400 and state == 5 then
 			entityList:GetMyPlayer():BuyItem(6)
-			entityList:GetMyPlayer():BuyItem(16)
 			entityList:GetMyPlayer():BuyItem(93)
 			state = 6
 			DeliverByCourier(2) 
@@ -164,8 +168,7 @@ function Tick( tick )
 			DeliverByCourier(2)
 			return
 		end
-		if gold >= 1010 and state == 9 then
-			entityList:GetMyPlayer():BuyItem(12)
+		if gold >= 810 and state == 9 then
 			entityList:GetMyPlayer():BuyItem(28)
 			entityList:GetMyPlayer():BuyItem(20)
 			entityList:GetMyPlayer():BuyItem(14)
@@ -269,6 +272,13 @@ end]]
 --test work status of script
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
+	if IsKeyDown(57) then
+		local me = entityList:GetMyHero()
+		Tests = math.floor(client.gameTime/60)
+		Tests = client.gameTime-Tests*60
+		client:ExecuteCmd("say "..Tests)
+		print("X="..me.position.x.."; Y="..me.position.y.."; Team="..me.team)
+	end
 	if IsKeyDown(config.Test) then
 		local me = entityList:GetMyHero()
 		client:ExecuteCmd("say state = "..state.." inPosition = "..(inPosition and 1 or 0).."TIME ="..client.gameTime)
