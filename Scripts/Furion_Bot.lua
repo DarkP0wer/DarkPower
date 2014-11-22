@@ -17,7 +17,7 @@ config:SetParameter("Midas", true)
 config:SetParameter("MaxNotFindTarget", 2)
 config:SetParameter("Ult", 1) -- 1 = CD; 2 = none
 config:Load()
-local levels = {2,3,2,3,2,4,2,5,3,5,4,5,5,5,5,4,5,5,5,3,1,1,1,1,5}
+local levels = {2,3,2,5,2,4,2,5,3,5,4,5,5,5,5,4,5,5,3,3,1,1,1,1,5}
 local purchaseStartingItems = {27, 12, 16} -- Ring of regen, Ring of Protection, branches
 --===================--
 --       CODE        --
@@ -83,7 +83,6 @@ function Tick( tick )
 			end
 		end
 		if me:IsChanneling() then return end
-		
 		if currentLevel ~= me.level then		
 			local ability = me.abilities
 			local prev = SelectUnit(me)
@@ -148,7 +147,7 @@ function Tick( tick )
 						end
 					end
 					NotFindTarget = NotFindTarget+1
-					if (NotFindTarget == config.MaxNotFindTarget) then
+					if (NotFindTarget == config.MaxNotFindTarget) and state >= 3 then
 						--ChangeFarmPos(FarmPos)
 						print("block spawn neutrals")
 					end
