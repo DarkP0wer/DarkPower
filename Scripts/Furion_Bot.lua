@@ -13,7 +13,7 @@ local config = ScriptConfig.new()
 config:SetParameter("Test", "L", config.TYPE_HOTKEY)
 config:SetParameter("minHealth", 150)
 config:SetParameter("Radius", 200)
-config:SetParameter("Midas", true)
+config:SetParameter("Midas", false)
 config:SetParameter("MaxNotFindTarget", 2)
 config:SetParameter("Ult", 1) -- 1 = CD; 2 = none
 config:Load()
@@ -26,7 +26,7 @@ local NotFindTarget = 0
 local Minuta = 0
 local TimeUseTree = 0
 local currentLevel = 0
-state = 1
+local state = 1
 local inPosition = false
 
 function IsInPos(im,Pos)
