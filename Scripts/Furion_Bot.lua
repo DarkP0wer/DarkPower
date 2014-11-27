@@ -272,7 +272,7 @@ function MyItemsInCurier(im,cur)
 			if item.owner == im then
 				print("Есть")
 				return true
-			else print("Name = "..s.name.."; item = "..item.name)
+		--	else print("Name = "..s.name.."; item = "..item.name)
 			end
 		end
     end
