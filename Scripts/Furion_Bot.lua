@@ -207,59 +207,6 @@ function Tick( tick )
 		end
 		
 		BuyItems(me)
-		--[[if gold >= 1825 and state == 5 then -- +220 for flying  curier
-			entityList:GetMyPlayer():BuyItem(6) -- item_helm_of_iron_will
-			entityList:GetMyPlayer():BuyItem(12) --item_helm_of_iron_will
-			entityList:GetMyPlayer():BuyItem(93) -- item_recipe_headdress
-			entityList:GetMyPlayer():BuyItem(11) -- item_quelling_blade
-			state = 6
-			DeliverByCourier(2) 
-			return
-		end
-		
-		if gold >= 1550 and state == 7 then
-			entityList:GetMyPlayer():BuyItem(25) -- item_gloves
-			entityList:GetMyPlayer():BuyItem(2) -- item_blades_of_attack
-			entityList:GetMyPlayer():BuyItem(150) -- item_recipe_armlet
-			state = 8
-			DeliverByCourier(2)
-			return
-		end
-		if gold >= 810 and state == 9 then
-			entityList:GetMyPlayer():BuyItem(28) -- item_sobi_mask
-			entityList:GetMyPlayer():BuyItem(20) -- item_circlet
-			entityList:GetMyPlayer():BuyItem(14) -- item_slippers
-			entityList:GetMyPlayer():BuyItem(74) -- item_recipe_wraith_band
-			Sleep(200)
-			DeliverByCourier(5)
-			state = 10
-			return
-		end
-		
-		if gold >= 1600 and state == 11 then
-			entityList:GetMyPlayer():BuyItem(8) --item_mithril_hammer 
-			Sleep(200)
-			DeliverByCourier(5)
-			state = 12
-			return
-		end		
-			
-		if gold >= 1600 and state == 13 then
-			entityList:GetMyPlayer():BuyItem(8) -- item_mithril_hammer
-			Sleep(200)
-			DeliverByCourier(5)
-			state = 14
-			return
-		end
-		if gold >= 900 and state == 15 then
-			entityList:GetMyPlayer():BuyItem(167) -- item_recipe_desolator
-			Sleep(200)
-			DeliverByCourier(5)
-			state = 16
-			return
-		end
-		
-		]]
 		if state >= 4 and state % 2 == 0 then 
 			client:ExecuteCmd("dota_courier_deliver")
 			client:ExecuteCmd("dota_courier_burst")
