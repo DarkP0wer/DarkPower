@@ -13,12 +13,12 @@ local config = ScriptConfig.new()
 config:SetParameter("Test", "L", config.TYPE_HOTKEY)
 config:SetParameter("minHealth", 150)
 config:SetParameter("Radius", 200)
-config:SetParameter("Midas", false)
+config:SetParameter("Midas", false) --deleted
 config:SetParameter("MaxNotFindTarget", 2)
 config:SetParameter("Ult", 1) -- 1 = CD; 2 = none
 config:Load()
 local levels = {2,3,2,5,2,4,2,5,3,5,4,5,5,5,5,4,5,5,3,3,1,1,1,1,5}
-local purchaseStartingItems = {27, 12, 16} -- Ring of regen, Ring of Protection, branches
+local purchaseStartingItems = {27, 45, 16} -- Ring of regen, courier, branches
 --===================--
 --       CODE        --
 --===================--
@@ -89,7 +89,14 @@ function Tick( tick )
 			entityList:GetMyPlayer():LearnAbility(me:GetAbility(levels[me.level]))
 			SelectBack(prev)
 		end
-	
+		
+		local courier = entityList:FindEntities({classId = CDOTA_Unit_Courier,team = me.team,alive = true})[1]
+		if courier then
+			if courier.courState ~= LuaEntityCourier.STATE_DELIVER then  
+				if DoIHaveItemsInStash() or MyItemsInCurier(me,courier) then client:ExecuteCmd("dota_courier_deliver") end
+			end
+		end
+		
 		if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 then
 			if config.Ult == 1 then
 				entityList:GetMyPlayer():UseAbility(me:GetAbility(4), FarmPos)
@@ -116,7 +123,7 @@ function Tick( tick )
 			TimeUseTree = client.gameTime+4*60
 		end
 
-		if state >= 4 and config.Midas then
+		--[[if state >= 4 and config.Midas then
 			local midas = me:FindItem("item_hand_of_midas")
 			if midas ~= nil then
 				if   midas:CanBeCasted() and me:CanUseItems() then 
@@ -125,8 +132,7 @@ function Tick( tick )
 					return
 				end
 			end
-		end
-		
+		end]]
 		if inPosition and state >= 3 and not isAttacking(me) and not me:IsChanneling() then
 			target = FindTarget()
 			if target ~= nil then 
@@ -134,13 +140,13 @@ function Tick( tick )
 				if me.health <= 400 and me:GetAbility(3).level >= 1 then 
 					entityList:GetMyPlayer():Move(Vector(3900, -1392, 1))
 				end
-				Sleep(1000)
+				Sleep(600)
 				MaxNotFindTarget = 0
 			else
 				entityList:GetMyPlayer():Move(FarmPos)
-				if GetSeconds() <=10 and GetMinuts() ~= Minuta then
+				if GetSeconds() >=5 and GetSeconds() <=10 and GetMinuts() ~= Minuta then
 					Minuta = GetMinuts()
-					if (NotFindTarget == 1) then
+					if (NotFindTarget == 0) then
 						if me:GetAbility(3).level >= 1 and me:GetAbility(3).state == -1 and not me:IsChanneling() then
 							entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
 							TimeUseTree = client.gameTime+4*60
@@ -158,39 +164,40 @@ function Tick( tick )
 		local playerEntity = entityList:GetEntities({classId=CDOTA_PlayerResource})[1]
 		local gold = playerEntity:GetGold(me.playerId)
 		if config.Midas then
-			if gold >= 2300 and state == 3 then
+			--[[if gold >= 2300 and state == 3 then
 				entityList:GetMyPlayer():BuyItem(64)
 				entityList:GetMyPlayer():BuyItem(25)
 				Sleep(200)
 				DeliverByCourier(5)
 				state = 4
 				return
-			end
+			end]]
 		elseif state == 3 then state = 5
 		end
 		
-		if gold >= 1625 and state == 5 then
-			entityList:GetMyPlayer():BuyItem(6)
-			entityList:GetMyPlayer():BuyItem(93)
-			entityList:GetMyPlayer():BuyItem(11)
+		if gold >= 1825 and state == 5 then -- +220 for flying  curier
+			entityList:GetMyPlayer():BuyItem(6) -- item_helm_of_iron_will
+			entityList:GetMyPlayer():BuyItem(12) --item_helm_of_iron_will
+			entityList:GetMyPlayer():BuyItem(93) -- item_recipe_headdress
+			entityList:GetMyPlayer():BuyItem(11) -- item_quelling_blade
 			state = 6
 			DeliverByCourier(2) 
 			return
 		end
 		
 		if gold >= 1550 and state == 7 then
-			entityList:GetMyPlayer():BuyItem(25)
-			entityList:GetMyPlayer():BuyItem(2)
-			entityList:GetMyPlayer():BuyItem(150)
+			entityList:GetMyPlayer():BuyItem(25) -- item_gloves
+			entityList:GetMyPlayer():BuyItem(2) -- item_blades_of_attack
+			entityList:GetMyPlayer():BuyItem(150) -- item_recipe_armlet
 			state = 8
 			DeliverByCourier(2)
 			return
 		end
 		if gold >= 810 and state == 9 then
-			entityList:GetMyPlayer():BuyItem(28)
-			entityList:GetMyPlayer():BuyItem(20)
-			entityList:GetMyPlayer():BuyItem(14)
-			entityList:GetMyPlayer():BuyItem(74)
+			entityList:GetMyPlayer():BuyItem(28) -- item_sobi_mask
+			entityList:GetMyPlayer():BuyItem(20) -- item_circlet
+			entityList:GetMyPlayer():BuyItem(14) -- item_slippers
+			entityList:GetMyPlayer():BuyItem(74) -- item_recipe_wraith_band
 			Sleep(200)
 			DeliverByCourier(5)
 			state = 10
@@ -198,7 +205,7 @@ function Tick( tick )
 		end
 		
 		if gold >= 1600 and state == 11 then
-			entityList:GetMyPlayer():BuyItem(8)
+			entityList:GetMyPlayer():BuyItem(8) --item_mithril_hammer 
 			Sleep(200)
 			DeliverByCourier(5)
 			state = 12
@@ -206,14 +213,14 @@ function Tick( tick )
 		end		
 			
 		if gold >= 1600 and state == 13 then
-			entityList:GetMyPlayer():BuyItem(8)
+			entityList:GetMyPlayer():BuyItem(8) -- item_mithril_hammer
 			Sleep(200)
 			DeliverByCourier(5)
 			state = 14
 			return
 		end
 		if gold >= 900 and state == 15 then
-			entityList:GetMyPlayer():BuyItem(167)
+			entityList:GetMyPlayer():BuyItem(167) -- item_recipe_desolator
 			Sleep(200)
 			DeliverByCourier(5)
 			state = 16
@@ -234,12 +241,42 @@ function Tick( tick )
 		end
 		
 		if state == 2 and me:GetAbility(2).state == -1  then
+			local kyra = me:FindItem("item_courier")
+			if kyra ~= nil then
+					me:CastAbility(kyra)
+					--print("Кура есть")
+			end
+			Sleep(500)
 			if inPosition == false then
 				entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
 			end
 			state = 3
 		end
 	end
+end
+
+function DoIHaveItemsInStash() 
+	for i = 7, 12 do
+		if entityList:GetMyHero():HasItem(i) then
+			return true
+		end
+	end
+	return false	
+end
+
+function MyItemsInCurier(im,cur) 
+	for i = 1, 6 do
+        local item = cur:GetItem(i)
+		if item then
+			s = item.owner
+			if item.owner == im then
+				print("Есть")
+				return true
+			else print("Name = "..s.name.."; item = "..item.name)
+			end
+		end
+    end
+    return false
 end
 
 function isAttacking(ent)
