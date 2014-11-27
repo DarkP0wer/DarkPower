@@ -14,7 +14,7 @@ config:SetParameter("Test", "L", config.TYPE_HOTKEY)
 config:SetParameter("minHealth", 150)
 config:SetParameter("Radius", 200)
 config:SetParameter("Midas", false) --deleted
-config:SetParameter("MaxNotFindTarget", 2)
+config:SetParameter("MaxNotFindTarget", 3)
 config:SetParameter("Ult", 1) -- 1 = CD; 2 = none
 config:Load()
 local levels = {2,3,2,5,2,4,2,5,3,5,4,5,5,5,5,4,5,5,3,3,1,1,1,1,5}
