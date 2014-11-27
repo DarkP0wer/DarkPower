@@ -1,4 +1,4 @@
---<< Automatically play Nature's Prophet v0.1 >>
+--<< Automatically play Nature's Prophet v0.2 >>
 
 --===================--
 --     LIBRARIES     --
@@ -28,7 +28,32 @@ local TimeUseTree = 0
 local currentLevel = 0
 local state = 1
 local inPosition = false
+local BuyItem1 = {6,12,93,11} -- First buy
+local BuyItem2 = {25,2,150}
+local BuyItem3 = {28,20,14,74}
+local BuyItem4 = {8}
+local BuyItem5 = {8}
+local BuyItem6 = {167}
+local StepsOfBuy={BuyItem1,BuyItem2,BuyItem3,BuyItem4,BuyItem5,BuyItem6}
+local StepOfPrice = {1825,1550,810,1600,1600,900}
 
+function BuyItems(im)
+	if state >= 5 then
+		local playerEntity = entityList:GetEntities({classId=CDOTA_PlayerResource})[1]
+		local gold = playerEntity:GetGold(im.playerId)
+		for i, Step in ipairs(StepsOfBuy) do
+			if gold >= StepOfPrice[i] and state == i*2+3 then 
+				for j, itemID in ipairs(Step) do
+					entityList:GetMyPlayer():BuyItem(itemID)
+				end
+				Sleep(200)
+				DeliverByCourier(5)
+				state = state+1
+			end
+		end
+	end
+end
+		
 function IsInPos(im,Pos)
 	local x = im.position.x
 	local y = im.position.y
@@ -88,6 +113,12 @@ function Tick( tick )
 			local prev = SelectUnit(me)
 			entityList:GetMyPlayer():LearnAbility(me:GetAbility(levels[me.level]))
 			SelectBack(prev)
+		end
+		
+		local kyra = me:FindItem("item_courier")
+		if kyra ~= nil then
+				me:CastAbility(kyra)
+				--print("Кура есть")
 		end
 		
 		local courier = entityList:FindEntities({classId = CDOTA_Unit_Courier,team = me.team,alive = true})[1]
@@ -175,7 +206,8 @@ function Tick( tick )
 		elseif state == 3 then state = 5
 		end
 		
-		if gold >= 1825 and state == 5 then -- +220 for flying  curier
+		BuyItems(me)
+		--[[if gold >= 1825 and state == 5 then -- +220 for flying  curier
 			entityList:GetMyPlayer():BuyItem(6) -- item_helm_of_iron_will
 			entityList:GetMyPlayer():BuyItem(12) --item_helm_of_iron_will
 			entityList:GetMyPlayer():BuyItem(93) -- item_recipe_headdress
@@ -227,6 +259,7 @@ function Tick( tick )
 			return
 		end
 		
+		]]
 		if state >= 4 and state % 2 == 0 then 
 			client:ExecuteCmd("dota_courier_deliver")
 			client:ExecuteCmd("dota_courier_burst")
@@ -241,11 +274,6 @@ function Tick( tick )
 		end
 		
 		if state == 2 and me:GetAbility(2).state == -1  then
-			local kyra = me:FindItem("item_courier")
-			if kyra ~= nil then
-					me:CastAbility(kyra)
-					--print("Кура есть")
-			end
 			Sleep(500)
 			if inPosition == false then
 				entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
@@ -272,7 +300,7 @@ function MyItemsInCurier(im,cur)
 			if item.owner == im then
 				print("Есть")
 				return true
-		--	else print("Name = "..s.name.."; item = "..item.name)
+			--else print("Name = "..s.name.."; item = "..item.name)
 			end
 		end
     end
