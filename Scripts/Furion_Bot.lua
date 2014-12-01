@@ -1,4 +1,4 @@
---<< Automatically play Nature's Prophet v0.2 >>
+--<< Automatically play Nature's Prophet v0.3 >>
 
 --===================--
 --     LIBRARIES     --
@@ -13,12 +13,20 @@ local config = ScriptConfig.new()
 config:SetParameter("Test", "L", config.TYPE_HOTKEY)
 config:SetParameter("minHealth", 150)
 config:SetParameter("Radius", 200)
-config:SetParameter("Midas", false) --deleted
+config:SetParameter("Midas", false)
 config:SetParameter("MaxNotFindTarget", 3)
 config:SetParameter("Ult", 1) -- 1 = CD; 2 = none
 config:Load()
 local levels = {2,3,2,5,2,4,2,5,3,5,4,5,5,5,5,4,5,5,3,3,1,1,1,1,5}
 local purchaseStartingItems = {27, 45, 16} -- Ring of regen, courier, branches
+local BuyItem1 = {6,12,93,11} -- First buy
+local BuyItem2 = {25,2,150}
+local BuyItem3 = {28,20,14,74}
+local BuyItem4 = {8}
+local BuyItem5 = {8}
+local BuyItem6 = {167}
+local StepsOfBuy={BuyItem1,BuyItem2,BuyItem3,BuyItem4,BuyItem5,BuyItem6}
+local StepsOfPrice = {1825,1550,810,1600,1600,900}
 --===================--
 --       CODE        --
 --===================--
@@ -28,21 +36,18 @@ local TimeUseTree = 0
 local currentLevel = 0
 local state = 1
 local inPosition = false
-local BuyItem1 = {6,12,93,11} -- First buy
-local BuyItem2 = {25,2,150}
-local BuyItem3 = {28,20,14,74}
-local BuyItem4 = {8}
-local BuyItem5 = {8}
-local BuyItem6 = {167}
-local StepsOfBuy={BuyItem1,BuyItem2,BuyItem3,BuyItem4,BuyItem5,BuyItem6}
-local StepOfPrice = {1825,1550,810,1600,1600,900}
+local NumFarmPos = 0
+local FarmPos1 = Vector(-1422,-4503,1)
+local FarmPos2 = Vector(3898,-1196,1)
+local FarmPos3 = Vector(-1185,2272,1)
+local StepsOfFarmPos={FarmPos1,FarmPos2,FarmPos3}
 
 function BuyItems(im)
 	if state >= 5 then
 		local playerEntity = entityList:GetEntities({classId=CDOTA_PlayerResource})[1]
 		local gold = playerEntity:GetGold(im.playerId)
 		for i, Step in ipairs(StepsOfBuy) do
-			if gold >= StepOfPrice[i] and state == i*2+3 then 
+			if gold >= StepsOfPrice[i] and state == i*2+3 then 
 				for j, itemID in ipairs(Step) do
 					entityList:GetMyPlayer():BuyItem(itemID)
 				end
@@ -57,10 +62,11 @@ end
 function IsInPos(im,Pos)
 	local x = im.position.x
 	local y = im.position.y
-	if im:GetAbility(3).level >= 1 and im.hero then--and im.team == 3 
+	if im:GetAbility(3).level >= 1 and im.hero and NumFarmPos == 0 and not FindWard(1) then 
 		Pos.x = 3898
 		Pos.y = -1196
-		FarmPos = Vector(Pos.x,Pos.y,1)
+		NumFarmPos = 1
+		FarmPos = StepsOfFarmPos[NumFarmPos+1]--Vector(Pos.x,Pos.y,1)
 	end
 	local r = config.Radius
 	if not im.hero then r = 120 end
@@ -88,23 +94,22 @@ function Tick( tick )
 		TimeUseTree = 0
 		NotFindTarget = 0
 		Minuta = 0
+		NumFarmPos = 0
 		return
 	end
 	local me = entityList:GetMyHero()
 	if PlayingGame() and me.alive then
 		if currentLevel == 0 then
-			FarmPos = Vector(-1422,-4503,1)
+			NumFarmPos = 0
+			FarmPos = StepsOfFarmPos[NumFarmPos+1]--Vector(-1422,-4503,1)
 			SpawnPos = Vector(-7077,-6780,1)
-			
 			if me.team == 2 then
-				FarmPos = Vector(-1422,-4503,1)
 				SpawnPos = Vector(-7077,-6780,1)
 				BuyPos = Vector(-4535,1508,1)
 			elseif me.team == 3 then
-				FarmPos = Vector(-1422,-4503,1)
 				SpawnPos = Vector(7145,6344,1)
 				BuyPos = Vector(3253, 431,1)
-			else print("error team = "..me.team)
+			else print("Error team = "..me.team)
 			end
 		end
 		if me:IsChanneling() then return end
@@ -118,7 +123,6 @@ function Tick( tick )
 		local kyra = me:FindItem("item_courier")
 		if kyra ~= nil then
 				me:CastAbility(kyra)
-				--print("Кура есть")
 		end
 		
 		local courier = entityList:FindEntities({classId = CDOTA_Unit_Courier,team = me.team,alive = true})[1]
@@ -128,10 +132,8 @@ function Tick( tick )
 			end
 		end
 		
-		if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 then
-			if config.Ult == 1 then
-				entityList:GetMyPlayer():UseAbility(me:GetAbility(4), FarmPos)
-			end
+		if me:GetAbility(4).level >= 1 and me:GetAbility(4).state == -1 and config.Ult == 1 then
+			entityList:GetMyPlayer():UseAbility(me:GetAbility(4), FarmPos)
 		end
 		
 		if me.health <= config.minHealth and me:GetAbility(2).state == -1 then
@@ -149,12 +151,12 @@ function Tick( tick )
 		
 		inPosition = IsInPos(me,FarmPos)
 		
-		if me:GetAbility(3).level >= 1 and me:GetAbility(3).state == -1 and client.gameTime >= TimeUseTree and inPosition and not me:IsChanneling() then
+		if me:GetAbility(3).level >= 1 and NumFarmPos >= 1 and me:GetAbility(3).state == -1 and client.gameTime >= TimeUseTree and inPosition and not me:IsChanneling() then
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
 			TimeUseTree = client.gameTime+4*60
 		end
 
-		--[[if state >= 4 and config.Midas then
+		if state >= 4 and config.Midas and NumFarmPos ~= 1 then
 			local midas = me:FindItem("item_hand_of_midas")
 			if midas ~= nil then
 				if   midas:CanBeCasted() and me:CanUseItems() then 
@@ -163,30 +165,41 @@ function Tick( tick )
 					return
 				end
 			end
-		end]]
+		end
 		if inPosition and state >= 3 and not isAttacking(me) and not me:IsChanneling() then
 			target = FindTarget()
 			if target ~= nil then 
 				entityList:GetMyPlayer():Attack(target)
 				if me.health <= 400 and me:GetAbility(3).level >= 1 then 
-					entityList:GetMyPlayer():Move(Vector(3900, -1392, 1))
+					if NumFarmPos == 1 then
+						entityList:GetMyPlayer():Move(Vector(3900, -1392, 1))
+					elseif NumFarmPos == 2 then
+						entityList:GetMyPlayer():Move(Vector(-1056,2208,1))
+					end
 				end
 				Sleep(600)
 				MaxNotFindTarget = 0
 			else
-				entityList:GetMyPlayer():Move(FarmPos)
-				if GetSeconds() >=5 and GetSeconds() <=10 and GetMinuts() ~= Minuta then
+				if NumFarmPos >= 1 then
+					entityList:GetMyPlayer():Move(FarmPos)
+				end
+				if GetSeconds() >=5 and GetSeconds() <=10 and GetMinuts() ~= Minuta and GetMinuts() ~= 0 then
 					Minuta = GetMinuts()
-					if (NotFindTarget == 0) then
+					if FindWard(NumFarmPos) then 
+						ChangeFarmPos(me)
+						return
+					end
+					if (NotFindTarget == 1) then
 						if me:GetAbility(3).level >= 1 and me:GetAbility(3).state == -1 and not me:IsChanneling() then
 							entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
 							TimeUseTree = client.gameTime+4*60
 						end
 					end
 					NotFindTarget = NotFindTarget+1
-					if (NotFindTarget == config.MaxNotFindTarget) and state >= 3 then
-						--ChangeFarmPos(FarmPos)
-						print("block spawn neutrals")
+					
+					if (NotFindTarget >= config.MaxNotFindTarget) and state >= 3 then
+						ChangeFarmPos(me)
+						print("Spawn neutrals Blocked")
 					end
 				end
 			end
@@ -195,14 +208,14 @@ function Tick( tick )
 		local playerEntity = entityList:GetEntities({classId=CDOTA_PlayerResource})[1]
 		local gold = playerEntity:GetGold(me.playerId)
 		if config.Midas then
-			--[[if gold >= 2300 and state == 3 then
+			if gold >= 2300 and state == 3 then
 				entityList:GetMyPlayer():BuyItem(64)
 				entityList:GetMyPlayer():BuyItem(25)
 				Sleep(200)
 				DeliverByCourier(5)
 				state = 4
 				return
-			end]]
+			end
 		elseif state == 3 then state = 5
 		end
 		
@@ -245,13 +258,31 @@ function MyItemsInCurier(im,cur)
 		if item then
 			s = item.owner
 			if item.owner == im then
-				print("Есть")
 				return true
-			--else print("Name = "..s.name.."; item = "..item.name)
 			end
 		end
     end
     return false
+end
+
+function ChangeFarmPos(im) 
+	if NumFarmPos == 0 then
+		NumFarmPos = 1
+		inPosition = false
+		TimeUseTree = 0
+		FarmPos = StepsOfFarmPos[2]
+	elseif NumFarmPos == 1 then
+		NumFarmPos = 2
+		inPosition = false
+		TimeUseTree = 0
+		FarmPos = StepsOfFarmPos[3]
+	elseif NumFarmPos == 2 then
+		NumFarmPos = 0
+		inPosition = false
+		FarmPos = StepsOfFarmPos[1]
+	end
+	NotFindTarget = 0
+	if im:GetAbility(2).state == -1 then entityList:GetMyPlayer():UseAbility(im:GetAbility(2), FarmPos) end
 end
 
 function isAttacking(ent)
@@ -292,11 +323,23 @@ function FindTarget(Tick)
 	return lowenemy
 end
 
---[[function GetDistance3D(Pos1,Pos2)
-	local AB
-	AB = math.sqrt ((Pos2.x-Pos1.x)^2+(Pos2.y-Pos1.y)^2+(Pos2.z-Pos1.z)^2)
-	return AB
-end]]
+function FindWard(NumPos)
+	local lowenemy = nil
+	local vect = Vector(-1044,-4110,1)
+	if NumPos == 1 then
+		vect = Vector(4111,-663,1)
+	elseif NumPos == 2 then
+		vect = Vector(-1581,2562,1)
+	end
+	local ward = entityList:FindEntities({classid=CDOTA_NPC_Observer_Ward})
+	for i,v in ipairs(ward) do
+		if (GetDistance2D(vect,v.position) < 1000) then
+			if lowenemy == nil and (v.name == "npc_dota_sentry_wards" or v.name == "npc_dota_observer_wards") then
+				lowenemy = v
+			end
+		end
+	end
+end
 
 function GetSeconds() 
 	return math.floor(client.gameTime-math.floor(client.gameTime/60)*60)
@@ -311,7 +354,7 @@ function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	if IsKeyDown(config.Test) then
 		local me = entityList:GetMyHero()
-		client:ExecuteCmd("say state = "..state.." inPosition = "..(inPosition and 1 or 0).."TIME ="..client.gameTime)
+		client:ExecuteCmd("say state = "..state.." inPosition = "..(inPosition and 1 or 0).." TIME = "..client.gameTime.." NumFarmPos = "..NumFarmPos.." NotFindTarget = "..NotFindTarget)
 		print("X="..client.mousePosition.x.."; Y="..client.mousePosition.y.."; Team="..me.team)
 	end
 end
