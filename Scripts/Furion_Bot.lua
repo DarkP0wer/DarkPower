@@ -142,10 +142,12 @@ function Tick( tick )
 			return
 		end
 		
-		if me.health >= me.maxHealth-100 and inPosition == false and me:GetAbility(2).state == -1 and state >= 3 and not me:IsChanneling() then
-			entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
-			inPosition = true
-			Sleep(500)
+		if inPosition == false and me:GetAbility(2).state == -1 and state >= 3 and not me:IsChanneling() then
+			if (me.health >= me.maxHealth-100 and IsInPos(me,SpawnPos)) or not IsInPos(me,SpawnPos) then
+				entityList:GetMyPlayer():UseAbility(me:GetAbility(2), FarmPos)
+				inPosition = true
+				Sleep(500)
+			end
 			return
 		end
 		
@@ -153,7 +155,7 @@ function Tick( tick )
 		
 		if me:GetAbility(3).level >= 1 and NumFarmPos >= 1 and me:GetAbility(3).state == -1 and client.gameTime >= TimeUseTree and inPosition and not me:IsChanneling() then
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
-			TimeUseTree = client.gameTime+4*60
+			TimeUseTree = client.gameTime+5*60
 		end
 
 		if state >= 4 and config.Midas and NumFarmPos ~= 1 then
@@ -179,15 +181,16 @@ function Tick( tick )
 				end
 				Sleep(600)
 				MaxNotFindTarget = 0
+				Minuta = GetMinuts()
 			else
 				if NumFarmPos >= 1 then
 					entityList:GetMyPlayer():Move(FarmPos)
 				end
-				if GetSeconds() >=5 and GetSeconds() <=10 and GetMinuts() ~= Minuta and GetMinuts() ~= 0 then
-					Minuta = GetMinuts()
+				if GetSeconds() >=5 and GetSeconds() <=10 and GetMinuts() ~= Minuta and client.gameTime > 0 then
 					if FindWard(NumFarmPos) then 
 						ChangeFarmPos(me)
-						return
+						print("Spawn neutrals WardFound")
+						return 0
 					end
 					if (NotFindTarget == 1) then
 						if me:GetAbility(3).level >= 1 and me:GetAbility(3).state == -1 and not me:IsChanneling() then
@@ -199,7 +202,7 @@ function Tick( tick )
 					
 					if (NotFindTarget >= config.MaxNotFindTarget) and state >= 3 then
 						ChangeFarmPos(me)
-						print("Spawn neutrals Blocked")
+						print("Spawn neutrals Blocked TIME ="..client.gameTime)
 					end
 				end
 			end
@@ -268,21 +271,21 @@ end
 function ChangeFarmPos(im) 
 	if NumFarmPos == 0 then
 		NumFarmPos = 1
-		inPosition = false
 		TimeUseTree = 0
 		FarmPos = StepsOfFarmPos[2]
 	elseif NumFarmPos == 1 then
 		NumFarmPos = 2
-		inPosition = false
 		TimeUseTree = 0
 		FarmPos = StepsOfFarmPos[3]
 	elseif NumFarmPos == 2 then
 		NumFarmPos = 0
-		inPosition = false
 		FarmPos = StepsOfFarmPos[1]
 	end
-	NotFindTarget = 0
-	if im:GetAbility(2).state == -1 then entityList:GetMyPlayer():UseAbility(im:GetAbility(2), FarmPos) end
+	NotFindTarget = 1
+	if im:GetAbility(2).state == -1 then 
+		entityList:GetMyPlayer():UseAbility(im:GetAbility(2), FarmPos) 
+		inPosition = false
+	end
 end
 
 function isAttacking(ent)
@@ -354,7 +357,7 @@ function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	if IsKeyDown(config.Test) then
 		local me = entityList:GetMyHero()
-		client:ExecuteCmd("say state = "..state.." inPosition = "..(inPosition and 1 or 0).." TIME = "..client.gameTime.." NumFarmPos = "..NumFarmPos.." NotFindTarget = "..NotFindTarget)
+		client:ExecuteCmd("say state = "..state.." inPosition = "..(inPosition and 1 or 0).." TIME = "..client.gameTime.." NumFarmPos = "..NumFarmPos.." NotFindTarget = "..NotFindTarget.." TimeNow = "..client.gameTime)
 		print("X="..client.mousePosition.x.."; Y="..client.mousePosition.y.."; Team="..me.team)
 	end
 end
