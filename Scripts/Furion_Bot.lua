@@ -66,7 +66,7 @@ function IsInPos(im,Pos)
 		Pos.x = 3898
 		Pos.y = -1196
 		NumFarmPos = 1
-		FarmPos = StepsOfFarmPos[NumFarmPos+1]--Vector(Pos.x,Pos.y,1)
+		FarmPos = StepsOfFarmPos[2]--Vector(Pos.x,Pos.y,1)
 	end
 	local r = config.Radius
 	if not im.hero then r = 120 end
@@ -101,7 +101,7 @@ function Tick( tick )
 	if PlayingGame() and me.alive then
 		if currentLevel == 0 then
 			NumFarmPos = 0
-			FarmPos = StepsOfFarmPos[NumFarmPos+1]--Vector(-1422,-4503,1)
+			FarmPos = StepsOfFarmPos[1]--Vector(-1422,-4503,1)
 			SpawnPos = Vector(-7077,-6780,1)
 			if me.team == 2 then
 				SpawnPos = Vector(-7077,-6780,1)
@@ -155,7 +155,7 @@ function Tick( tick )
 		
 		if me:GetAbility(3).level >= 1 and NumFarmPos >= 1 and me:GetAbility(3).state == -1 and client.gameTime >= TimeUseTree and inPosition and not me:IsChanneling() then
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
-			TimeUseTree = client.gameTime+5*60
+			TimeUseTree = client.gameTime+4*60
 		end
 
 		if state >= 4 and config.Midas and NumFarmPos ~= 1 then
@@ -187,12 +187,13 @@ function Tick( tick )
 					entityList:GetMyPlayer():Move(FarmPos)
 				end
 				if GetSeconds() >=5 and GetSeconds() <=10 and GetMinuts() ~= Minuta and client.gameTime > 0 then
+					Minuta = GetMinuts()
 					if FindWard(NumFarmPos) then 
 						ChangeFarmPos(me)
 						print("Spawn neutrals WardFound")
 						return 0
 					end
-					if (NotFindTarget == 1) then
+					if (NotFindTarget == 1 or NotFindTarget == 0) then
 						if me:GetAbility(3).level >= 1 and me:GetAbility(3).state == -1 and not me:IsChanneling() then
 							entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
 							TimeUseTree = client.gameTime+4*60
