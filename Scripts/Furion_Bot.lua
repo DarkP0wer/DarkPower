@@ -62,7 +62,7 @@ end
 function IsInPos(im,Pos)
 	local x = im.position.x
 	local y = im.position.y
-	if im:GetAbility(3).level >= 1 and im.hero and NumFarmPos == 0 and not FindWard(1) then 
+	if im:GetAbility(3).level >= 1 and im.hero and NumFarmPos == 0 and not FindWard(Vector(4111,-663,1)) then 
 		Pos.x = 3898
 		Pos.y = -1196
 		NumFarmPos = 1
@@ -101,8 +101,7 @@ function Tick( tick )
 	if PlayingGame() and me.alive then
 		if currentLevel == 0 then
 			NumFarmPos = 0
-			FarmPos = StepsOfFarmPos[1]--Vector(-1422,-4503,1)
-			SpawnPos = Vector(-7077,-6780,1)
+			FarmPos = Vector(-1422,-4503,1)
 			if me.team == 2 then
 				SpawnPos = Vector(-7077,-6780,1)
 				BuyPos = Vector(-4535,1508,1)
@@ -155,7 +154,7 @@ function Tick( tick )
 		
 		if me:GetAbility(3).level >= 1 and NumFarmPos >= 1 and me:GetAbility(3).state == -1 and client.gameTime >= TimeUseTree and inPosition and not me:IsChanneling() then
 			entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
-			TimeUseTree = client.gameTime+4*60
+			TimeUseTree = client.gameTime+10*60
 		end
 
 		if state >= 4 and config.Midas and NumFarmPos ~= 1 then
@@ -171,6 +170,8 @@ function Tick( tick )
 		if inPosition and state >= 3 and not isAttacking(me) and not me:IsChanneling() then
 			target = FindTarget()
 			if target ~= nil then 
+				MaxNotFindTarget = 0
+				Minuta = GetMinuts()
 				entityList:GetMyPlayer():Attack(target)
 				if me.health <= 400 and me:GetAbility(3).level >= 1 then 
 					if NumFarmPos == 1 then
@@ -180,23 +181,30 @@ function Tick( tick )
 					end
 				end
 				Sleep(600)
-				MaxNotFindTarget = 0
-				Minuta = GetMinuts()
 			else
 				if NumFarmPos >= 1 then
 					entityList:GetMyPlayer():Move(FarmPos)
 				end
+				local vect = Vector(-1044,-4110,1)
+				if NumFarmPos == 1 then
+					vect = Vector(4111,-663,1)
+				elseif NumFarmPos == 2 then
+					vect = Vector(-1581,2562,1)
+				else 
+					vect = Vector(-1044,-4110,1)
+				end
+				local wards =  FindWard(vect)
+				if wards ~= nil then 
+					print("Spawn neutrals WardFound")
+					ChangeFarmPos(me)
+					return
+				end
 				if GetSeconds() >=5 and GetSeconds() <=10 and GetMinuts() ~= Minuta and client.gameTime > 0 then
 					Minuta = GetMinuts()
-					if FindWard(NumFarmPos) then 
-						ChangeFarmPos(me)
-						print("Spawn neutrals WardFound")
-						return 0
-					end
-					if (NotFindTarget == 1 or NotFindTarget == 0) then
+					if (NotFindTarget >= 1) then
 						if me:GetAbility(3).level >= 1 and me:GetAbility(3).state == -1 and not me:IsChanneling() then
 							entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
-							TimeUseTree = client.gameTime+4*60
+							TimeUseTree = client.gameTime+10*60
 						end
 					end
 					NotFindTarget = NotFindTarget+1
@@ -327,22 +335,18 @@ function FindTarget(Tick)
 	return lowenemy
 end
 
-function FindWard(NumPos)
+function FindWard(pos)
+	local me = entityList:GetMyHero()
 	local lowenemy = nil
-	local vect = Vector(-1044,-4110,1)
-	if NumPos == 1 then
-		vect = Vector(4111,-663,1)
-	elseif NumPos == 2 then
-		vect = Vector(-1581,2562,1)
-	end
 	local ward = entityList:FindEntities({classid=CDOTA_NPC_Observer_Ward})
 	for i,v in ipairs(ward) do
-		if (GetDistance2D(vect,v.position) < 1000) then
+		if (GetDistance2D(pos,v.position) < 850) then
 			if lowenemy == nil and (v.name == "npc_dota_sentry_wards" or v.name == "npc_dota_observer_wards") then
 				lowenemy = v
 			end
 		end
 	end
+	return lowenemy
 end
 
 function GetSeconds() 
@@ -358,6 +362,8 @@ function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	if IsKeyDown(config.Test) then
 		local me = entityList:GetMyHero()
+		
+		entityList:GetMyPlayer():Move(Vector(-1422,-4503,1))
 		client:ExecuteCmd("say state = "..state.." inPosition = "..(inPosition and 1 or 0).." TIME = "..client.gameTime.." NumFarmPos = "..NumFarmPos.." NotFindTarget = "..NotFindTarget.." TimeNow = "..client.gameTime)
 		print("X="..client.mousePosition.x.."; Y="..client.mousePosition.y.."; Team="..me.team)
 	end
