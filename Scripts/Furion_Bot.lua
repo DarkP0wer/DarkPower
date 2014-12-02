@@ -62,7 +62,7 @@ end
 function IsInPos(im,Pos)
 	local x = im.position.x
 	local y = im.position.y
-	if im:GetAbility(3).level >= 1 and im.hero and NumFarmPos == 0 and not FindWard(Vector(4111,-663,1)) then 
+	if im:GetAbility(3).level >= 1 and im.hero and NumFarmPos == 0 and not FindWard(Vector(4111,-663,1),850) then 
 		Pos.x = 3898
 		Pos.y = -1196
 		NumFarmPos = 1
@@ -190,14 +190,16 @@ function Tick( tick )
 					entityList:GetMyPlayer():Move(FarmPos)
 				end
 				local vect = Vector(-1044,-4110,1)
+				local RangeV = 850
 				if NumFarmPos == 1 then
 					vect = Vector(4111,-663,1)
 				elseif NumFarmPos == 2 then
-					vect = Vector(-1581,2562,1)
+					vect = Vector(-1483,2649,1)
+					RangeV = 400
 				else 
 					vect = Vector(-1044,-4110,1)
 				end
-				local wards =  FindWard(vect)
+				local wards =  FindWard(vect,RangeV)
 				if wards ~= nil then 
 					print("Spawn neutrals WardFound")
 					ChangeFarmPos(me)
@@ -343,12 +345,12 @@ function FindTarget(Tick)
 	return lowenemy
 end
 
-function FindWard(pos)
+function FindWard(pos,radius)
 	local me = entityList:GetMyHero()
 	local lowenemy = nil
 	local ward = entityList:FindEntities({classid=CDOTA_NPC_Observer_Ward})
 	for i,v in ipairs(ward) do
-		if (GetDistance2D(pos,v.position) < 850) then
+		if (GetDistance2D(pos,v.position) < radius) then
 			if lowenemy == nil and (v.name == "npc_dota_sentry_wards" or v.name == "npc_dota_observer_wards") then
 				lowenemy = v
 			end
