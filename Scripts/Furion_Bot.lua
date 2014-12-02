@@ -39,7 +39,7 @@ local inPosition = false
 local NumFarmPos = 0
 local FarmPos1 = Vector(-1422,-4503,1)
 local FarmPos2 = Vector(3898,-1196,1)
-local FarmPos3 = Vector(-1185,2272,1)
+local FarmPos3 = Vector(-2080,2592,1)--Vector(-1185,2272,1)
 local StepsOfFarmPos={FarmPos1,FarmPos2,FarmPos3}
 
 function BuyItems(im)
@@ -101,7 +101,7 @@ function Tick( tick )
 	if PlayingGame() and me.alive then
 		if currentLevel == 0 then
 			NumFarmPos = 0
-			FarmPos = Vector(-1422,-4503,1)
+			FarmPos = StepsOfFarmPos[1]--Vector(-1422,-4503,1)
 			if me.team == 2 then
 				SpawnPos = Vector(-7077,-6780,1)
 				BuyPos = Vector(-4535,1508,1)
@@ -153,7 +153,11 @@ function Tick( tick )
 		inPosition = IsInPos(me,FarmPos)
 		
 		if me:GetAbility(3).level >= 1 and NumFarmPos >= 1 and me:GetAbility(3).state == -1 and client.gameTime >= TimeUseTree and inPosition and not me:IsChanneling() then
-			entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
+			if NumFarmPos == 2 then
+				entityList:GetMyPlayer():UseAbility(me:GetAbility(3), Vector(-1843,2517,1))
+			else
+				entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
+			end
 			TimeUseTree = client.gameTime+10*60
 		end
 
@@ -177,7 +181,7 @@ function Tick( tick )
 					if NumFarmPos == 1 then
 						entityList:GetMyPlayer():Move(Vector(3900, -1392, 1))
 					elseif NumFarmPos == 2 then
-						entityList:GetMyPlayer():Move(Vector(-1056,2208,1))
+						entityList:GetMyPlayer():Move(Vector(-2080,2272,1))
 					end
 				end
 				Sleep(600)
@@ -203,7 +207,11 @@ function Tick( tick )
 					Minuta = GetMinuts()
 					if (NotFindTarget >= 1) then
 						if me:GetAbility(3).level >= 1 and me:GetAbility(3).state == -1 and not me:IsChanneling() then
-							entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
+							if NumFarmPos == 2 then
+							entityList:GetMyPlayer():UseAbility(me:GetAbility(3), Vector(-1843,2517,1))
+							else
+								entityList:GetMyPlayer():UseAbility(me:GetAbility(3), me.position)
+							end
 							TimeUseTree = client.gameTime+10*60
 						end
 					end
