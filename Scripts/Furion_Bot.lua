@@ -170,7 +170,7 @@ function Tick( tick )
 		if inPosition and state >= 3 and not isAttacking(me) and not me:IsChanneling() then
 			target = FindTarget()
 			if target ~= nil then 
-				MaxNotFindTarget = 0
+				NotFindTarget = 0
 				Minuta = GetMinuts()
 				entityList:GetMyPlayer():Attack(target)
 				if me.health <= 400 and me:GetAbility(3).level >= 1 then 
@@ -362,9 +362,7 @@ function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	if IsKeyDown(config.Test) then
 		local me = entityList:GetMyHero()
-		
-		entityList:GetMyPlayer():Move(Vector(-1422,-4503,1))
-		client:ExecuteCmd("say state = "..state.." inPosition = "..(inPosition and 1 or 0).." TIME = "..client.gameTime.." NumFarmPos = "..NumFarmPos.." NotFindTarget = "..NotFindTarget.." TimeNow = "..client.gameTime)
+		client:ExecuteCmd("say state = "..state.." inPosition = "..(inPosition and 1 or 0).." TIME = "..client.gameTime.." NumFarmPos = "..NumFarmPos.." NotFindTarget = "..NotFindTarget)
 		print("X="..client.mousePosition.x.."; Y="..client.mousePosition.y.."; Team="..me.team)
 	end
 end
