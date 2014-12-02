@@ -62,7 +62,8 @@ end
 function IsInPos(im,Pos)
 	local x = im.position.x
 	local y = im.position.y
-	if im:GetAbility(3).level >= 1 and im.hero and NumFarmPos == 0 and not FindWard(Vector(4111,-663,1),850) then 
+	local Wards = FindWard(Vector(4111,-663,1),850)
+	if im:GetAbility(3).level >= 1 and im.hero and NumFarmPos == 0 and Wards == nil then 
 		Pos.x = 3898
 		Pos.y = -1196
 		NumFarmPos = 1
@@ -197,7 +198,8 @@ function Tick( tick )
 					vect = Vector(-1483,2649,1)
 					RangeV = 400
 				else 
-					vect = Vector(-1044,-4110,1)
+					vect = Vector(-1201,-4019,1)
+					RangeV = 400
 				end
 				local wards =  FindWard(vect,RangeV)
 				if wards ~= nil then 
