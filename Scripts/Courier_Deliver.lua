@@ -17,7 +17,7 @@ function GenerateSideMessage(msg)
 	sidemsg:AddElement(drawMgr:CreateText(85,20,0xFFFF00FF," " .. msg,drawMgr:CreateFont("F17","Tahoma",17,550)))
 end
 function Key(msg,code)
-	if msg ~= KEY_DOWN or not client.connected or client.loading or client.chat then
+	if msg ~= KEY_DOWN or not client.connected or client.console or client.loading or client.chat then
 		return
 	end
 	if code == 109 then
