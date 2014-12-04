@@ -1,4 +1,4 @@
---<< This script Drop any items v0.1 >>
+--<< This script Drop and Up any items v0.2 >>
 
 --===================--
 --     LIBRARIES     --
@@ -8,7 +8,9 @@ require("libs.Utils")
 --===================--
 --      CONFIG       --
 --===================--
-local HOTKEY = 56
+local DOWNKEY = 56
+local UPKEY = 55
+local turnflag = false
 
 local manaitems = {"item_wraith_band","item_veil_of_discord","item_ultimate_orb","item_staff_of_wizardry","item_soul_booster","item_shivas_guard","item_sheepstick",
 "item_rod_of_atos","item_robe","item_ring_of_aquila","item_point_booster","item_orchid","item_null_talisman","item_necronomicon_3","item_necronomicon_2","item_necronomicon",
@@ -24,12 +26,23 @@ function DropItems(im)
 		end
 	end
 end
+
+function UpItems(im)
+	local DownItems = entityList:FindEntities({type=LuaEntity.TYPE_ITEM_PHYSICAL})
+	for i,v in ipairs(DownItems) do
+		entityList:GetMyPlayer():TakeItem(v,turnflag)
+	end
+end
 		
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
-	if IsKeyDown(HOTKEY) then
+	if IsKeyDown(DOWNKEY) then
 		local me = entityList:GetMyHero()
 		DropItems(me)
+	end
+	if IsKeyDown(UPKEY) then
+		local me = entityList:GetMyHero()
+		UpItems(me)
 	end
 end
 
