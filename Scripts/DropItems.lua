@@ -4,13 +4,15 @@
 --     LIBRARIES     --
 --===================--
 require("libs.Utils")
-
+require("libs.ScriptConfig")
 --===================--
 --      CONFIG       --
 --===================--
-local DOWNKEY = 56
-local UPKEY = 55
-local turnflag = false
+local config = ScriptConfig.new()
+config:SetParameter("DOWNKEY", "56", config.TYPE_HOTKEY)
+config:SetParameter("UPKEY", "55", config.TYPE_HOTKEY)
+config:SetParameter("turnflag", false)
+config:Load()
 local NoDrop = {"item_arcane_boots"} -- No Drop arcane boots
 
 function DropItems(im)
@@ -23,7 +25,7 @@ function DropItems(im)
 		if bonusStrength or bonusMana or bonusHealth or bonusIntellect or bonusAll then
 			for j,x in ipairs(NoDrop) do
 				if v.name ~= NoDrop[j] then
-					entityList:GetMyPlayer():DropItem(v,im.position)
+					entityList:GetMyPlayer():DropItem(v,im.position,config.turnflag)
 				end
 			end
 		end		
@@ -33,17 +35,17 @@ end
 function UpItems(im)
 	local DownItems = entityList:FindEntities({type=LuaEntity.TYPE_ITEM_PHYSICAL})
 	for i,v in ipairs(DownItems) do
-		entityList:GetMyPlayer():TakeItem(v,turnflag)
+		entityList:GetMyPlayer():TakeItem(v,config.turnflag)
 	end
 end
 		
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
-	if IsKeyDown(DOWNKEY) then
+	if IsKeyDown(config.DOWNKEY) then
 		local me = entityList:GetMyHero()
 		DropItems(me)
 	end
-	if IsKeyDown(UPKEY) then
+	if IsKeyDown(config.UPKEY) then
 		local me = entityList:GetMyHero()
 		UpItems(me)
 	end
