@@ -4,13 +4,15 @@
 --     LIBRARIES     --
 --===================--
 require("libs.Utils")
-
+require("libs.ScriptConfig")
 --===================--
 --      CONFIG       --
 --===================--
-local DOWNKEY = 56
-local UPKEY = 55
-local turnflag = false
+local config = ScriptConfig.new()
+config:SetParameter("DOWNKEY", "56", config.TYPE_HOTKEY)
+config:SetParameter("UPKEY", "55", config.TYPE_HOTKEY)
+config:SetParameter("turnflag", false)
+config:Load()
 
 local DropItems = {"item_wraith_band","item_veil_of_discord","item_ultimate_orb","item_staff_of_wizardry","item_soul_booster","item_shivas_guard","item_sheepstick",
 "item_rod_of_atos","item_robe","item_ring_of_aquila","item_point_booster","item_orchid","item_null_talisman","item_necronomicon_3","item_necronomicon_2","item_necronomicon",
@@ -22,7 +24,7 @@ function DropItem(im)
 	for i, items in ipairs(DropItems) do
 		local IsItem = im:FindItem(DropItems[i])
 		if IsItem ~= nil then
-			entityList:GetMyPlayer():DropItem(IsItem,im.position)	
+			entityList:GetMyPlayer():DropItem(IsItem,im.position,config.turnflag)	
 		end
 	end
 end
@@ -30,17 +32,17 @@ end
 function UpItems(im)
 	local DownItems = entityList:FindEntities({type=LuaEntity.TYPE_ITEM_PHYSICAL})
 	for i,v in ipairs(DownItems) do
-		entityList:GetMyPlayer():TakeItem(v,turnflag)
+		entityList:GetMyPlayer():TakeItem(v,config.turnflag)
 	end
 end
 		
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
-	if IsKeyDown(DOWNKEY) then
+	if IsKeyDown(config.DOWNKEY) then
 		local me = entityList:GetMyHero()
 		DropItem(me)
 	end
-	if IsKeyDown(UPKEY) then
+	if IsKeyDown(config.DOWNKEY) then
 		local me = entityList:GetMyHero()
 		UpItems(me)
 	end
