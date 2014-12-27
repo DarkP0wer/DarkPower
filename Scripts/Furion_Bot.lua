@@ -204,8 +204,10 @@ function Tick( tick )
 				local wards =  FindWard(vect,RangeV)
 				if wards ~= nil then 
 					print("Spawn neutrals WardFound")
-					ChangeFarmPos(me)
-					return
+					if (me:GetAbility(3).state == -1) then
+						ChangeFarmPos(me)
+						return
+					end
 				end
 				if GetSeconds() >=5 and GetSeconds() <=10 and GetMinuts() ~= Minuta and client.gameTime > 0 then
 					Minuta = GetMinuts()
@@ -221,7 +223,7 @@ function Tick( tick )
 					end
 					NotFindTarget = NotFindTarget+1
 					
-					if (NotFindTarget >= config.MaxNotFindTarget) and state >= 3 then
+					if (NotFindTarget >= config.MaxNotFindTarget) and state >= 3 and me:GetAbility(3).state == -1 then
 						ChangeFarmPos(me)
 						print("Spawn neutrals Blocked TIME ="..client.gameTime)
 					end
@@ -280,8 +282,7 @@ function MyItemsInCurier(im,cur)
 	for i = 1, 6 do
         local item = cur:GetItem(i)
 		if item then
-			s = item.owner
-			if item.owner == im then
+			if item.purchaser == im then
 				return true
 			end
 		end
