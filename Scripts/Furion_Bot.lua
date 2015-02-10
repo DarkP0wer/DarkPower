@@ -204,7 +204,7 @@ function Tick( tick )
 				local wards =  FindWard(vect,RangeV)
 				if wards ~= nil then 
 					print("Spawn neutrals WardFound")
-					if (me:GetAbility(3).state == -1) then
+					if (me:GetAbility(3).state == -1 and me:GetAbility(3).level >= 1) then
 						ChangeFarmPos(me)
 						return
 					end
@@ -223,7 +223,7 @@ function Tick( tick )
 					end
 					NotFindTarget = NotFindTarget+1
 					
-					if (NotFindTarget >= config.MaxNotFindTarget) and state >= 3 and me:GetAbility(3).state == -1 then
+					if (NotFindTarget >= config.MaxNotFindTarget) and state >= 3 and me:GetAbility(3).state == -1 and me:GetAbility(3).level >= 1 then
 						ChangeFarmPos(me)
 						print("Spawn neutrals Blocked TIME ="..client.gameTime)
 					end
