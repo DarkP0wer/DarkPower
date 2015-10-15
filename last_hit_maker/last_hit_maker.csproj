@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>last_hit_maker</RootNamespace>
     <AssemblyName>last_hit_maker</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PreBuildEvent />
     <PostBuildEvent />
     <OutputPath>bin\Release</OutputPath>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -38,6 +39,9 @@
     <Reference Include="Ensage">
       <HintPath>C:\Users\DarkPower\Desktop\GOP\LeagueSharp\System\Ensage.dll</HintPath>
     </Reference>
+    <Reference Include="Ensage.Common">
+      <HintPath>C:\Users\DarkPower\Desktop\GOP\LeagueSharp\System\Ensage.Common.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX">
       <HintPath>C:\Users\DarkPower\Desktop\GOP\LeagueSharp\System\SharpDX.dll</HintPath>
     </Reference>
@@ -46,6 +50,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
