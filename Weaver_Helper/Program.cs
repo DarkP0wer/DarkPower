@@ -280,7 +280,7 @@ namespace Weaver_Helper
                 }
                 if (!IsMenuMoved && (Control.MouseButtons & MouseButtons.Right) != 0)
                 {
-                    if ((CursorPosition.X >= xy1[0].X && CursorPosition.Y >= xy1[0].Y) && ((CursorPosition.X <= xy2[0].X % 2 + 10) && CursorPosition.Y <= xy2[0].Y))
+                    if ((CursorPosition.X >= xy1[0].X && CursorPosition.Y >= xy1[0].Y) && ((CursorPosition.X <= xy2[0].X - 50) && CursorPosition.Y <= xy2[0].Y))
                     {
                         IsMenuMoved = true;
                     }
