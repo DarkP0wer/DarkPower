@@ -45,7 +45,7 @@ namespace Dota_Buff
             {
                 listBox1 = new System.Windows.Forms.ListBox();
                 listBox2 = new System.Windows.Forms.ListBox();
-                webBrowser1 = new System.Windows.Forms.WebBrowser();
+                this.webBrowser1 = new System.Windows.Forms.WebBrowser();
                 button1 = new System.Windows.Forms.Button();
                 label1 = new System.Windows.Forms.Label();
                 linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -140,7 +140,7 @@ namespace Dota_Buff
                 Controls.Add(label1);
                 Controls.Add(button1);
                 Controls.Add(listBox2);
-                Controls.Add(webBrowser1);
+                Controls.Add(this.webBrowser1);
                 Controls.Add(listBox1);
                 FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
                 Name = "Form1";
@@ -169,7 +169,7 @@ namespace Dota_Buff
 
             private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
             {
-                webBrowser1.Navigate("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
+                this.webBrowser1.Navigate("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
             }
 
             private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
