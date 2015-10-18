@@ -260,7 +260,7 @@ namespace Dota_Buff
                     frm.comboBox2.Items.Clear(); ;
                     foreach (var enemy in enemies)
                     {
-                        if (enemy == null || !enemy.IsValid) continue;
+                        if (enemy == null || enemy.IsFakeClient) continue;
                         uint id = enemy.PlayerSteamID;
                         if (id > 0)
                         {
