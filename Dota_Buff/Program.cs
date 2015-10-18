@@ -211,7 +211,7 @@ namespace Dota_Buff
 
             private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
             {
-                System.Diagnostics.Process.Start("https://www.joduska.me");
+                System.Diagnostics.Process.Start("https://www.joduska.me/forum/topic/137479-dota-buff/");
             }
         }
 
