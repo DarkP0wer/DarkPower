@@ -46,8 +46,8 @@ namespace Dota_Buff
                 //listBox1 = new System.Windows.Forms.ListBox();
                 //listBox2 = new System.Windows.Forms.ListBox();
                 webBrowser1 = new System.Windows.Forms.WebBrowser();
-                this.comboBox1 = new System.Windows.Forms.ComboBox();
-                this.comboBox2 = new System.Windows.Forms.ComboBox();
+                comboBox1 = new System.Windows.Forms.ComboBox();
+                comboBox2 = new System.Windows.Forms.ComboBox();
                 button1 = new System.Windows.Forms.Button();
                 label1 = new System.Windows.Forms.Label();
                 linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -62,7 +62,7 @@ namespace Dota_Buff
                 listBox1.Name = "listBox1";
                 listBox1.Size = new System.Drawing.Size(149, 108);
                 listBox1.TabIndex = 0;
-                listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+                listBox1.SelectedIndexChanged += new System.EventHandler(listBox1_SelectedIndexChanged);
                 // */
                 // webBrowser1
                 // 
@@ -83,7 +83,7 @@ namespace Dota_Buff
                 listBox2.Name = "listBox2";
                 listBox2.Size = new System.Drawing.Size(149, 108);
                 listBox2.TabIndex = 3;
-                listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
+                listBox2.SelectedIndexChanged += new System.EventHandler(listBox2_SelectedIndexChanged);
                 // */
                 // 
                 // comboBox1
@@ -95,6 +95,7 @@ namespace Dota_Buff
                 comboBox1.Size = new System.Drawing.Size(121, 21);
                 comboBox1.TabIndex = 8;
                 comboBox1.Enabled = false;
+                comboBox1.SelectedIndexChanged += new System.EventHandler(comboBox1_SelectedIndexChanged);
                 // 
                 // comboBox2
                 // 
@@ -104,6 +105,7 @@ namespace Dota_Buff
                 comboBox2.Name = "comboBox2";
                 comboBox2.Size = new System.Drawing.Size(121, 21);
                 comboBox2.TabIndex = 9;
+                comboBox2.SelectedIndexChanged += new System.EventHandler(comboBox2_SelectedIndexChanged);
                 // 
                 // button1
                 // 
@@ -115,7 +117,7 @@ namespace Dota_Buff
                 button1.TabIndex = 4;
                 button1.Text = "DB";
                 button1.UseVisualStyleBackColor = true;
-                button1.Click += new System.EventHandler(this.button1_Click);
+                button1.Click += new System.EventHandler(button1_Click);
                 // 
                 // label1
                 // 
@@ -136,7 +138,7 @@ namespace Dota_Buff
                 linkLabel1.TabIndex = 6;
                 linkLabel1.TabStop = true;
                 linkLabel1.Text = "Forum Thread";
-                linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+                linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(linkLabel1_LinkClicked);
                 // 
                 // linkLabel2
                 // 
@@ -148,7 +150,7 @@ namespace Dota_Buff
                 linkLabel2.TabIndex = 7;
                 linkLabel2.TabStop = true;
                 linkLabel2.Text = "GitHub Darp0wer";
-                linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+                linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(linkLabel2_LinkClicked);
                 // 
                 // Form1
                 // 
@@ -169,9 +171,9 @@ namespace Dota_Buff
                 ShowIcon = false;
                 Text = "DotaBuff by DarkPower";
                 TopMost = true;
-                FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-                Load += new System.EventHandler(this.Form1_Load);
-                MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+                FormClosing += new System.Windows.Forms.FormClosingEventHandler(Form1_FormClosing);
+                Load += new System.EventHandler(Form1_Load);
+                MouseDown += new System.Windows.Forms.MouseEventHandler(Form1_MouseDown);
                 ResumeLayout(false);
                 PerformLayout();
             }
@@ -191,12 +193,12 @@ namespace Dota_Buff
                 Width = 900; Height = 400;
             }
 
-            private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+            private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
             {
                 webBrowser1.Navigate("http://www.dotabuff.com/players/" + comboBox1.Items[comboBox1.SelectedIndex].ToString());
             }
 
-            private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
+            private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
             {
                 comboBox1.SelectedIndex = comboBox2.SelectedIndex;
             }
