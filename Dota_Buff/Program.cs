@@ -64,8 +64,8 @@ namespace Dota_Buff
                 //
                 // webBrowser1
                 // 
-                this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                | System.Windows.Forms.AnchorStyles.Left) 
+                this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                | System.Windows.Forms.AnchorStyles.Left)
                 | System.Windows.Forms.AnchorStyles.Right)));
                 this.webBrowser1.Location = new System.Drawing.Point(167, 6);
                 this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
@@ -169,7 +169,16 @@ namespace Dota_Buff
 
             private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
             {
-                this.webBrowser1.Navigate("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
+                try
+                {
+                    this.webBrowser1.Navigate("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
+                }
+                catch (Exception e2)
+                {
+                    if (e2.Source != null)
+                        MessageBox.Show("Error: " + e2.Source);
+                    throw;
+                }
             }
 
             private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
@@ -236,7 +245,7 @@ namespace Dota_Buff
                     {
                         if (enemy == null || enemy.IsFakeClient) continue;
                         uint id = enemy.PlayerSteamID;
-                        if (id > 100)
+                        if (id > 0)
                         {
                             //Console.WriteLine(enemy.Name + "\t\t" + id);
                             //Array.Resize<string>(ref lines, lines.Length + 1);
@@ -251,7 +260,7 @@ namespace Dota_Buff
             catch (Exception e)
             {
                 if (e.Source != null)
-                    MessageBox.Show("Error: {0}", e.Source);
+                    MessageBox.Show("Error: " + e.Source);
                 throw;
             }
         }
