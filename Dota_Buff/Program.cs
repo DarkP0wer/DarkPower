@@ -43,17 +43,15 @@ namespace Dota_Buff
 
             private void InitializeComponent()
             {
-                //listBox1 = new System.Windows.Forms.ListBox();
-                //listBox2 = new System.Windows.Forms.ListBox();
+                listBox1 = new System.Windows.Forms.ListBox();
+                listBox2 = new System.Windows.Forms.ListBox();
                 webBrowser1 = new System.Windows.Forms.WebBrowser();
-                comboBox1 = new System.Windows.Forms.ComboBox();
-                comboBox2 = new System.Windows.Forms.ComboBox();
                 button1 = new System.Windows.Forms.Button();
                 label1 = new System.Windows.Forms.Label();
                 linkLabel1 = new System.Windows.Forms.LinkLabel();
                 linkLabel2 = new System.Windows.Forms.LinkLabel();
                 SuspendLayout();
-                /*// 
+                // 
                 // listBox1
                 // 
                 listBox1.Enabled = false;
@@ -63,20 +61,20 @@ namespace Dota_Buff
                 listBox1.Size = new System.Drawing.Size(149, 108);
                 listBox1.TabIndex = 0;
                 listBox1.SelectedIndexChanged += new System.EventHandler(listBox1_SelectedIndexChanged);
-                // */
+                //
                 // webBrowser1
                 // 
-                webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
                 | System.Windows.Forms.AnchorStyles.Left) 
                 | System.Windows.Forms.AnchorStyles.Right)));
-                webBrowser1.Location = new System.Drawing.Point(167, 6);
-                webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-                webBrowser1.Name = "webBrowser1";
-                webBrowser1.ScriptErrorsSuppressed = true;
-                webBrowser1.Size = new System.Drawing.Size(786, 408);
-                webBrowser1.TabIndex = 2;
+                this.webBrowser1.Location = new System.Drawing.Point(167, 6);
+                this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+                this.webBrowser1.Name = "webBrowser1";
+                this.webBrowser1.ScriptErrorsSuppressed = true;
+                this.webBrowser1.Size = new System.Drawing.Size(786, 408);
+                this.webBrowser1.TabIndex = 2;
                 // 
-                /*// listBox2
+                // listBox2
                 // 
                 listBox2.FormattingEnabled = true;
                 listBox2.Location = new System.Drawing.Point(12, 143);
@@ -84,29 +82,7 @@ namespace Dota_Buff
                 listBox2.Size = new System.Drawing.Size(149, 108);
                 listBox2.TabIndex = 3;
                 listBox2.SelectedIndexChanged += new System.EventHandler(listBox2_SelectedIndexChanged);
-                // */
-                // 
-                // comboBox1
-                // 
-                comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-                comboBox1.FormattingEnabled = true;
-                comboBox1.Location = new System.Drawing.Point(12, 29);
-                comboBox1.Name = "comboBox1";
-                comboBox1.Size = new System.Drawing.Size(121, 21);
-                comboBox1.TabIndex = 8;
-                comboBox1.Enabled = false;
-                comboBox1.SelectedIndexChanged += new System.EventHandler(comboBox1_SelectedIndexChanged);
-                // 
-                // comboBox2
-                // 
-                comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-                comboBox2.FormattingEnabled = true;
-                comboBox2.Location = new System.Drawing.Point(12, 143);
-                comboBox2.Name = "comboBox2";
-                comboBox2.Size = new System.Drawing.Size(121, 21);
-                comboBox2.TabIndex = 9;
-                comboBox2.SelectedIndexChanged += new System.EventHandler(comboBox2_SelectedIndexChanged);
-                // 
+                //
                 // button1
                 // 
                 button1.BackColor = System.Drawing.SystemColors.ControlLightLight;
@@ -163,9 +139,9 @@ namespace Dota_Buff
                 Controls.Add(linkLabel1);
                 Controls.Add(label1);
                 Controls.Add(button1);
-                Controls.Add(comboBox2);
+                Controls.Add(listBox2);
                 Controls.Add(webBrowser1);
-                Controls.Add(comboBox1);
+                Controls.Add(listBox1);
                 FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
                 Name = "Form1";
                 ShowIcon = false;
@@ -178,11 +154,9 @@ namespace Dota_Buff
                 PerformLayout();
             }
 
-            //public System.Windows.Forms.ListBox listBox1;
-            //public System.Windows.Forms.ListBox listBox2;
+            public System.Windows.Forms.ListBox listBox1;
+            public System.Windows.Forms.ListBox listBox2;
             private System.Windows.Forms.WebBrowser webBrowser1;
-            public System.Windows.Forms.ComboBox comboBox1;
-            public System.Windows.Forms.ComboBox comboBox2;
             private System.Windows.Forms.Button button1;
             private System.Windows.Forms.Label label1;
             private System.Windows.Forms.LinkLabel linkLabel1;
@@ -193,14 +167,14 @@ namespace Dota_Buff
                 Width = 900; Height = 400;
             }
 
-            private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+            private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
             {
-                webBrowser1.Navigate("http://www.dotabuff.com/players/" + comboBox1.Items[comboBox1.SelectedIndex].ToString());
+                webBrowser1.Navigate("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
             }
 
-            private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+            private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
             {
-                comboBox1.SelectedIndex = comboBox2.SelectedIndex;
+                listBox1.SelectedIndex = listBox2.SelectedIndex;
             }
 
             private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -256,8 +230,8 @@ namespace Dota_Buff
                     var enemies = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
                     /*string[] lines = new string[1];
                     lines[0] = "Name \tID";*/
-                    frm.comboBox1.Items.Clear();
-                    frm.comboBox2.Items.Clear(); ;
+                    frm.listBox1.Items.Clear();
+                    frm.listBox2.Items.Clear(); ;
                     foreach (var enemy in enemies)
                     {
                         if (enemy == null || enemy.IsFakeClient) continue;
@@ -267,8 +241,8 @@ namespace Dota_Buff
                             //Console.WriteLine(enemy.Name + "\t\t" + id);
                             //Array.Resize<string>(ref lines, lines.Length + 1);
                             //lines[lines.Length-1] = enemy.Name  + "\t\t" + id;
-                            frm.comboBox1.Items.Add(id);
-                            frm.comboBox2.Items.Add(enemy.Name);
+                            frm.listBox1.Items.Add(id);
+                            frm.listBox2.Items.Add(enemy.Name);
                         }
                     }
                     //System.IO.File.WriteAllLines("Info.txt", lines);
