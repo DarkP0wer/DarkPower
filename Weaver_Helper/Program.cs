@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ensage;
 using Ensage.Common;
+using Ensage.Common.Extensions;
 using SharpDX;
 using SharpDX.Direct3D9;
 
@@ -114,8 +115,8 @@ namespace Weaver_Helper
         {
             var player = ObjectMgr.LocalPlayer;
             if (!Game.IsInGame || player == null || player.Hero == null || Game.IsPaused) return;
-            Ability ult = player.Hero.Spellbook.Spell4;
-            if (ult.Name != null && "weaver_time_lapse" == ult.Name)
+            Ability ult = player.Hero.FindSpell("weaver_time_lapse");
+            if (ult != null)
             {
                 for (int i = 0; i < 5; i++)
                 {
@@ -130,21 +131,24 @@ namespace Weaver_Helper
                 {
                     if (((int)LH[0] - (int)player.Hero.Health) >= MomentDownHealth)
                     {
-                            ult.UseAbility();
-                            Console.WriteLine("Cast ult 1 weaver");
+                        if (player.Hero.AghanimState()) ult.UseAbility(player.Hero);
+                        else ult.UseAbility();
+                        //Console.WriteLine("Cast ult 1 weaver");
                     }
                     if (((int)LH[4] - (int)player.Hero.Health) >= MinHealthDownToDown)
                     {
                         if (ult.Cooldown > 0 || !IsScriptEnabled) return;
-                        ult.UseAbility();
-                        Console.WriteLine("Cast2");
+                        if (player.Hero.AghanimState()) ult.UseAbility(player.Hero);
+                        else ult.UseAbility();
+                        //Console.WriteLine("Cast2");
                     }
 
                     if (player.Hero.Health <= MinHealthDownToDown && player.Hero.Health+100 <= LH[4])
                     {
                         if (ult.Cooldown > 0 || !IsScriptEnabled) return;
-                        ult.UseAbility();
-                        Console.WriteLine("Cast3");
+                        if (player.Hero.AghanimState()) ult.UseAbility(player.Hero);
+                        else ult.UseAbility();
+                        //Console.WriteLine("Cast3");
                     }
                 }
             }
@@ -276,7 +280,7 @@ namespace Weaver_Helper
                 }
                 if (!IsMenuMoved && (Control.MouseButtons & MouseButtons.Right) != 0)
                 {
-                    if ((CursorPosition.X >= xy1[0].X && CursorPosition.Y >= xy1[0].Y) && (CursorPosition.X <= xy2[0].X && CursorPosition.Y <= xy2[0].Y))
+                    if ((CursorPosition.X >= xy1[0].X && CursorPosition.Y >= xy1[0].Y) && ((CursorPosition.X <= xy2[0].X % 2 + 10) && CursorPosition.Y <= xy2[0].Y))
                     {
                         IsMenuMoved = true;
                     }
