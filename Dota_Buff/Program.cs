@@ -262,7 +262,7 @@ namespace Dota_Buff
                     {
                         if (enemy == null || enemy.IsFakeClient) continue;
                         uint id = enemy.PlayerSteamID;
-                        if (id > 0)
+                        if (id > 100)
                         {
                             //Console.WriteLine(enemy.Name + "\t\t" + id);
                             //Array.Resize<string>(ref lines, lines.Length + 1);
