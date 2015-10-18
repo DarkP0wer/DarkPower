@@ -43,15 +43,17 @@ namespace Dota_Buff
 
             private void InitializeComponent()
             {
-                listBox1 = new System.Windows.Forms.ListBox();
+                //listBox1 = new System.Windows.Forms.ListBox();
+                //listBox2 = new System.Windows.Forms.ListBox();
                 webBrowser1 = new System.Windows.Forms.WebBrowser();
-                listBox2 = new System.Windows.Forms.ListBox();
+                this.comboBox1 = new System.Windows.Forms.ComboBox();
+                this.comboBox2 = new System.Windows.Forms.ComboBox();
                 button1 = new System.Windows.Forms.Button();
                 label1 = new System.Windows.Forms.Label();
                 linkLabel1 = new System.Windows.Forms.LinkLabel();
                 linkLabel2 = new System.Windows.Forms.LinkLabel();
                 SuspendLayout();
-                // 
+                /*// 
                 // listBox1
                 // 
                 listBox1.Enabled = false;
@@ -61,7 +63,7 @@ namespace Dota_Buff
                 listBox1.Size = new System.Drawing.Size(149, 108);
                 listBox1.TabIndex = 0;
                 listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
-                // 
+                // */
                 // webBrowser1
                 // 
                 webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -74,7 +76,7 @@ namespace Dota_Buff
                 webBrowser1.Size = new System.Drawing.Size(786, 408);
                 webBrowser1.TabIndex = 2;
                 // 
-                // listBox2
+                /*// listBox2
                 // 
                 listBox2.FormattingEnabled = true;
                 listBox2.Location = new System.Drawing.Point(12, 143);
@@ -82,6 +84,26 @@ namespace Dota_Buff
                 listBox2.Size = new System.Drawing.Size(149, 108);
                 listBox2.TabIndex = 3;
                 listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
+                // */
+                // 
+                // comboBox1
+                // 
+                comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+                comboBox1.FormattingEnabled = true;
+                comboBox1.Location = new System.Drawing.Point(12, 29);
+                comboBox1.Name = "comboBox1";
+                comboBox1.Size = new System.Drawing.Size(121, 21);
+                comboBox1.TabIndex = 8;
+                comboBox1.Enabled = false;
+                // 
+                // comboBox2
+                // 
+                comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+                comboBox2.FormattingEnabled = true;
+                comboBox2.Location = new System.Drawing.Point(12, 143);
+                comboBox2.Name = "comboBox2";
+                comboBox2.Size = new System.Drawing.Size(121, 21);
+                comboBox2.TabIndex = 9;
                 // 
                 // button1
                 // 
@@ -135,13 +157,13 @@ namespace Dota_Buff
                 BackColor = System.Drawing.SystemColors.Highlight;
                 ClientSize = new System.Drawing.Size(965, 426);
                 ControlBox = false;
-                Controls.Add(this.linkLabel2);
-                Controls.Add(this.linkLabel1);
-                Controls.Add(this.label1);
-                Controls.Add(this.button1);
-                Controls.Add(this.listBox2);
-                Controls.Add(this.webBrowser1);
-                Controls.Add(this.listBox1);
+                Controls.Add(linkLabel2);
+                Controls.Add(linkLabel1);
+                Controls.Add(label1);
+                Controls.Add(button1);
+                Controls.Add(comboBox2);
+                Controls.Add(webBrowser1);
+                Controls.Add(comboBox1);
                 FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
                 Name = "Form1";
                 ShowIcon = false;
@@ -154,9 +176,11 @@ namespace Dota_Buff
                 PerformLayout();
             }
 
-            public System.Windows.Forms.ListBox listBox1;
+            //public System.Windows.Forms.ListBox listBox1;
+            //public System.Windows.Forms.ListBox listBox2;
             private System.Windows.Forms.WebBrowser webBrowser1;
-            public System.Windows.Forms.ListBox listBox2;
+            public System.Windows.Forms.ComboBox comboBox1;
+            public System.Windows.Forms.ComboBox comboBox2;
             private System.Windows.Forms.Button button1;
             private System.Windows.Forms.Label label1;
             private System.Windows.Forms.LinkLabel linkLabel1;
@@ -169,13 +193,12 @@ namespace Dota_Buff
 
             private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
             {
-                webBrowser1.Navigate("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
-                listBox2.SelectedIndex = listBox1.SelectedIndex;
+                webBrowser1.Navigate("http://www.dotabuff.com/players/" + comboBox1.Items[comboBox1.SelectedIndex].ToString());
             }
 
             private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
             {
-                listBox1.SelectedIndex = listBox2.SelectedIndex;
+                comboBox1.SelectedIndex = comboBox2.SelectedIndex;
             }
 
             private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -231,19 +254,19 @@ namespace Dota_Buff
                     var enemies = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
                     /*string[] lines = new string[1];
                     lines[0] = "Name \tID";*/
-                    frm.listBox1.Items.Clear();
-                    frm.listBox2.Items.Clear(); ;
+                    frm.comboBox1.Items.Clear();
+                    frm.comboBox2.Items.Clear(); ;
                     foreach (var enemy in enemies)
                     {
-                        if (enemy == null) continue;
+                        if (enemy == null || !enemy.IsValid) continue;
                         uint id = enemy.PlayerSteamID;
                         if (id > 0)
                         {
                             //Console.WriteLine(enemy.Name + "\t\t" + id);
                             //Array.Resize<string>(ref lines, lines.Length + 1);
                             //lines[lines.Length-1] = enemy.Name  + "\t\t" + id;
-                            frm.listBox1.Items.Add(id);
-                            frm.listBox2.Items.Add(enemy.Name);
+                            frm.comboBox1.Items.Add(id);
+                            frm.comboBox2.Items.Add(enemy.Name);
                         }
                     }
                     //System.IO.File.WriteAllLines("Info.txt", lines);
