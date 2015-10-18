@@ -219,7 +219,6 @@ namespace Weaver_Helper
                 {
                     if ((CursorPosition.X >= xy1[i].X && CursorPosition.Y >= xy1[i].Y) && (CursorPosition.X <= xy2[i].X && CursorPosition.Y <= xy2[i].Y))
                     {
-                        Console.WriteLine("Clicked " + i + " item");
                         switch (i)
                         {
                             case 0:
