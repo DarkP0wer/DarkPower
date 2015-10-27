@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Ensage;
@@ -9,23 +8,13 @@ using SharpDX;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Dota_Buff
 {
     class Program
     {
-
-        static void Main(string[] args)
-        {
-            Game.OnWndProc += Game_OnGameWndProc;
-        }
-
-        public class ClipCursor
-        {
-            [System.Runtime.InteropServices.DllImport("user32.dll")]
-            public static extern bool GetCursorPos(out Point lpPoint);
-        }
-
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
 
@@ -33,6 +22,19 @@ namespace Dota_Buff
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
         [DllImportAttribute("user32.dll")]
         public static extern bool ReleaseCapture();
+        public static Boolean _close;
+
+        static void Main(string[] args)
+        {
+            Game.OnWndProc += Game_OnGameWndProc;
+            _close = true;
+        }
+
+        public class ClipCursor
+        {
+            [System.Runtime.InteropServices.DllImport("user32.dll")]
+            public static extern bool GetCursorPos(out Point lpPoint);
+        }
 
         public partial class Form1 : Form
         {
@@ -45,18 +47,20 @@ namespace Dota_Buff
             {
                 listBox1 = new System.Windows.Forms.ListBox();
                 listBox2 = new System.Windows.Forms.ListBox();
-                this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+                webBrowser1 = new System.Windows.Forms.WebBrowser();
                 button1 = new System.Windows.Forms.Button();
                 label1 = new System.Windows.Forms.Label();
                 linkLabel1 = new System.Windows.Forms.LinkLabel();
                 linkLabel2 = new System.Windows.Forms.LinkLabel();
+                button2 = new System.Windows.Forms.Button();
+                checkBox1 = new System.Windows.Forms.CheckBox();
                 SuspendLayout();
                 // 
                 // listBox1
                 // 
                 listBox1.Enabled = false;
                 listBox1.FormattingEnabled = true;
-                listBox1.Location = new System.Drawing.Point(12, 29);
+                listBox1.Location = new System.Drawing.Point(12, 44);
                 listBox1.Name = "listBox1";
                 listBox1.Size = new System.Drawing.Size(149, 108);
                 listBox1.TabIndex = 0;
@@ -64,20 +68,20 @@ namespace Dota_Buff
                 //
                 // webBrowser1
                 // 
-                this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                 | System.Windows.Forms.AnchorStyles.Left)
                 | System.Windows.Forms.AnchorStyles.Right)));
-                this.webBrowser1.Location = new System.Drawing.Point(167, 6);
-                this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-                this.webBrowser1.Name = "webBrowser1";
-                this.webBrowser1.ScriptErrorsSuppressed = true;
-                this.webBrowser1.Size = new System.Drawing.Size(786, 408);
-                this.webBrowser1.TabIndex = 2;
+                webBrowser1.Location = new System.Drawing.Point(167, 6);
+                webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+                webBrowser1.Name = "webBrowser1";
+                webBrowser1.ScriptErrorsSuppressed = true;
+                webBrowser1.Size = new System.Drawing.Size(786, 408);
+                webBrowser1.TabIndex = 2;
                 // 
                 // listBox2
                 // 
                 listBox2.FormattingEnabled = true;
-                listBox2.Location = new System.Drawing.Point(12, 143);
+                listBox2.Location = new System.Drawing.Point(12, 158);
                 listBox2.Name = "listBox2";
                 listBox2.Size = new System.Drawing.Size(149, 108);
                 listBox2.TabIndex = 3;
@@ -89,16 +93,16 @@ namespace Dota_Buff
                 button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
                 button1.Location = new System.Drawing.Point(2, 2);
                 button1.Name = "button1";
-                button1.Size = new System.Drawing.Size(38, 21);
+                button1.Size = new System.Drawing.Size(80, 21);
                 button1.TabIndex = 4;
-                button1.Text = "DB";
+                button1.Text = "DB HIDE";
                 button1.UseVisualStyleBackColor = true;
                 button1.Click += new System.EventHandler(button1_Click);
                 // 
                 // label1
                 // 
                 label1.AutoSize = true;
-                label1.Location = new System.Drawing.Point(39, 6);
+                label1.Location = new System.Drawing.Point(12, 26);
                 label1.Name = "label1";
                 label1.Size = new System.Drawing.Size(122, 13);
                 label1.TabIndex = 5;
@@ -108,7 +112,7 @@ namespace Dota_Buff
                 // 
                 linkLabel1.AutoSize = true;
                 linkLabel1.LinkColor = System.Drawing.Color.White;
-                linkLabel1.Location = new System.Drawing.Point(12, 263);
+                linkLabel1.Location = new System.Drawing.Point(9, 342);
                 linkLabel1.Name = "linkLabel1";
                 linkLabel1.Size = new System.Drawing.Size(73, 13);
                 linkLabel1.TabIndex = 6;
@@ -120,13 +124,33 @@ namespace Dota_Buff
                 // 
                 linkLabel2.AutoSize = true;
                 linkLabel2.LinkColor = System.Drawing.Color.White;
-                linkLabel2.Location = new System.Drawing.Point(12, 288);
+                linkLabel2.Location = new System.Drawing.Point(9, 364);
                 linkLabel2.Name = "linkLabel2";
                 linkLabel2.Size = new System.Drawing.Size(89, 13);
                 linkLabel2.TabIndex = 7;
                 linkLabel2.TabStop = true;
                 linkLabel2.Text = "GitHub Darp0wer";
                 linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(linkLabel2_LinkClicked);
+                // 
+                // button2
+                // 
+                button2.Location = new System.Drawing.Point(12, 390);
+                button2.Name = "button2";
+                button2.Size = new System.Drawing.Size(86, 24);
+                button2.TabIndex = 8;
+                button2.Text = "button2";
+                button2.UseVisualStyleBackColor = true;
+                button2.Click += new System.EventHandler(this.button2_Click);
+                // 
+                // checkBox1
+                // 
+                checkBox1.AutoSize = true;
+                checkBox1.Location = new System.Drawing.Point(12, 272);
+                checkBox1.Name = "checkBox1";
+                checkBox1.Size = new System.Drawing.Size(120, 17);
+                checkBox1.TabIndex = 9;
+                checkBox1.Text = "Use default browser";
+                checkBox1.UseVisualStyleBackColor = true;
                 // 
                 // Form1
                 // 
@@ -142,6 +166,8 @@ namespace Dota_Buff
                 Controls.Add(listBox2);
                 Controls.Add(this.webBrowser1);
                 Controls.Add(listBox1);
+                Controls.Add(this.checkBox1);
+                Controls.Add(this.button2);
                 FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
                 Name = "Form1";
                 ShowIcon = false;
@@ -161,6 +187,8 @@ namespace Dota_Buff
             private System.Windows.Forms.Label label1;
             private System.Windows.Forms.LinkLabel linkLabel1;
             private System.Windows.Forms.LinkLabel linkLabel2;
+            private System.Windows.Forms.Button button2;
+            private System.Windows.Forms.CheckBox checkBox1;
 
             private void Form1_Load(object sender, EventArgs e)
             {
@@ -171,7 +199,7 @@ namespace Dota_Buff
             {
                 try
                 {
-                    this.webBrowser1.Navigate("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
+                    webBrowser1.Navigate("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
                 }
                 catch (Exception e2)
                 {
@@ -188,7 +216,7 @@ namespace Dota_Buff
 
             private void Form1_FormClosing(object sender, FormClosingEventArgs e)
             {
-                e.Cancel = true;
+                e.Cancel = _close;
             }
 
             private void button1_Click(object sender, EventArgs e)
@@ -199,8 +227,13 @@ namespace Dota_Buff
                 }
                 else
                 {
-                    Width = 42; Height = 30;
+                    Width = 1; Height = 1;
                 }
+            }
+
+            private void button2_Click(object sender, EventArgs e)
+            {
+                Close();
             }
 
             private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -221,8 +254,10 @@ namespace Dota_Buff
             {
                 System.Diagnostics.Process.Start("https://www.joduska.me/forum/topic/137479-dota-buff/");
             }
+
         }
 
+    
         static Form1 frm = new Form1();
 
         public static void Game_OnGameWndProc(WndEventArgs args)
