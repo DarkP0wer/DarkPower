@@ -199,7 +199,14 @@ namespace Dota_Buff
             {
                 try
                 {
-                    webBrowser1.Navigate("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
+                    if (checkBox1.Checked)
+                    {
+                        System.Diagnostics.Process.Start("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
+                    }
+                    else
+                    {
+                        webBrowser1.Navigate("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
+                    }
                 }
                 catch (Exception e2)
                 {
