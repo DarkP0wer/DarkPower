@@ -18,7 +18,7 @@ namespace Dota_Buff
         
         public static String filename = "Dota_Buff";
         public static string[] KeysName = new string[] { "SHIFT+1 (!)", "SHIFT+5 (%)" };
-        public static char[] KeysValue = new char[] { '!', '%' };
+        public static ulong[] KeysValue = new ulong[] { '!', '%' };
         public static ulong OpenKey;
         public static Boolean IsFormClose;
         //**
@@ -438,9 +438,11 @@ namespace Dota_Buff
 
         public static void Game_OnGameWndProc(WndEventArgs args)
         {
-            if (Game.IsChatOpen || Game.IsWatchingGame || !Game.IsInGame) return;
+            if (Game.IsChatOpen || Game.IsWatchingGame) return;
             try
             {
+                int NotValidKey = Array.IndexOf(KeysValue, OpenKey);
+                if (NotValidKey == -1) { OpenKey = '%'; Win32.MessageBox(0, "Your HotKey changed to SHIFT+5 (%)", "Dota_Buff", 0); }
                 if (args.WParam == OpenKey)
                 {
                     if (IsFormClose)
@@ -450,7 +452,7 @@ namespace Dota_Buff
                     }
                     frm.Width = 800; frm.Height = 400;
                     frm.Show();
-                    if (ObjectMgr.LocalPlayer == null) return;
+                    //if (ObjectMgr.LocalPlayer == null) return;
                     var enemies = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
                     frm.listBox1.Items.Clear();
                     frm.listBox2.Items.Clear(); ;
