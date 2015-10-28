@@ -1,14 +1,11 @@
 using System;
-using System.Globalization;
 using System.Linq;
 using Ensage;
 using Ensage.Common;
-using Ensage.Common.Extensions;
-using SharpDX;
 using System.Windows.Forms;
-using System.ComponentModel;
+//using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Text;
+//using System.Text;
 
 namespace Dota_Buff
 {
@@ -18,11 +15,11 @@ namespace Dota_Buff
         public const int HT_CAPTION = 0x2;
 
         #region CFG
-        //**
+        /*
         public static String filename = "Dota_Buff.ini";
         public static string[] KeysName = new string[] { "SHIFT+1 (!)", "SHIFT+5 (%)" };
         public static char[] KeysValue = new char[] { '!', '%' };
-        public static char OpenKey;
+        public static char OpenKey;*/
         public static Boolean IsFormClose;
         //**
         #endregion
@@ -89,10 +86,10 @@ namespace Dota_Buff
             Game.OnWndProc += Game_OnGameWndProc;
             IsFormClose = false;
             frm.comboBox1.Items.Clear();
-            for (int i = 0; i < KeysName.Length; i++)
+            /*for (int i = 0; i < KeysName.Length; i++)
             {
                 frm.comboBox1.Items.Add(KeysName[i]);
-            }
+            }*/
             /*if (System.IO.File.Exists(filename))
             {
                 var IniFile = new IniFile(filename);
@@ -108,7 +105,7 @@ namespace Dota_Buff
                 frm.comboBox1.SelectedIndex = 0;
                 //System.IO.File.SetAttributes(filename, System.IO.FileAttributes.System);
             }*/
-            OpenKey = KeysValue[0];
+            //OpenKey = KeysValue[0];
         }
 
         public partial class Form1 : Form
@@ -324,13 +321,13 @@ namespace Dota_Buff
 
             private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
             {
-                if (OpenKey != KeysValue[comboBox1.SelectedIndex])
+                /*if (OpenKey != KeysValue[comboBox1.SelectedIndex])
                 {
-                    /*String str = "" + comboBox1.SelectedIndex;
+                    String str = "" + comboBox1.SelectedIndex;
                     var IniFile = new IniFile(filename);
-                    IniFile.Write("OpenKey", str, "HotKeys");*/
+                    IniFile.Write("OpenKey", str, "HotKeys");
                 }
-                OpenKey = KeysValue[comboBox1.SelectedIndex];
+                OpenKey = KeysValue[comboBox1.SelectedIndex];*/
             }
 
             private void button1_Click(object sender, EventArgs e)
@@ -380,7 +377,7 @@ namespace Dota_Buff
             if (Game.IsChatOpen || Game.IsWatchingGame || frm == null) return;
             try
             {
-                if (args.WParam == OpenKey)
+                if (args.WParam == '!')
                 {
                     if (IsFormClose)
                     {
