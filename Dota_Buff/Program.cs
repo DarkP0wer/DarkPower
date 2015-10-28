@@ -436,7 +436,7 @@ namespace Dota_Buff
 
         public static void Game_OnGameWndProc(WndEventArgs args)
         {
-            if (Game.IsChatOpen || Game.IsWatchingGame) return;
+            if (Game.IsChatOpen || Game.IsWatchingGame || !Game.IsInGame) return;
             try
             {
                 if (args.WParam == OpenKey)
