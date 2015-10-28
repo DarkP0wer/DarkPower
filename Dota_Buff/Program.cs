@@ -24,7 +24,7 @@ namespace Dota_Buff
         #endregion
 
 
-        /*class IniFile
+        class IniFile
         {
             string Path;
 
@@ -65,7 +65,7 @@ namespace Dota_Buff
             {
                 return Read(Key, Section).Length > 0;
             }
-        }*/
+        }
 
         public class Win32
         {
@@ -85,10 +85,10 @@ namespace Dota_Buff
             Game.OnWndProc += Game_OnGameWndProc;
             IsFormClose = false;
             frm.comboBox1.Items.Clear();
-            /*for (int i = 0; i < KeysName.Length; i++)
+            for (int i = 0; i < KeysName.Length; i++)
             {
                 frm.comboBox1.Items.Add(KeysName[i]);
-            }*/
+            }
             /*if (System.IO.File.Exists(filename))
             {
                 var IniFile = new IniFile(filename);
@@ -260,6 +260,7 @@ namespace Dota_Buff
                 TopMost = true;
                 Load += new System.EventHandler(Form1_Load);
                 MouseDown += new System.Windows.Forms.MouseEventHandler(Form1_MouseDown);
+                FormClosed += new System.Windows.Forms.FormClosedEventHandler(Form1_FormClosed);
                 ResumeLayout(false);
                 PerformLayout();
             }
@@ -278,6 +279,11 @@ namespace Dota_Buff
             private void Form1_Load(object sender, EventArgs e)
             {
                 Width = 900; Height = 400;
+                frm.comboBox1.Items.Clear();
+                for (int i = 0; i < KeysName.Length; i++)
+                {
+                    frm.comboBox1.Items.Add(KeysName[i]);
+                }
             }
 
             private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -345,6 +351,11 @@ namespace Dota_Buff
             {
                 IsFormClose = true;
                 Close();
+            }
+
+            private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+            {
+                IsFormClose = true;
             }
 
             private void Form1_MouseDown(object sender, MouseEventArgs e)
