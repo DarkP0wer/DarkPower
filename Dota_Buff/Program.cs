@@ -273,6 +273,7 @@ namespace Dota_Buff
                 Width = 900; Height = 400;
                 IsFormClose = false;
                 frm.comboBox1.Items.Clear();
+                FirstOpen = true;
                 for (int i = 0; i < KeysName.Length; i++)
                 {
                     frm.comboBox1.Items.Add(KeysName[i]);
