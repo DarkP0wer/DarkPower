@@ -452,7 +452,7 @@ namespace Dota_Buff
                     }
                     frm.Width = 800; frm.Height = 400;
                     frm.Show();
-                    //if (ObjectMgr.LocalPlayer == null) return;
+                    if (ObjectMgr.LocalPlayer == null) return;
                     var enemies = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
                     frm.listBox1.Items.Clear();
                     frm.listBox2.Items.Clear(); ;
