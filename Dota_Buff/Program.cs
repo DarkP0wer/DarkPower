@@ -16,12 +16,13 @@ namespace Dota_Buff
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
 
-        #region HotKeys CFG
+        #region CFG
         //**
         public static String filename = "Dota_Buff.ini";
         public static string[] KeysName = new string[] { "SHIFT+1 (!)", "SHIFT+5 (%)" };
         public static char[] KeysValue = new char[] { '!', '%' };
         public static char OpenKey;
+        public static Boolean IsFormClose;
         //**
         #endregion
 
@@ -46,7 +47,7 @@ namespace Dota_Buff
         static void Main(string[] args)
         {
             Game.OnWndProc += Game_OnGameWndProc;
-            
+            IsFormClose = false;
             frm.comboBox1.Items.Clear();
             for (int i = 0; i < KeysName.Length; i++)
             {
@@ -179,7 +180,7 @@ namespace Dota_Buff
                 button2.Name = "button2";
                 button2.Size = new System.Drawing.Size(86, 24);
                 button2.TabIndex = 8;
-                button2.Text = "button2";
+                button2.Text = "Close";
                 button2.UseVisualStyleBackColor = true;
                 button2.Click += new System.EventHandler(this.button2_Click);
                 // 
@@ -300,6 +301,7 @@ namespace Dota_Buff
 
             private void button2_Click(object sender, EventArgs e)
             {
+                IsFormClose = true;
                 Close();
             }
 
@@ -334,6 +336,11 @@ namespace Dota_Buff
             {
                 if (args.WParam == OpenKey)
                 {
+                    if (IsFormClose)
+                    {
+                        Win32.MessageBox(0, "You close form!\r\n Reload script for openning", "Dota_Buff", 0);
+                        return;
+                    }
                     frm.Width = 900; frm.Height = 400;
                     frm.Show();
                     var player = ObjectMgr.LocalPlayer;
