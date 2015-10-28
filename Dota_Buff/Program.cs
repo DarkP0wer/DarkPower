@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Ensage;
+using Ensage.Common;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -449,8 +450,7 @@ namespace Dota_Buff
                     }
                     frm.Width = 800; frm.Height = 400;
                     frm.Show();
-                    var player = ObjectMgr.LocalPlayer;
-                    if (player == null) return;
+                    if (ObjectMgr.LocalPlayer == null) return;
                     var enemies = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
                     frm.listBox1.Items.Clear();
                     frm.listBox2.Items.Clear(); ;
