@@ -8,6 +8,7 @@ using SharpDX;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Dota_Buff
 {
@@ -26,6 +27,50 @@ namespace Dota_Buff
         //**
         #endregion
 
+
+        class IniFile
+        {
+            string Path;
+
+            [DllImport("kernel32")]
+            static extern long WritePrivateProfileString(string Section, string Key, string Value, string FilePath);
+
+            [DllImport("kernel32")]
+            static extern int GetPrivateProfileString(string Section, string Key, string Default, StringBuilder RetVal, int Size, string FilePath);
+
+            public IniFile(string IniPath)
+            {
+                Path = new System.IO.FileInfo(IniPath+ ".ini").FullName.ToString();
+            }
+
+            public string Read(string Key, string Section = null)
+            {
+                var RetVal = new StringBuilder(255);
+                GetPrivateProfileString(Section, Key, "", RetVal, 255, Path);
+                return RetVal.ToString();
+            }
+
+            public void Write(string Key, string Value, string Section)
+            {
+                WritePrivateProfileString(Section, Key, Value, Path);
+            }
+
+            public void DeleteKey(string Key, string Section)
+            {
+                Write(Key, null, Section);
+            }
+
+            public void DeleteSection(string Section)
+            {
+                Write(null, null, Section);
+            }
+
+            public bool KeyExists(string Key, string Section = null)
+            {
+                return Read(Key, Section).Length > 0;
+            }
+        }
+
         public class Win32
         {
             [DllImportAttribute("user32.dll")]
@@ -35,11 +80,6 @@ namespace Dota_Buff
             [DllImport("user32.dll", CharSet = CharSet.Auto)]
             public static extern int MessageBox(int hWnd, String text,
                 String caption, uint type);
-            [DllImport("Kernel32.dll", CharSet = CharSet.Auto)]
-            public static extern int GetPrivateProfileString(String sSection, String sKey, String sDefault,
-                String sString, int iSize, String sFile);
-            [DllImport("Kernel32.dll", CharSet = CharSet.Auto)]
-            public static extern bool WritePrivateProfileString(String sSection, String sKey, String sString, String sFile);
             /*[System.Runtime.InteropServices.DllImport("user32.dll")]
             public static extern bool GetCursorPos(out Point lpPoint);*/
         }
@@ -53,17 +93,21 @@ namespace Dota_Buff
             {
                 frm.comboBox1.Items.Add(KeysName[i]);
             }
-            //if (System.IO.File.Exists(filename))
-            //{
-                string str="0";
-                //Win32.WritePrivateProfileString("HotKeys", "OpenKey", str, filename);
-                Win32.GetPrivateProfileString("HotKeys", "OpenKey", "0", str, 100, filename);
-                OpenKey = KeysValue[int.Parse(str)];
-                frm.comboBox1.SelectedIndex = int.Parse(str);
-                
+            if (System.IO.File.Exists(filename))
+            {
+                var IniFile = new IniFile(filename);
+                var k = IniFile.Read("OpenKey", "HotKeys");
+                OpenKey = KeysValue[int.Parse(k)];
+                frm.comboBox1.SelectedIndex = int.Parse(k);
+            }
+            else
+            {
+                var IniFile = new IniFile(filename);
+                IniFile.Write("OpenKey", "0", "HotKeys");
+                OpenKey = KeysValue[0];
+                frm.comboBox1.SelectedIndex = 0;
                 //System.IO.File.SetAttributes(filename, System.IO.FileAttributes.System);
-                //Win32.MessageBox(0, str, "Ini файл", 0);
-            //}
+            }
         }
 
         public partial class Form1 : Form
@@ -143,11 +187,11 @@ namespace Dota_Buff
                 // label1
                 // 
                 label1.AutoSize = true;
-                label1.Location = new System.Drawing.Point(12, 26);
+                label1.Location = new System.Drawing.Point(2, 26);
                 label1.Name = "label1";
                 label1.Size = new System.Drawing.Size(122, 13);
                 label1.TabIndex = 5;
-                label1.Text = "InGame Press";
+                label1.Text = "HotKey:";
                 // 
                 // linkLabel1
                 // 
@@ -282,7 +326,8 @@ namespace Dota_Buff
                 if (OpenKey != KeysValue[comboBox1.SelectedIndex])
                 {
                     String str = "" + comboBox1.SelectedIndex;
-                    Win32.WritePrivateProfileString("HotKeys", "OpenKey", str, filename);
+                    var IniFile = new IniFile(filename);
+                    IniFile.Write("OpenKey", str, "HotKeys");
                 }
                 OpenKey = KeysValue[comboBox1.SelectedIndex];
             }
