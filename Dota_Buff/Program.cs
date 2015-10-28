@@ -146,7 +146,7 @@ namespace Dota_Buff
                 label1.Name = "label1";
                 label1.Size = new System.Drawing.Size(122, 13);
                 label1.TabIndex = 5;
-                label1.Text = "In Game Press SHIFT+1";
+                label1.Text = "In Game Press:";
                 // 
                 // linkLabel1
                 // 
@@ -332,7 +332,7 @@ namespace Dota_Buff
             if (Game.IsChatOpen || Game.IsWatchingGame || frm == null) return;
             try
             {
-                if (args.WParam == '!')
+                if (args.WParam == OpenKey)
                 {
                     frm.Width = 900; frm.Height = 400;
                     frm.Show();
