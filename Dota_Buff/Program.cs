@@ -316,7 +316,8 @@ namespace Dota_Buff
                             result = strContent;
                         }
                         int startpos = result.IndexOf("<div class=\"r-table r-only-mobile-5 heroes-overview\">");
-                        if (startpos > -1)
+                        if (startpos == -1) textBox1.Text = "THIS PROFILE IS PRIVATE";
+                        else if (startpos > -1)
                         {
                             int finishpos = result.IndexOf("/article", startpos);
                             result = result.Substring(startpos, finishpos - startpos);
