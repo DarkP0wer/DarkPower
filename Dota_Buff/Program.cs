@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using Ensage;
-using Ensage.Common;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -105,7 +104,6 @@ namespace Dota_Buff
                 frm.comboBox1.SelectedIndex = 0;
                 //System.IO.File.SetAttributes(filename, System.IO.FileAttributes.System);
             }
-            OpenKey = KeysValue[0];
         }
 
         public partial class Form1 : Form
@@ -119,14 +117,12 @@ namespace Dota_Buff
             {
                 listBox1 = new System.Windows.Forms.ListBox();
                 listBox2 = new System.Windows.Forms.ListBox();
-                this.webBrowser1 = new System.Windows.Forms.WebBrowser();
                 button1 = new System.Windows.Forms.Button();
                 label1 = new System.Windows.Forms.Label();
                 linkLabel1 = new System.Windows.Forms.LinkLabel();
                 linkLabel2 = new System.Windows.Forms.LinkLabel();
                 button2 = new System.Windows.Forms.Button();
                 radioButton1 = new System.Windows.Forms.RadioButton();
-                radioButton2 = new System.Windows.Forms.RadioButton();
                 radioButton3 = new System.Windows.Forms.RadioButton();
                 comboBox1 = new System.Windows.Forms.ComboBox();
                 textBox1 = new System.Windows.Forms.TextBox();
@@ -149,19 +145,6 @@ namespace Dota_Buff
                 textBox1.Name = "textBox1";
                 textBox1.Size = new System.Drawing.Size(621, 365);
                 textBox1.TabIndex = 14;
-                // 
-                // webBrowser1
-                // 
-                webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
-                webBrowser1.Location = new System.Drawing.Point(167, 23);
-                webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-                webBrowser1.Name = "webBrowser1";
-                webBrowser1.ScriptErrorsSuppressed = true;
-                webBrowser1.Size = new System.Drawing.Size(621, 365);
-                webBrowser1.TabIndex = 2;
-                webBrowser1.Visible = false;
                 // 
                 // comboBox1
                 // 
@@ -251,21 +234,10 @@ namespace Dota_Buff
                 radioButton1.UseVisualStyleBackColor = true;
                 radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
                 // 
-                // radioButton2
-                // 
-                radioButton2.AutoSize = true;
-                radioButton2.Location = new System.Drawing.Point(370, 6);
-                radioButton2.Name = "radioButton2";
-                radioButton2.Size = new System.Drawing.Size(148, 17);
-                radioButton2.TabIndex = 16;
-                radioButton2.Text = "WebBrowser IE (with bug)";
-                radioButton2.UseVisualStyleBackColor = true;
-                radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
-                // 
                 // radioButton3
                 // 
                 radioButton3.AutoSize = true;
-                radioButton3.Location = new System.Drawing.Point(524, 6);
+                radioButton3.Location = new System.Drawing.Point(370, 6);
                 radioButton3.Name = "radioButton3";
                 radioButton3.Size = new System.Drawing.Size(277, 17);
                 radioButton3.TabIndex = 17;
@@ -285,10 +257,8 @@ namespace Dota_Buff
                 Controls.Add(label1);
                 Controls.Add(button1);
                 Controls.Add(listBox2);
-                Controls.Add(this.webBrowser1);
                 Controls.Add(listBox1);
                 Controls.Add(radioButton3);
-                Controls.Add(radioButton2);
                 Controls.Add(radioButton1);
                 Controls.Add(textBox1);
                 Controls.Add(button2);
@@ -307,14 +277,12 @@ namespace Dota_Buff
 
             public System.Windows.Forms.ListBox listBox1;
             public System.Windows.Forms.ListBox listBox2;
-            private System.Windows.Forms.WebBrowser webBrowser1;
             private System.Windows.Forms.Button button1;
             private System.Windows.Forms.Label label1;
             private System.Windows.Forms.LinkLabel linkLabel1;
             private System.Windows.Forms.LinkLabel linkLabel2;
             private System.Windows.Forms.Button button2;
             private System.Windows.Forms.RadioButton radioButton1;
-            private System.Windows.Forms.RadioButton radioButton2;
             private System.Windows.Forms.RadioButton radioButton3;
             public System.Windows.Forms.ComboBox comboBox1;
             private System.Windows.Forms.TextBox textBox1;
@@ -379,10 +347,6 @@ namespace Dota_Buff
 
                             }
                         }
-                    }
-                    else if (radioButton2.Checked)
-                    {
-                        webBrowser1.Navigate("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
                     }
                     else
                     {
@@ -457,19 +421,11 @@ namespace Dota_Buff
 
             private void radioButton1_CheckedChanged(object sender, EventArgs e)
             {
-                webBrowser1.Visible = false;
                 textBox1.Visible = true;
-            }
-
-            private void radioButton2_CheckedChanged(object sender, EventArgs e)
-            {
-                webBrowser1.Visible = true;
-                textBox1.Visible = false;
             }
 
             private void radioButton3_CheckedChanged(object sender, EventArgs e)
             {
-                webBrowser1.Visible = false;
                 textBox1.Visible = false;
             }
 
@@ -480,7 +436,7 @@ namespace Dota_Buff
 
         public static void Game_OnGameWndProc(WndEventArgs args)
         {
-            if (Game.IsChatOpen || Game.IsWatchingGame || frm == null) return;
+            if (Game.IsChatOpen || Game.IsWatchingGame) return;
             try
             {
                 if (args.WParam == OpenKey)
@@ -495,8 +451,6 @@ namespace Dota_Buff
                     var player = ObjectMgr.LocalPlayer;
                     if (player == null) return;
                     var enemies = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
-                    /*string[] lines = new string[1];
-                    lines[0] = "Name \tID";*/
                     frm.listBox1.Items.Clear();
                     frm.listBox2.Items.Clear(); ;
                     foreach (var enemy in enemies)
@@ -505,15 +459,11 @@ namespace Dota_Buff
                         uint id = enemy.PlayerSteamID;
                         if (id > 0)
                         {
-                            //Console.WriteLine(enemy.Name + "\t\t" + id);
-                            //Array.Resize<string>(ref lines, lines.Length + 1);
-                            //lines[lines.Length-1] = enemy.Name  + "\t\t" + id;
                             frm.listBox1.Items.Add(id);
                             frm.listBox2.Items.Add(enemy.Name);
                             
                         }
                     }
-                    //System.IO.File.WriteAllLines("Info.txt", lines);
                 }
             }
             catch (Exception e)
