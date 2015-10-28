@@ -16,20 +16,53 @@ namespace Dota_Buff
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
 
-        [DllImportAttribute("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-        [DllImportAttribute("user32.dll")]
-        public static extern bool ReleaseCapture();
+        #region HotKeys CFG
+        //**
+        public static String filename = "Dota_Buff.ini";
+        public static string[] KeysName = new string[] { "SHIFT+1 (!)", "SHIFT+5 (%)" };
+        public static char[] KeysValue = new char[] { '!', '%' };
+        public static char OpenKey;
+        //**
+        #endregion
+
+        public class Win32
+        {
+            [DllImportAttribute("user32.dll")]
+            public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+            [DllImportAttribute("user32.dll")]
+            public static extern bool ReleaseCapture();
+            [DllImport("user32.dll", CharSet = CharSet.Auto)]
+            public static extern int MessageBox(int hWnd, String text,
+                String caption, uint type);
+            [DllImport("Kernel32.dll", CharSet = CharSet.Auto)]
+            public static extern int GetPrivateProfileString(String sSection, String sKey, String sDefault,
+                String sString, int iSize, String sFile);
+            [DllImport("Kernel32.dll", CharSet = CharSet.Auto)]
+            public static extern bool WritePrivateProfileString(String sSection, String sKey, String sString, String sFile);
+            /*[System.Runtime.InteropServices.DllImport("user32.dll")]
+            public static extern bool GetCursorPos(out Point lpPoint);*/
+        }
 
         static void Main(string[] args)
         {
             Game.OnWndProc += Game_OnGameWndProc;
-        }
-
-        public class ClipCursor
-        {
-            [System.Runtime.InteropServices.DllImport("user32.dll")]
-            public static extern bool GetCursorPos(out Point lpPoint);
+            
+            frm.comboBox1.Items.Clear();
+            for (int i = 0; i < KeysName.Length; i++)
+            {
+                frm.comboBox1.Items.Add(KeysName[i]);
+            }
+            //if (System.IO.File.Exists(filename))
+            //{
+                string str="0";
+                //Win32.WritePrivateProfileString("HotKeys", "OpenKey", str, filename);
+                Win32.GetPrivateProfileString("HotKeys", "OpenKey", "0", str, 100, filename);
+                OpenKey = KeysValue[int.Parse(str)];
+                frm.comboBox1.SelectedIndex = int.Parse(str);
+                
+                //System.IO.File.SetAttributes(filename, System.IO.FileAttributes.System);
+                //Win32.MessageBox(0, str, "Ini файл", 0);
+            //}
         }
 
         public partial class Form1 : Form
@@ -50,6 +83,7 @@ namespace Dota_Buff
                 linkLabel2 = new System.Windows.Forms.LinkLabel();
                 button2 = new System.Windows.Forms.Button();
                 checkBox1 = new System.Windows.Forms.CheckBox();
+                comboBox1 = new System.Windows.Forms.ComboBox();
                 SuspendLayout();
                 // 
                 // listBox1
@@ -73,6 +107,16 @@ namespace Dota_Buff
                 webBrowser1.ScriptErrorsSuppressed = true;
                 webBrowser1.Size = new System.Drawing.Size(786, 408);
                 webBrowser1.TabIndex = 2;
+                // 
+                // comboBox1
+                // 
+                comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+                comboBox1.FormattingEnabled = true;
+                comboBox1.Location = new System.Drawing.Point(79, 23);
+                comboBox1.Name = "comboBox1";
+                comboBox1.Size = new System.Drawing.Size(82, 21);
+                comboBox1.TabIndex = 10;
+                comboBox1.SelectedIndexChanged += new System.EventHandler(comboBox1_SelectedIndexChanged);
                 // 
                 // listBox2
                 // 
@@ -162,10 +206,11 @@ namespace Dota_Buff
                 Controls.Add(label1);
                 Controls.Add(button1);
                 Controls.Add(listBox2);
-                Controls.Add(this.webBrowser1);
+                Controls.Add(webBrowser1);
                 Controls.Add(listBox1);
-                Controls.Add(this.checkBox1);
-                Controls.Add(this.button2);
+                Controls.Add(checkBox1);
+                Controls.Add(button2);
+                Controls.Add(comboBox1);
                 FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
                 Name = "Form1";
                 ShowIcon = false;
@@ -186,6 +231,7 @@ namespace Dota_Buff
             private System.Windows.Forms.LinkLabel linkLabel2;
             private System.Windows.Forms.Button button2;
             private System.Windows.Forms.CheckBox checkBox1;
+            public System.Windows.Forms.ComboBox comboBox1;
 
             private void Form1_Load(object sender, EventArgs e)
             {
@@ -230,6 +276,16 @@ namespace Dota_Buff
                 listBox1.SelectedIndex = listBox2.SelectedIndex;
             }
 
+            private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+            {
+                if (OpenKey != KeysValue[comboBox1.SelectedIndex])
+                {
+                    String str = "" + comboBox1.SelectedIndex;
+                    Win32.WritePrivateProfileString("HotKeys", "OpenKey", str, filename);
+                }
+                OpenKey = KeysValue[comboBox1.SelectedIndex];
+            }
+
             private void button1_Click(object sender, EventArgs e)
             {
                 if (Width != 900)
@@ -251,8 +307,8 @@ namespace Dota_Buff
             {
                 if (e.Button == MouseButtons.Left)
                 {
-                    ReleaseCapture();
-                    SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+                    Win32.ReleaseCapture();
+                    Win32.SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
                 }
             }
 
