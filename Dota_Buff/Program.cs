@@ -15,11 +15,11 @@ namespace Dota_Buff
         public const int HT_CAPTION = 0x2;
 
         #region CFG
-        /*
+        
         public static String filename = "Dota_Buff.ini";
         public static string[] KeysName = new string[] { "SHIFT+1 (!)", "SHIFT+5 (%)" };
         public static char[] KeysValue = new char[] { '!', '%' };
-        public static char OpenKey;*/
+        public static ulong OpenKey;
         public static Boolean IsFormClose;
         //**
         #endregion
@@ -105,7 +105,7 @@ namespace Dota_Buff
                 frm.comboBox1.SelectedIndex = 0;
                 //System.IO.File.SetAttributes(filename, System.IO.FileAttributes.System);
             }*/
-            //OpenKey = KeysValue[0];
+            OpenKey = KeysValue[0];
         }
 
         public partial class Form1 : Form
@@ -326,8 +326,8 @@ namespace Dota_Buff
                     String str = "" + comboBox1.SelectedIndex;
                     var IniFile = new IniFile(filename);
                     IniFile.Write("OpenKey", str, "HotKeys");
-                }
-                OpenKey = KeysValue[comboBox1.SelectedIndex];*/
+                }*/
+                OpenKey = KeysValue[comboBox1.SelectedIndex];
             }
 
             private void button1_Click(object sender, EventArgs e)
@@ -377,7 +377,7 @@ namespace Dota_Buff
             if (Game.IsChatOpen || Game.IsWatchingGame || frm == null) return;
             try
             {
-                if (args.WParam == '!')
+                if (args.WParam == OpenKey)
                 {
                     if (IsFormClose)
                     {
