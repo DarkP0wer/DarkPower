@@ -28,7 +28,7 @@ namespace Dota_Buff
         #endregion
 
 
-        class IniFile
+        /*class IniFile
         {
             string Path;
 
@@ -69,7 +69,7 @@ namespace Dota_Buff
             {
                 return Read(Key, Section).Length > 0;
             }
-        }
+        }*/
 
         public class Win32
         {
@@ -93,7 +93,7 @@ namespace Dota_Buff
             {
                 frm.comboBox1.Items.Add(KeysName[i]);
             }
-            if (System.IO.File.Exists(filename))
+            /*if (System.IO.File.Exists(filename))
             {
                 var IniFile = new IniFile(filename);
                 var k = IniFile.Read("OpenKey", "HotKeys");
@@ -107,7 +107,8 @@ namespace Dota_Buff
                 OpenKey = KeysValue[0];
                 frm.comboBox1.SelectedIndex = 0;
                 //System.IO.File.SetAttributes(filename, System.IO.FileAttributes.System);
-            }
+            }*/
+            OpenKey = KeysValue[0];
         }
 
         public partial class Form1 : Form
@@ -325,9 +326,9 @@ namespace Dota_Buff
             {
                 if (OpenKey != KeysValue[comboBox1.SelectedIndex])
                 {
-                    String str = "" + comboBox1.SelectedIndex;
+                    /*String str = "" + comboBox1.SelectedIndex;
                     var IniFile = new IniFile(filename);
-                    IniFile.Write("OpenKey", str, "HotKeys");
+                    IniFile.Write("OpenKey", str, "HotKeys");*/
                 }
                 OpenKey = KeysValue[comboBox1.SelectedIndex];
             }
