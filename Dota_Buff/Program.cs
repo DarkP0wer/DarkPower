@@ -333,7 +333,7 @@ namespace Dota_Buff
                                 //NextPos = ;
                                 int Matchespos = result.IndexOf("Matches Played</div><div class=\"r-body\">");
                                 String Matches = result.Substring(Matchespos + 40, result.IndexOf("<", Matchespos + 40) - Matchespos - 40);
-                                textBox1.Text = textBox1.Text + ((HeroName.Length > 7) ? ("\t") : ("\t\t")) + Matches;
+                                textBox1.Text = textBox1.Text + ((HeroName.Length > 8) ? ("\t") : ("\t\t")) + Matches;
 
                                 int WinRatepos = result.IndexOf("Win Rate</div><div class=\"r-body\">");
                                 String WinRate = result.Substring(WinRatepos + 34, result.IndexOf("<", WinRatepos + 34) - WinRatepos - 34);
