@@ -85,26 +85,6 @@ namespace Dota_Buff
         {
             Game.OnWndProc += Game_OnGameWndProc;
             IsFormClose = false;
-            frm.comboBox1.Items.Clear();
-            for (int i = 0; i < KeysName.Length; i++)
-            {
-                frm.comboBox1.Items.Add(KeysName[i]);
-            }
-            if (System.IO.File.Exists(filename))
-            {
-                var IniFile = new IniFile(filename);
-                var k = IniFile.Read("OpenKey", "HotKeys");
-                OpenKey = KeysValue[int.Parse(k)];
-                frm.comboBox1.SelectedIndex = int.Parse(k);
-            }
-            else
-            {
-                var IniFile = new IniFile(filename);
-                IniFile.Write("OpenKey", "0", "HotKeys");
-                OpenKey = KeysValue[0];
-                frm.comboBox1.SelectedIndex = 0;
-                //System.IO.File.SetAttributes(filename, System.IO.FileAttributes.System);
-            }
         }
 
         public partial class Form1 : Form
@@ -291,10 +271,26 @@ namespace Dota_Buff
             private void Form1_Load(object sender, EventArgs e)
             {
                 Width = 900; Height = 400;
+                IsFormClose = false;
                 frm.comboBox1.Items.Clear();
                 for (int i = 0; i < KeysName.Length; i++)
                 {
                     frm.comboBox1.Items.Add(KeysName[i]);
+                }
+                if (System.IO.File.Exists(filename))
+                {
+                    var IniFile = new IniFile(filename);
+                    var k = IniFile.Read("OpenKey", "HotKeys");
+                    OpenKey = KeysValue[int.Parse(k)];
+                    frm.comboBox1.SelectedIndex = int.Parse(k);
+                }
+                else
+                {
+                    var IniFile = new IniFile(filename);
+                    IniFile.Write("OpenKey", "0", "HotKeys");
+                    OpenKey = KeysValue[0];
+                    frm.comboBox1.SelectedIndex = 0;
+                    //System.IO.File.SetAttributes(filename, System.IO.FileAttributes.System);
                 }
             }
 
@@ -335,7 +331,7 @@ namespace Dota_Buff
                                 //NextPos = ;
                                 int Matchespos = result.IndexOf("Matches Played</div><div class=\"r-body\">", NextPos);
                                 String Matches = result.Substring(Matchespos + 40, result.IndexOf("<", Matchespos + 40) - Matchespos - 40);
-                                textBox1.Text = textBox1.Text + ((HeroName.Length > 8) ? ("\t") : ("\t\t")) + Matches;
+                                textBox1.Text = textBox1.Text + ((HeroName.Length > 9) ? ("\t") : ("\t\t")) + Matches;
 
                                 int WinRatepos = result.IndexOf("Win Rate</div><div class=\"r-body\">", NextPos);
                                 String WinRate = result.Substring(WinRatepos + 34, result.IndexOf("<", WinRatepos + 34) - WinRatepos - 34);
