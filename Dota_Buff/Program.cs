@@ -17,8 +17,8 @@ namespace Dota_Buff
         #region CFG
         
         public static String filename = "Dota_Buff";
-        public static string[] KeysName = new string[] { "SHIFT+1 (!)", "SHIFT+5 (%)" };
-        public static ulong[] KeysValue = new ulong[] { '!', '%' };
+        public static string[] KeysName = new string[] { "SHIFT+5 (%)", "SHIFT+1 (!)" };
+        public static ulong[] KeysValue = new ulong[] { '%', '!' };
         public static ulong OpenKey;
         public static Boolean IsFormClose;
         //**
