@@ -19,7 +19,7 @@ namespace Dota_Buff
         public static String filename = "Dota_Buff";
         public static string[] KeysName = new string[] { "SHIFT+5 (%)", "SHIFT+1 (!)" };
         public static ulong[] KeysValue = new ulong[] { '%', '!' };
-        public static ulong OpenKey;
+        public static int OpenKey;
         public static Boolean IsFormClose;
         //**
         #endregion
@@ -281,14 +281,14 @@ namespace Dota_Buff
                 {
                     var IniFile = new IniFile(filename);
                     var k = IniFile.Read("OpenKey", "HotKeys");
-                    OpenKey = KeysValue[int.Parse(k)];
+                    OpenKey = int.Parse(k);
                     frm.comboBox1.SelectedIndex = int.Parse(k);
                 }
                 else
                 {
                     var IniFile = new IniFile(filename);
                     IniFile.Write("OpenKey", "0", "HotKeys");
-                    OpenKey = KeysValue[0];
+                    OpenKey = 0;
                     frm.comboBox1.SelectedIndex = 0;
                     //System.IO.File.SetAttributes(filename, System.IO.FileAttributes.System);
                 }
@@ -366,13 +366,13 @@ namespace Dota_Buff
 
             private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
             {
-                if (OpenKey != KeysValue[comboBox1.SelectedIndex])
+                if (OpenKey != comboBox1.SelectedIndex)
                 {
                     String str = "" + comboBox1.SelectedIndex;
                     var IniFile = new IniFile(filename);
                     IniFile.Write("OpenKey", str, "HotKeys");
                 }
-                OpenKey = KeysValue[comboBox1.SelectedIndex];
+                OpenKey = comboBox1.SelectedIndex;
             }
 
             private void button1_Click(object sender, EventArgs e)
@@ -437,9 +437,8 @@ namespace Dota_Buff
             if (Game.IsChatOpen || Game.IsWatchingGame) return;
             try
             {
-                int NotValidKey = Array.IndexOf(KeysValue, OpenKey);
-                if (NotValidKey == -1) { OpenKey = '%'; Win32.MessageBox(0, "Your HotKey changed to SHIFT+5 (%)", "Dota_Buff", 0); }
-                if (args.WParam == OpenKey)
+                if (OpenKey > KeysValue.Length-1 || OpenKey < 0) { OpenKey = 0; Win32.MessageBox(0, "Your HotKey changed to SHIFT+5 (%)", "Dota_Buff", 0); }
+                if (args.WParam == KeysValue[OpenKey])
                 {
                     if (IsFormClose)
                     {
