@@ -20,12 +20,10 @@ namespace Dota_Buff
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
         [DllImportAttribute("user32.dll")]
         public static extern bool ReleaseCapture();
-        public static Boolean _close;
 
         static void Main(string[] args)
         {
             Game.OnWndProc += Game_OnGameWndProc;
-            _close = true;
         }
 
         public class ClipCursor
@@ -110,7 +108,7 @@ namespace Dota_Buff
                 // 
                 linkLabel1.AutoSize = true;
                 linkLabel1.LinkColor = System.Drawing.Color.White;
-                linkLabel1.Location = new System.Drawing.Point(9, 342);
+                linkLabel1.Location = new System.Drawing.Point(9, 316);
                 linkLabel1.Name = "linkLabel1";
                 linkLabel1.Size = new System.Drawing.Size(73, 13);
                 linkLabel1.TabIndex = 6;
@@ -122,7 +120,7 @@ namespace Dota_Buff
                 // 
                 linkLabel2.AutoSize = true;
                 linkLabel2.LinkColor = System.Drawing.Color.White;
-                linkLabel2.Location = new System.Drawing.Point(9, 364);
+                linkLabel2.Location = new System.Drawing.Point(9, 338);
                 linkLabel2.Name = "linkLabel2";
                 linkLabel2.Size = new System.Drawing.Size(89, 13);
                 linkLabel2.TabIndex = 7;
@@ -131,8 +129,9 @@ namespace Dota_Buff
                 linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(linkLabel2_LinkClicked);
                 // 
                 // button2
-                // 
-                button2.Location = new System.Drawing.Point(12, 390);
+                //
+                button2.BackColor = System.Drawing.SystemColors.ControlLightLight;
+                button2.Location = new System.Drawing.Point(12, 364);
                 button2.Name = "button2";
                 button2.Size = new System.Drawing.Size(86, 24);
                 button2.TabIndex = 8;
@@ -149,6 +148,7 @@ namespace Dota_Buff
                 checkBox1.TabIndex = 9;
                 checkBox1.Text = "Use default browser";
                 checkBox1.UseVisualStyleBackColor = true;
+                checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
                 // 
                 // Form1
                 // 
@@ -171,7 +171,6 @@ namespace Dota_Buff
                 ShowIcon = false;
                 Text = "DotaBuff by DarkPower";
                 TopMost = true;
-                FormClosing += new System.Windows.Forms.FormClosingEventHandler(Form1_FormClosing);
                 Load += new System.EventHandler(Form1_Load);
                 MouseDown += new System.Windows.Forms.MouseEventHandler(Form1_MouseDown);
                 ResumeLayout(false);
@@ -193,6 +192,18 @@ namespace Dota_Buff
                 Width = 900; Height = 400;
             }
 
+            private void checkBox1_CheckedChanged(object sender, EventArgs e)
+            {
+                if (checkBox1.Checked)
+                {
+                    webBrowser1.Visible = false;
+                }
+                else
+                {
+                    webBrowser1.Visible = true;
+                }
+            }
+
             private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
             {
                 try
@@ -209,7 +220,7 @@ namespace Dota_Buff
                 catch (Exception e2)
                 {
                     if (e2.Source != null)
-                        MessageBox.Show("Error: " + e2.Source);
+                        System.Windows.Forms.MessageBox.Show("Error: " + e2.Source);
                     throw;
                 }
             }
@@ -217,11 +228,6 @@ namespace Dota_Buff
             private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
             {
                 listBox1.SelectedIndex = listBox2.SelectedIndex;
-            }
-
-            private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-            {
-                e.Cancel = _close;
             }
 
             private void button1_Click(object sender, EventArgs e)
