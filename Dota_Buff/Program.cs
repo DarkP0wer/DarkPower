@@ -147,7 +147,7 @@ namespace Dota_Buff
                 label1.Name = "label1";
                 label1.Size = new System.Drawing.Size(122, 13);
                 label1.TabIndex = 5;
-                label1.Text = "In Game Press:";
+                label1.Text = "InGame Press";
                 // 
                 // linkLabel1
                 // 
@@ -338,7 +338,7 @@ namespace Dota_Buff
                 {
                     if (IsFormClose)
                     {
-                        Win32.MessageBox(0, "You close form!\r\n Reload script for openning", "Dota_Buff", 0);
+                        Win32.MessageBox(0, "You close form!\r\n Reload script for openning!", "Dota_Buff", 0);
                         return;
                     }
                     frm.Width = 900; frm.Height = 400;
