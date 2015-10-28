@@ -304,7 +304,7 @@ namespace Dota_Buff
                 {
                     if (radioButton1.Checked)
                     {
-
+                        textBox1.Text = "Loading...";
                         String result = "";
 
                         var webRequest = WebRequest.Create("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
@@ -333,15 +333,15 @@ namespace Dota_Buff
                                 String HeroName = result.Substring(NextPos + 13, result.IndexOf("\"", NextPos) - NextPos - 13);
                                 textBox1.Text = textBox1.Text + HeroName;
                                 //NextPos = ;
-                                int Matchespos = result.IndexOf("Matches Played</div><div class=\"r-body\">");
+                                int Matchespos = result.IndexOf("Matches Played</div><div class=\"r-body\">", NextPos);
                                 String Matches = result.Substring(Matchespos + 40, result.IndexOf("<", Matchespos + 40) - Matchespos - 40);
                                 textBox1.Text = textBox1.Text + ((HeroName.Length > 8) ? ("\t") : ("\t\t")) + Matches;
 
-                                int WinRatepos = result.IndexOf("Win Rate</div><div class=\"r-body\">");
+                                int WinRatepos = result.IndexOf("Win Rate</div><div class=\"r-body\">", NextPos);
                                 String WinRate = result.Substring(WinRatepos + 34, result.IndexOf("<", WinRatepos + 34) - WinRatepos - 34);
                                 textBox1.Text = textBox1.Text + "\t\t" + WinRate;
 
-                                int KDApos = result.IndexOf("KDA Ratio</div><div class=\"r-body\">");
+                                int KDApos = result.IndexOf("KDA Ratio</div><div class=\"r-body\">", NextPos);
                                 String KDA = result.Substring(KDApos + 35, result.IndexOf("<", KDApos + 35) - KDApos - 35);
                                 textBox1.Text = textBox1.Text + "\t\t" + KDA + "\r\n";
 
