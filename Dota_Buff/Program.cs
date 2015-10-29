@@ -96,6 +96,8 @@ namespace Dota_Buff
                 var k = IniFile.Read("OpenKey", "HotKeys");
                 OpenKey = int.Parse(k);
                 frm.comboBox1.SelectedIndex = int.Parse(k);
+                Console.WriteLine("Load with file");
+                Console.WriteLine(OpenKey);
             }
             else
             {
