@@ -107,6 +107,7 @@ namespace Dota_Buff
                 frm.comboBox1.SelectedIndex = 0;
                 //System.IO.File.SetAttributes(filename, System.IO.FileAttributes.System);
             }
+            Win32.MessageBox(0, "Your HotKey = "+KeysName[OpenKey], "Dota_Buff", 0);
         }
 
         public partial class Form1 : Form
