@@ -85,6 +85,21 @@ namespace Dota_Buff
         {
             Game.OnWndProc += Game_OnGameWndProc;
             IsFormClose = false;
+            if (System.IO.File.Exists(filename))
+            {
+                var IniFile = new IniFile(filename);
+                var k = IniFile.Read("OpenKey", "HotKeys");
+                OpenKey = int.Parse(k);
+                frm.comboBox1.SelectedIndex = int.Parse(k);
+            }
+            else
+            {
+                var IniFile = new IniFile(filename);
+                IniFile.Write("OpenKey", "0", "HotKeys");
+                OpenKey = 0;
+                frm.comboBox1.SelectedIndex = 0;
+                //System.IO.File.SetAttributes(filename, System.IO.FileAttributes.System);
+            }
         }
 
         public partial class Form1 : Form
@@ -437,6 +452,7 @@ namespace Dota_Buff
             if (Game.IsChatOpen || Game.IsWatchingGame) return;
             try
             {
+                Console.WriteLine(OpenKey);
                 if (OpenKey > KeysValue.Length-1 || OpenKey < 0) { OpenKey = 0; Win32.MessageBox(0, "Your HotKey changed to SHIFT+5 (%)", "Dota_Buff", 0); }
                 if (args.WParam == KeysValue[OpenKey])
                 {
