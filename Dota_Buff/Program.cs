@@ -16,7 +16,7 @@ namespace Dota_Buff
 
         #region CFG
         
-        public static String filename = "Dota_Buff";
+        public static String filename = "Dota_Buff.ini";
         public static string[] KeysName = new string[] { "SHIFT+5 (%)", "SHIFT+1 (!)" };
         public static ulong[] KeysValue = new ulong[] { '%', '!' };
         public static int OpenKey;
@@ -37,7 +37,7 @@ namespace Dota_Buff
 
             public IniFile(string IniPath)
             {
-                Path = new System.IO.FileInfo(IniPath+ ".ini").FullName.ToString();
+                Path = new System.IO.FileInfo(IniPath).FullName.ToString();
             }
 
             public string Read(string Key, string Section = null)
