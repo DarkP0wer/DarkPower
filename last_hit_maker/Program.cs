@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Ensage;
@@ -47,8 +46,8 @@ namespace last_hit_maker
         {
             Ability quelling_blade;
             quelling_blade =  me.Inventory.Items.FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Item_QuellingBlade);
-            if (quelling_blade != null) return me.DamageAverage * 1.40 + me.BonusDamage;
-            else return me.DamageAverage + me.BonusDamage;
+            if (quelling_blade != null) return me.MinimumDamage * 1.40 + me.BonusDamage;
+            else return me.MinimumDamage + me.BonusDamage;
         }
 
         static void Drawing_OnPostReset(EventArgs args)
@@ -67,20 +66,20 @@ namespace last_hit_maker
             if (!Game.IsInGame)
                 return;
             var player = ObjectMgr.LocalPlayer;
-            if (player == null || !player.IsAlive || player.Hero == null || player.Team == Team.Observer || Game.GameTime > 1800 || player.Hero.DamageAverage > 150)
+            if (player == null || !player.IsAlive || player.Hero == null || player.Team == Team.Observer || Game.GameTime > 1800 || player.Hero.MinimumDamage > 150)
                 return;
             double dmg = Damage(player.Hero);
             var creeps = ObjectMgr.GetEntities<Creep>().Where(x => x.IsSpawned && x.IsAlive && x.Team != player.Team).OrderBy(x => x.CreateTime).ToList();
 
             var drawList = new List<List<Creep>>();
             // Check if these creeps are in our namelist
-            foreach (var creep in
-                        from creep in creeps
+            foreach (var creep in creeps
+                        /*from creep in creeps
                         let name = creep.Name
                         where _creepNames.Contains(name)
-                        select creep)
+                        select creep*/)
             {
-                Vector2 screenPos;
+            /*    Vector2 screenPos;
                 if (Drawing.WorldToScreen(creep.Position, out screenPos))
                 {
                     // Add creeps to lists to detect stacks
@@ -98,33 +97,27 @@ namespace last_hit_maker
             }
             foreach (var l in drawList)
             {
-                var counter = 1;
                 foreach (var creep in l)
-                {
+                {*/
                     Vector2 screenPos;
                     if (creep.IsAlive && Drawing.WorldToScreen(creep.Position, out screenPos))
                     {
                         double damage = (dmg * (1 - creep.DamageResist) + 1);
                         if (creep.Health > 0 && creep.Health < damage)
                         {
-                            var text = string.Format("{0}h", creep.Health-damage);
+                            var text = string.Format("{0}h", (int)(creep.Health-damage));
                             var textSize = Drawing.MeasureText(text, "Arial", Drawing.DefaultTextSize, FontFlags.DropShadow);
                             _text.DrawText(null, text, (int)(screenPos.X - textSize.X / 2), (int)(screenPos.Y - textSize.Y / 2), Color.Red);
                         }
                         else if (creep.Health < damage + 88)
                         {
-                            var text = string.Format("{0}h", creep.Health - damage);
+                            var text = string.Format("{0}h", (int)(creep.Health - damage));
                             var textSize = Drawing.MeasureText(text, "Arial", Drawing.DefaultTextSize, FontFlags.DropShadow);
                             _text.DrawText(null, text, (int)(screenPos.X - textSize.X / 2), (int)(screenPos.Y - textSize.Y / 2), Color.Yellow);
                         }    
                     }
-                }
+              //  }
             }
-        }
-
-        static float GetDistance(Vector3 v1, Vector3 v2)
-        {
-            return (float)Math.Sqrt(Math.Pow(v1.X - v2.X, 2) + Math.Pow(v1.Y - v2.Y, 2));
         }
     }
 }
