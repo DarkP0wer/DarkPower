@@ -85,6 +85,11 @@ namespace Dota_Buff
         {
             Game.OnWndProc += Game_OnGameWndProc;
             IsFormClose = false;
+            frm.comboBox1.Items.Clear();
+            for (int i = 0; i < KeysName.Length; i++)
+            {
+                frm.comboBox1.Items.Add(KeysName[i]);
+            }
             if (System.IO.File.Exists(filename))
             {
                 var IniFile = new IniFile(filename);
