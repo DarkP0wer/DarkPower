@@ -388,7 +388,7 @@ namespace Translate
 
             private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
             {
-                System.Diagnostics.Process.Start("https://www.joduska.me/forum/topic/");
+                System.Diagnostics.Process.Start("https://www.joduska.me/forum/topic/145393-google-translate/");
             }
 
             private void Form1_MouseDown(object sender, MouseEventArgs e)
