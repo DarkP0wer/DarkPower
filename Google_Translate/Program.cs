@@ -303,7 +303,7 @@ namespace Translate
                 if (e.Button == System.Windows.Forms.MouseButtons.Right)
                 {
                     if (checkBox1.Checked) Game.ExecuteCommand(((IsSayTeam)?"say_team ":"say ") + textBox3.Text);
-                    else Game.ExecuteCommand("say " + textBox2.Text);
+                    else Game.ExecuteCommand(((IsSayTeam) ? "say_team " : "say ") + textBox2.Text);
                     if (checkBox3.Checked)
                     {
                         Width = 132;
@@ -339,7 +339,7 @@ namespace Translate
                 if (checkBox2.Checked)
                 {
                     if (checkBox1.Checked) Game.ExecuteCommand(((IsSayTeam) ? "say_team " : "say ") + textBox3.Text);
-                    else Game.ExecuteCommand("say " + textBox2.Text);
+                    else Game.ExecuteCommand(((IsSayTeam) ? "say_team " : "say ") + textBox2.Text);
                     label1.Text = "▼ Google Translate By DarkPower - " + ((IsSayTeam) ? "SayTeam" : "SayGlobal");
                     if (checkBox3.Checked)
                     {
