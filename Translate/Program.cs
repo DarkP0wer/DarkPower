@@ -1,12 +1,9 @@
 using System;
-using System.Linq;
 using Ensage;
-using Ensage.Common;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Net;
-using System.Windows.Input;
 
 namespace Translate
 {
