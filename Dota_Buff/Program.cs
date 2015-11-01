@@ -17,9 +17,11 @@ namespace Dota_Buff
         #region CFG
         
         public static String filename = "Dota_Buff.ini";
-        public static string[] KeysName = new string[] { "SHIFT+5 (%)", "SHIFT+1 (!)" };
-        public static ulong[] KeysValue = new ulong[] { '%', '!' };
+        public static string[] KeysName = new string[] { "SHIFT+5 (%)", "SHIFT+1 (!)", "NUMPAD0", "NUMPAD1", "NUMPAD2", "NUMPAD3", "NUMPAD4", "NUMPAD5", "NUMPAD6", "NUMPAD7", "NUMPAD8", "NUMPAD9" };
+        public static ulong[] KeysValue = new ulong[] { '%', '!', 0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69 };
         public static int OpenKey;
+        public static String[] LoadedInformation = new String[20];
+        public static String[] LoadedSteamID = new String[20];
         public static Boolean IsFormClose;
         //**
         #endregion
@@ -79,6 +81,13 @@ namespace Dota_Buff
                 String caption, uint type);
             /*[System.Runtime.InteropServices.DllImport("user32.dll")]
             public static extern bool GetCursorPos(out Point lpPoint);*/
+            [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
+            public static extern IntPtr FindWindow(string lpClassName,
+                string lpWindowName);
+            [DllImport("user32.dll")]
+            public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+            [DllImport("user32.dll")]
+            public static extern bool SetForegroundWindow(IntPtr hWnd);
         }
 
         static void Main(string[] args)
@@ -96,8 +105,6 @@ namespace Dota_Buff
                 var k = IniFile.Read("OpenKey", "HotKeys");
                 OpenKey = int.Parse(k);
                 frm.comboBox1.SelectedIndex = int.Parse(k);
-                Console.WriteLine("Load with file");
-                Console.WriteLine(OpenKey);
             }
             else
             {
@@ -107,7 +114,7 @@ namespace Dota_Buff
                 frm.comboBox1.SelectedIndex = 0;
                 //System.IO.File.SetAttributes(filename, System.IO.FileAttributes.System);
             }
-            Win32.MessageBox(0, "Your HotKey = "+KeysName[OpenKey], "Dota_Buff", 0);
+            //Win32.MessageBox(0, "Your HotKey = "+KeysName[OpenKey], "Dota_Buff", 0);
         }
 
         public partial class Form1 : Form
@@ -148,6 +155,7 @@ namespace Dota_Buff
                 textBox1.Multiline = true;
                 textBox1.Name = "textBox1";
                 textBox1.Size = new System.Drawing.Size(621, 365);
+                textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
                 textBox1.TabIndex = 14;
                 // 
                 // comboBox1
@@ -272,6 +280,7 @@ namespace Dota_Buff
                 ShowIcon = false;
                 Text = "DotaBuff by DarkPower";
                 TopMost = true;
+                this.Opacity = 0.85D;
                 Load += new System.EventHandler(Form1_Load);
                 MouseDown += new System.Windows.Forms.MouseEventHandler(Form1_MouseDown);
                 FormClosed += new System.Windows.Forms.FormClosedEventHandler(Form1_FormClosed);
@@ -303,50 +312,113 @@ namespace Dota_Buff
                 {
                     if (radioButton1.Checked)
                     {
-                        textBox1.Text = "Loading...";
-                        String result = "";
-
-                        var webRequest = WebRequest.Create("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
-                        ((HttpWebRequest)webRequest).UserAgent = ".NET Framework Example Client";
-                        using (var response = webRequest.GetResponse())
-                        using (var content = response.GetResponseStream())
-                        using (var reader = new System.IO.StreamReader(content))
+                        if (LoadedSteamID[listBox1.SelectedIndex] == listBox1.Items[listBox1.SelectedIndex].ToString())
                         {
-                            var strContent = reader.ReadToEnd();
-                            result = strContent;
+                            textBox1.Text = LoadedInformation[listBox1.SelectedIndex];
                         }
-                        int startpos = result.IndexOf("<div class=\"r-table r-only-mobile-5 heroes-overview\">");
-                        if (startpos == -1) textBox1.Text = "THIS PROFILE IS PRIVATE";
-                        else if (startpos > -1)
+                        else
                         {
-                            int finishpos = result.IndexOf("/article", startpos);
-                            result = result.Substring(startpos, finishpos - startpos);
-                            textBox1.Text = result;
-                            int CountHero = 0;
-                            int NextPos = result.IndexOf("matches?hero=", 0);
-                            //\t\t\tMost played heros:\r\n
-                            textBox1.Text = "Hero\t\tMatches\t\tWinRate\t\tKDA\r\n";
-                            while (NextPos > -1)
+                            textBox1.Text = "Loading...";
+                            String result = "";
+
+                            var webRequest = WebRequest.Create("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
+                            ((HttpWebRequest)webRequest).UserAgent = ".NET Framework Example Client";
+                            using (var response = webRequest.GetResponse())
+                            using (var content = response.GetResponseStream())
+                            using (var reader = new System.IO.StreamReader(content))
                             {
-                                CountHero++;
-                                String HeroName = result.Substring(NextPos + 13, result.IndexOf("\"", NextPos) - NextPos - 13);
-                                textBox1.Text = textBox1.Text + HeroName;
-                                //NextPos = ;
-                                int Matchespos = result.IndexOf("Matches Played</div><div class=\"r-body\">", NextPos);
-                                String Matches = result.Substring(Matchespos + 40, result.IndexOf("<", Matchespos + 40) - Matchespos - 40);
-                                textBox1.Text = textBox1.Text + ((HeroName.Length > 9) ? ("\t") : ("\t\t")) + Matches;
-
-                                int WinRatepos = result.IndexOf("Win Rate</div><div class=\"r-body\">", NextPos);
-                                String WinRate = result.Substring(WinRatepos + 34, result.IndexOf("<", WinRatepos + 34) - WinRatepos - 34);
-                                textBox1.Text = textBox1.Text + "\t\t" + WinRate;
-
-                                int KDApos = result.IndexOf("KDA Ratio</div><div class=\"r-body\">", NextPos);
-                                String KDA = result.Substring(KDApos + 35, result.IndexOf("<", KDApos + 35) - KDApos - 35);
-                                textBox1.Text = textBox1.Text + "\t\t" + KDA + "\r\n";
-
-                                NextPos = result.IndexOf("matches?hero=", NextPos + 630);
-
+                                var strContent = reader.ReadToEnd();
+                                result = strContent;
                             }
+                            String result2 = result;
+                            int startpos = result.IndexOf("<div class=\"r-table r-only-mobile-5 heroes-overview\">");
+                            if (startpos == -1)
+                            {
+                                textBox1.Text = "THIS PROFILE IS PRIVATE";
+                            }
+                            else if (startpos > -1)
+                            {
+                                int finishpos = result.IndexOf("/article", startpos);
+                                result = result.Substring(startpos, finishpos - startpos);
+                                int NextPos = result.IndexOf("matches?hero=", 0);
+                                textBox1.Text = "Hero\t\t\tMatches\t\tWinRate\t\tKDA\r\n";
+                                while (NextPos > -1)
+                                {
+                                    String HeroName = result.Substring(NextPos + 13, result.IndexOf("\"", NextPos) - NextPos - 13);
+                                    textBox1.Text += HeroName;
+                                    //NextPos = ;
+                                    int Matchespos = result.IndexOf("Matches Played</div><div class=\"r-body\">", NextPos);
+                                    String Matches = result.Substring(Matchespos + 40, result.IndexOf("<", Matchespos + 40) - Matchespos - 40);
+                                    textBox1.Text += ((HeroName.Length > 9) ? ("\t\t") : ("\t\t\t")) + Matches;
+
+                                    int WinRatepos = result.IndexOf("Win Rate</div><div class=\"r-body\">", NextPos);
+                                    String WinRate = result.Substring(WinRatepos + 34, result.IndexOf("<", WinRatepos + 34) - WinRatepos - 34);
+                                    textBox1.Text += "\t\t" + WinRate;
+
+                                    int KDApos = result.IndexOf("KDA Ratio</div><div class=\"r-body\">", NextPos);
+                                    String KDA = result.Substring(KDApos + 35, result.IndexOf("<", KDApos + 35) - KDApos - 35);
+                                    textBox1.Text += "\t\t" + KDA + "\r\n";
+
+                                    NextPos = result.IndexOf("matches?hero=", NextPos + 630);
+
+                                }
+
+                                int startpos2 = result2.IndexOf("<div class=\"r-table r-only-mobile-5 performances-overview\">");
+                                if (startpos2 == -1)
+                                {
+                                    textBox1.Text += "THIS PROFILE IS PRIVATE";
+                                }
+                                else if (startpos2 > -1)
+                                {
+                                    int finishpos2 = result2.IndexOf("</article", startpos2);
+                                    result2 = result2.Substring(startpos2, finishpos2 - startpos2);
+                                    int NextPos2 = result2.IndexOf("data-link-to=\"&#47;matches&#47;", 0);
+                                    //textBox1.Text = result2;
+                                    textBox1.Text += "Last Games:\r\nHero\t\t\tResult\t\t\t\tType\t\t\tKDA\r\n";
+                                    while (NextPos2 > -1)
+                                    {
+                                        int HeroNamePos = result2.IndexOf("<a href=\"/heroes/", NextPos2);
+                                        String HeroName = result2.Substring(HeroNamePos + 17, result2.IndexOf("\"", HeroNamePos + 17) - HeroNamePos - 17);
+                                        textBox1.Text += HeroName;
+                                        int ResultPos = result2.IndexOf("Result</div><div class=\"r-body\"><a class=\"", NextPos2);
+                                        String Result = result2.Substring(ResultPos + 42, result2.IndexOf("\"", ResultPos + 42) - ResultPos - 42);
+                                        textBox1.Text += ((HeroName.Length > 9) ? ("\t\t") : ("\t\t\t")) + Result;
+
+                                        int ResultDPos = result2.IndexOf("<time datetime=\"", NextPos2);
+                                        String ResultD = result2.Substring(ResultDPos + 16, result2.IndexOf("\"", ResultDPos + 16) - ResultDPos - 16);
+                                        textBox1.Text += "(" + ResultD + ")";
+
+                                        int TypePos = result2.IndexOf("Type</div><div class=\"r-body\">", NextPos2);
+                                        String TypeG = result2.Substring(TypePos + 30, result2.IndexOf("<", TypePos + 30) - TypePos - 30);
+                                        textBox1.Text += "\t" + TypeG;
+
+                                        int GameModePos = result2.IndexOf("<div class=\"subtext\">", TypePos);
+                                        String GameMode = result2.Substring(GameModePos + 21, result2.IndexOf("<", GameModePos + 21) - GameModePos - 21);
+                                        textBox1.Text += "(" + GameMode + ")";
+
+                                        int KDApos = result2.IndexOf("\"kda-record\">", NextPos2);
+                                        String KDA = result2.Substring(KDApos + 13, result2.IndexOf("</span></span><div class=\"bar bar-default\"", KDApos + 13) - KDApos - 13);
+                                        for (int i = 0; i < 3; i++)
+                                        {
+                                            String substr = "<span class=\"value\">";
+                                            int n = KDA.IndexOf(substr);
+                                            KDA = KDA.Remove(n, substr.Length);
+                                        }
+                                        for (int i = 0; i < 2; i++)
+                                        {
+                                            String substr = "</span>";
+                                            int n = KDA.IndexOf(substr);
+                                            KDA = KDA.Remove(n, substr.Length);
+                                        }
+                                        textBox1.Text += "\t\t" + KDA + "\r\n";
+
+                                        NextPos2 = result2.IndexOf("data-link-to=\"&#47;matches&#47;", NextPos2 + 630);
+
+                                    }
+                                }
+                            }
+                            LoadedInformation[listBox1.SelectedIndex] = textBox1.Text;
+                            LoadedSteamID[listBox1.SelectedIndex] = listBox1.Items[listBox1.SelectedIndex].ToString();
                         }
                     }
                     else
@@ -387,6 +459,9 @@ namespace Dota_Buff
                 else
                 {
                     Width = 1; Height = 1;
+                    Win32.ShowWindow(Win32.FindWindow(null, "Dota 2"), 10);
+                    Win32.ShowWindow(Win32.FindWindow(null, "Dota 2"), 5);
+                    Win32.SetForegroundWindow(Win32.FindWindow(null, "Dota 2"));
                 }
             }
 
