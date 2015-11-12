@@ -516,7 +516,7 @@ namespace Dota_Buff
             try
             {
                 if (OpenKey > KeysValue.Length-1 || OpenKey < 0) { OpenKey = 0; Win32.MessageBox(0, "Your HotKey changed to SHIFT+5 (%)", "Dota_Buff", 0); }
-                if (args.WParam == KeysValue[OpenKey])
+                if (args.Msg == 0x0101 && args.WParam == KeysValue[OpenKey])
                 {
                     if (IsFormClose)
                     {
