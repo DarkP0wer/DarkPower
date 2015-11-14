@@ -232,8 +232,8 @@ namespace HOST_HACKS
                 frm.textBox3.Clear(); frm.textBox4.Clear();
                 for (int i = 0; i < lines.Length - 1; i++)
                 {
-                    lines2[i] = Pointer("dota2", Convert.ToInt64(lines[i]), new int[] { 0, 0x71C}, true, 0).Value.ToString("X");
-                    lines3[i] = Pointer("dota2", Convert.ToInt64(lines[i]), new int[] { 0, 0x720 }, true, 0).Value.ToString("X");
+                    lines2[i] = Pointer("dota2", 2366206272, new int[] { 0, 0x71C }, true, 0).Value.ToString("X");
+                    lines3[i] = Pointer("dota2", 2366206272, new int[] { 0, 0x720 }, true, 0).Value.ToString("X");
                     Console.WriteLine(lines2[i]);
                     frm.textBox3.Text = frm.textBox3.Text + lines2[i] + "\r\n";
                     frm.textBox4.Text = frm.textBox4.Text + lines2[i] + "\r\n";
