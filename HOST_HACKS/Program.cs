@@ -238,9 +238,15 @@ namespace HOST_HACKS
                 frm.textBox3.Clear(); frm.textBox4.Clear();
                 for (int i = 0; i < lines.Length - 1; i++)
                 {*/
-                Console.Write("non+" + frm.textBox2.Text);
-                frm.textBox3.Text = Pointer("dota2", "non+" + frm.textBox2.Text, new int[] { 0xD8 }, true, 0).Adress.ToString("F4");
-                frm.textBox4.Text = Pointer("dota2", "non+" + frm.textBox2.Text, new int[] { 0xDC }, true, 0).Adress.ToString("F4");
+                Process[] P = Process.GetProcessesByName("dota2");
+                if (P.Length == 0) return;
+                int o = 0;
+                byte[] buff1 = new byte[64];
+                Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(int.Parse(frm.textBox2.Text, NumberStyles.HexNumber)+0xD8), buff1, 64, ref o);
+                byte[] buff2 = new byte[64];
+                Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(int.Parse(frm.textBox2.Text, NumberStyles.HexNumber) + 0xD8), buff2, 64, ref o);
+                frm.textBox3.Text = BitConverter.ToString(buff1, 0);
+                frm.textBox4.Text = BitConverter.ToString(buff2, 0);
                 //}
             }
         }
