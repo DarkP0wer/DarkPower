@@ -145,17 +145,19 @@ namespace HOST_HACKS
                 return res;
             }
 
-            if (Address.GetType() == typeof(Int32))
-            {
-                BaseAddy = Convert.ToInt32(Address);
-                Console.Write("int32");
-            }
-            else if (Address.GetType() == typeof(String))
+            if (Address.GetType() == typeof(String))
             {
                 string[] tmp = Convert.ToString(Address).Split('+');
-                foreach (ProcessModule M in P[0].Modules)
-                    if (M.ModuleName.ToLower() == tmp[0].ToLower())
-                        BaseAddy = M.BaseAddress.ToInt32() + int.Parse(tmp[1], NumberStyles.HexNumber);
+                if (tmp[0].ToLower() == "non")
+                {
+                    BaseAddy = int.Parse(tmp[1], NumberStyles.HexNumber);
+                }
+                else
+                {
+                    foreach (ProcessModule M in P[0].Modules)
+                        if (M.ModuleName.ToLower() == tmp[0].ToLower())
+                            BaseAddy = M.BaseAddress.ToInt32() + int.Parse(tmp[1], NumberStyles.HexNumber);
+                }
             }
             else
             {
@@ -236,8 +238,9 @@ namespace HOST_HACKS
                 frm.textBox3.Clear(); frm.textBox4.Clear();
                 for (int i = 0; i < lines.Length - 1; i++)
                 {*/
-                frm.textBox3.Text = Pointer("dota2", int.Parse(frm.textBox2.Text, NumberStyles.HexNumber), new int[] { 0x71C }, true, 0).Adress.ToString("F4");
-                frm.textBox4.Text = Pointer("dota2", int.Parse(frm.textBox2.Text, NumberStyles.HexNumber), new int[] { 0x720 }, true, 0).Adress.ToString("F4");
+                Console.Write("non+" + frm.textBox2.Text);
+                frm.textBox3.Text = Pointer("dota2", "non+" + frm.textBox2.Text, new int[] { 0x71C }, true, 0).Adress.ToString("F4");
+                frm.textBox4.Text = Pointer("dota2", "non+" + frm.textBox2.Text, new int[] { 0x720 }, true, 0).Adress.ToString("F4");
                 //}
             }
         }
