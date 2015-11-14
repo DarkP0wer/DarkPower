@@ -146,8 +146,10 @@ namespace HOST_HACKS
             }
 
             if (Address.GetType() == typeof(Int32))
+            {
                 BaseAddy = Convert.ToInt32(Address);
-
+                Console.Write("int32");
+            }
             else if (Address.GetType() == typeof(String))
             {
                 string[] tmp = Convert.ToString(Address).Split('+');
