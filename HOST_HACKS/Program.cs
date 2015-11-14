@@ -241,12 +241,12 @@ namespace HOST_HACKS
                 Process[] P = Process.GetProcessesByName("dota2");
                 if (P.Length == 0) return;
                 int o = 0;
-                byte[] buff1 = new byte[64];
-                Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(frm.textBox2.Text, NumberStyles.HexNumber) + 216), buff1, 64, ref o);
-                byte[] buff2 = new byte[64];
-                Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(frm.textBox2.Text, NumberStyles.HexNumber) + 220), buff2, 64, ref o);
-                frm.textBox3.Text = Convert.ToString((float)BitConverter.ToInt64(buff1, 0));
-                frm.textBox4.Text = Convert.ToString((float)BitConverter.ToInt64(buff2, 0));
+                byte[] buff1 = new byte[128];
+                Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(frm.textBox2.Text, NumberStyles.HexNumber) + 216), buff1, buff1.Length, ref o);
+                byte[] buff2 = new byte[128];
+                Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(frm.textBox2.Text, NumberStyles.HexNumber) + 220), buff2, buff2.Length, ref o);
+                frm.textBox3.Text = Convert.ToString((float)BitConverter.ToInt32(buff1, 0));
+                frm.textBox4.Text = Convert.ToString((float)BitConverter.ToInt32(buff2, 0));
                 //}
             }
         }
