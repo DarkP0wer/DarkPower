@@ -226,18 +226,15 @@ namespace HOST_HACKS
         {
             if (frm.textBox1.Text == "MAP")
             {
-                string [] lines = frm.textBox2.Text.Split('\n');
+                /*string [] lines = frm.textBox2.Text.Split('\n');
                 string[] lines2 = frm.textBox2.Text.Split('\n');
                 string[] lines3 = frm.textBox2.Text.Split('\n');
                 frm.textBox3.Clear(); frm.textBox4.Clear();
                 for (int i = 0; i < lines.Length - 1; i++)
-                {
-                    lines2[i] = Pointer("dota2", 2366195520, new int[] { 0, 0x71C }, true, 0).Adress.ToString("X");
-                    lines3[i] = Pointer("dota2", 2366195520, new int[] { 0, 0x720 }, true, 0).Adress.ToString("X");
-                    Console.WriteLine(lines2[i]);
-                    frm.textBox3.Text = frm.textBox3.Text + lines2[i] + "\r\n";
-                    frm.textBox4.Text = frm.textBox4.Text + lines2[i] + "\r\n";
-                }
+                {*/
+                frm.textBox3.Text = Pointer("dota2", int.Parse(frm.textBox2.Text, NumberStyles.HexNumber), new int[] { 0, 0x71C }, true, 0).Value.ToString("X");
+                frm.textBox4.Text = Pointer("dota2", int.Parse(frm.textBox2.Text, NumberStyles.HexNumber), new int[] { 0, 0x720 }, true, 0).Value.ToString("X");
+                //}
             }
         }
 
