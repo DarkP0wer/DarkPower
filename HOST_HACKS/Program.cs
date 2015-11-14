@@ -187,6 +187,8 @@ namespace HOST_HACKS
 
             res.Adress = Final_Address;
             res.Value = BaseAddy;
+            Console.WriteLine(Final_Address);
+            Console.WriteLine(BaseAddy);
             return res;
         }
 
