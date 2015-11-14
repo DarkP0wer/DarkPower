@@ -239,8 +239,8 @@ namespace HOST_HACKS
                 for (int i = 0; i < lines.Length - 1; i++)
                 {*/
                 Console.Write("non+" + frm.textBox2.Text);
-                frm.textBox3.Text = Pointer("dota2", "non+" + frm.textBox2.Text, new int[] { 0x71C }, true, 0).Adress.ToString("F4");
-                frm.textBox4.Text = Pointer("dota2", "non+" + frm.textBox2.Text, new int[] { 0x720 }, true, 0).Adress.ToString("F4");
+                frm.textBox3.Text = Pointer("dota2", "non+" + frm.textBox2.Text, new int[] { 0xD8 }, true, 0).Adress.ToString("F4");
+                frm.textBox4.Text = Pointer("dota2", "non+" + frm.textBox2.Text, new int[] { 0xDC }, true, 0).Adress.ToString("F4");
                 //}
             }
         }
