@@ -242,11 +242,11 @@ namespace HOST_HACKS
                 if (P.Length == 0) return;
                 int o = 0;
                 byte[] buff1 = new byte[64];
-                Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(int.Parse(frm.textBox2.Text, NumberStyles.HexNumber)+0xD8), buff1, 64, ref o);
+                Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(frm.textBox2.Text, NumberStyles.HexNumber) + 216), buff1, 64, ref o);
                 byte[] buff2 = new byte[64];
-                Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(int.Parse(frm.textBox2.Text, NumberStyles.HexNumber) + 0xD8), buff2, 64, ref o);
-                frm.textBox3.Text = BitConverter.ToString(buff1, 0);
-                frm.textBox4.Text = BitConverter.ToString(buff2, 0);
+                Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(frm.textBox2.Text, NumberStyles.HexNumber) + 220), buff2, 64, ref o);
+                frm.textBox3.Text = Convert.ToString(BitConverter.ToInt32(buff1, 0));
+                frm.textBox4.Text = Convert.ToString(BitConverter.ToInt32(buff2, 0));
                 //}
             }
         }
