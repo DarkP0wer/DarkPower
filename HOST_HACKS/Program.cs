@@ -26,8 +26,8 @@ namespace HOST_HACKS
         public static IntPtr GHandle;
         public struct AdressAndValue
         {
-            public int Adress;
-            public int Value;
+            public long Adress;
+            public long Value;
         }
         #endregion
 
@@ -134,7 +134,7 @@ namespace HOST_HACKS
 
         public static AdressAndValue Pointer(string ProcessName, object Address, int[] Offsets, Boolean ReadOnly, int WValue)
         {
-            int BaseAddy = -1;
+            long BaseAddy = -1;
             AdressAndValue res = new AdressAndValue();
 
             Process[] P = Process.GetProcessesByName(ProcessName);
@@ -156,7 +156,7 @@ namespace HOST_HACKS
                 {
                     foreach (ProcessModule M in P[0].Modules)
                         if (M.ModuleName.ToLower() == tmp[0].ToLower())
-                            BaseAddy = M.BaseAddress.ToInt32() + int.Parse(tmp[1], NumberStyles.HexNumber);
+                            BaseAddy = M.BaseAddress.ToInt64() + int.Parse(tmp[1], NumberStyles.HexNumber);
                 }
             }
             else
@@ -166,19 +166,19 @@ namespace HOST_HACKS
                 byte[] buff2 = new byte[64];
                 Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(BaseAddy), buff2, 64, ref o);
                 GHandle = P[0].Handle;
-                BaseAddy = BitConverter.ToInt32(buff2, 0);
+                BaseAddy = BitConverter.ToInt64(buff2, 0);
                 res.Value = BaseAddy;
                 return res;
             }
 
             byte[] buff = new byte[64];
-            int Final_Address = -1;
+            long Final_Address = -1;
             for (int i = 0; i < Offsets.Length; i++)
             {
                 int o = 0;
                 Final_Address = BaseAddy + Offsets[i];
                 Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(BaseAddy + Offsets[i]), buff, 64, ref o);
-                BaseAddy = BitConverter.ToInt32(buff, 0);
+                BaseAddy = BitConverter.ToInt64(buff, 0);
             }
 
             if (Final_Address != -1 && !ReadOnly)
