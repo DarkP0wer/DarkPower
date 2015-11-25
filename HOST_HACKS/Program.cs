@@ -498,7 +498,7 @@ namespace HOST_HACKS
 
             private void button3_Click(object sender, EventArgs e)
             {
-                label2.Text = Pointer("dota2", "server.dll+1C6F980", new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(textBox1.Text)).Value.ToString("X");
+                label2.Text = Pointer("dota2", "server.dll+1C6F990", new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(textBox1.Text)).Value.ToString("X");
             }
 
             private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
