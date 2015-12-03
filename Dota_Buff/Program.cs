@@ -710,6 +710,7 @@
                                     frm.listBox2.Items.Add("Loading...");
                                 }
                             }
+                            Win32.PrintEncolored(enemy.ID + " | " + frm.listBox1.Items.Count, ConsoleColor.Green);
                             frm.listBox1.Items[enemy.ID] = ""+id;
                             frm.listBox2.Items[enemy.ID] = ""+enemy.Name;
                         }
