@@ -695,6 +695,8 @@
                         var enemies = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
                         frm.listBox1.Items.Clear();
                         frm.listBox2.Items.Clear();
+                        frm.listBox1.Items.Add("Loading...");
+                        frm.listBox2.Items.Add("Loading...");
                         foreach (var enemy in enemies)
                         {
                             if (enemy == null || enemy.IsFakeClient) continue;
