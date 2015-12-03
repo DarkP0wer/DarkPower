@@ -173,7 +173,7 @@
                             else Repos[i].RepoM = "-";
                             RWA[i] = "Loading inf...";
                             String text = "";
-                            var webRequest = WebRequest.Create("http://www.dotabuff.com/players/"+p.PlayerSteamID+"/matches?date=patch_6.85b&hero=&skill_bracket=&lobby_type=ranked_matchmaking&game_mode=&region=&faction=&duration=&timezone=Etc%2FUTC");
+                            var webRequest = WebRequest.Create("http://www.dotabuff.com/players/" + p.PlayerSteamID + "/matches?date=patch_6.85b&hero=&skill_bracket=&lobby_type=ranked_matchmaking&game_mode=&region=&faction=&duration=&timezone=Etc%2FUTC");
                             ((HttpWebRequest)webRequest).UserAgent = ".NET Framework Example Client";
                             webRequest.Method = "GET";
                             using (var response = webRequest.GetResponse())
@@ -202,7 +202,14 @@
                         }
                     }
                 }
-                else IsPlayersLoad = false;
+                else
+                {
+                    if (IsPlayersLoad)
+                    {
+                        for (int i = 0; i < 20; i++) RWA[i] = "NULL";
+                        IsPlayersLoad = false;
+                    }
+                }
             }
 
             private static void Drawing_OnPostReset(EventArgs args)
