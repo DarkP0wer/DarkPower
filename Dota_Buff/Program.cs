@@ -699,8 +699,8 @@
                         {
                             if (enemy == null || enemy.IsFakeClient) continue;
                             uint id = enemy.PlayerSteamID;
-                            if(enemy.ID > frm.listBox1.Items.Count - 1)
-                                for(int i = 0; i < enemy.ID - frm.listBox1.Items.Count)
+                            if (enemy.ID > frm.listBox1.Items.Count - 1)
+                                for (int i = 0; i < enemy.ID - frm.listBox1.Items.Count; i++ )
                                 {
                                     frm.listBox1.Items.Add("Loading...");
                                     frm.listBox2.Items.Add("Loading...");
