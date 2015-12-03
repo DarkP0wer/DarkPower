@@ -710,7 +710,6 @@
                         {
                             if (enemy == null || enemy.IsFakeClient) continue;
                             uint id = enemy.PlayerSteamID;
-                            Win32.PrintEncolored(enemy.ID + " | " + frm.listBox1.Items.Count , ConsoleColor.Red);
                             if (enemy.ID+1 > frm.listBox1.Items.Count)
                             {
                                 int d = frm.listBox1.Items.Count;
@@ -720,7 +719,6 @@
                                     frm.listBox2.Items.Add("Loading...");
                                 }
                             }
-                            Win32.PrintEncolored(enemy.ID + " | " + frm.listBox1.Items.Count, ConsoleColor.Green);
                             frm.listBox1.Items[enemy.ID] = ""+id;
                             frm.listBox2.Items[enemy.ID] = ""+enemy.Name;
                         }
