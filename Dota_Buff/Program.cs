@@ -155,23 +155,20 @@
                         }
                         if (RWA[i] == "NULL")
                         {
-                            if (Repos[i].SteamId != p.PlayerSteamID)
+                            if (System.IO.File.Exists(filename))
                             {
-                                if (System.IO.File.Exists(filename))
+                                var IniFile = new IniFile(filename);
+                                if (IniFile.KeyExists("Mark", "" + p.PlayerSteamID))
                                 {
-                                    var IniFile = new IniFile(filename);
-                                    if (IniFile.KeyExists("Mark", "" + p.PlayerSteamID))
-                                    {
-                                        var Mark = IniFile.Read("Mark", "" + p.PlayerSteamID);
-                                        var RepoText = IniFile.Read("RepoText", "" + p.PlayerSteamID);
-                                        Repos[i].SteamId = p.PlayerSteamID;
-                                        Repos[i].RepoM = Mark;
-                                        Repos[i].RepoT = RepoText;
-                                    }
-                                    else Repos[i].RepoM = "-";
+                                    var Mark = IniFile.Read("Mark", "" + p.PlayerSteamID);
+                                    var RepoText = IniFile.Read("RepoText", "" + p.PlayerSteamID);
+                                    Repos[i].SteamId = p.PlayerSteamID;
+                                    Repos[i].RepoM = Mark;
+                                    Repos[i].RepoT = RepoText;
                                 }
                                 else Repos[i].RepoM = "-";
                             }
+                            else Repos[i].RepoM = "-";
                             RWA[i] = "Loading inf...";
                             String text = "";
                             var webRequest = WebRequest.Create("http://www.dotabuff.com/players/"+p.PlayerSteamID+"/matches?date=patch_6.85b&hero=&skill_bracket=&lobby_type=ranked_matchmaking&game_mode=&region=&faction=&duration=&timezone=Etc%2FUTC");
@@ -698,15 +695,16 @@
                         var enemies = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
                         frm.listBox1.Items.Clear();
                         frm.listBox2.Items.Clear();
-                        for (int i = 0; i < 20; i++)
-                        {
-                            frm.listBox1.Items.Add("Loading...");
-                            frm.listBox2.Items.Add("Loading...");
-                        }
                         foreach (var enemy in enemies)
                         {
                             if (enemy == null || enemy.IsFakeClient) continue;
                             uint id = enemy.PlayerSteamID;
+                            if(enemy.ID > frm.listBox1.Items.Count - 1)
+                                for(int i = 0; i < enemy.ID - frm.listBox1.Items.Count)
+                                {
+                                    frm.listBox1.Items.Add("Loading...");
+                                    frm.listBox2.Items.Add("Loading...");
+                                }
                             frm.listBox1.Items[enemy.ID] = ""+id;
                             frm.listBox2.Items[enemy.ID] = ""+enemy.Name;
                         }
