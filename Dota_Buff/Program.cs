@@ -1,11 +1,14 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using Ensage;
 using Ensage.Common;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Net;
+using SharpDX;
+using SharpDX.Direct3D9;
 
 namespace Dota_Buff
 {
@@ -15,15 +18,24 @@ namespace Dota_Buff
         public const int HT_CAPTION = 0x2;
 
         #region CFG
-        
-        public static String filename = "Dota_Buff.ini";
-        public static string[] KeysName = new string[] { "SHIFT+5 (%)", "SHIFT+1 (!)", "NUMPAD0", "NUMPAD1", "NUMPAD2", "NUMPAD3", "NUMPAD4", "NUMPAD5", "NUMPAD6", "NUMPAD7", "NUMPAD8", "NUMPAD9" };
-        public static ulong[] KeysValue = new ulong[] { '%', '!', 0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69 };
-        public static int OpenKey;
-        public static String[] LoadedInformation = new String[20];
-        public static String[] LoadedSteamID = new String[20];
-        public static Boolean IsFormClose;
-        //**
+        private static String version = "v1.4";
+        private static readonly Ensage.Common.Menu.Menu SubMenu = new Ensage.Common.Menu.Menu("Dota Buff "+version, "DOTA BUFF", true);
+        private static Boolean IsPlayersLoad;
+        private static String filename = "Dota_Buff.ini";
+        private static String[] LoadedInformation = new String[20];
+        private static String[] LoadedSteamID = new String[20];
+        private static String[] RWA = new String[20];
+        public struct Repo
+        {
+            public String RepoM;
+            public String RepoT;
+            public uint SteamId;
+        }
+        public static Repo[] Repos = new Repo[20];
+        private static int MaxPlayers;
+        private static Boolean IsFormClose;
+        private static Font FontArray;
+        private static System.Timers.Timer aTimer;
         #endregion
 
 
@@ -73,12 +85,7 @@ namespace Dota_Buff
         public class Win32
         {
             [DllImportAttribute("user32.dll")]
-            public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-            [DllImportAttribute("user32.dll")]
             public static extern bool ReleaseCapture();
-            [DllImport("user32.dll", CharSet = CharSet.Auto)]
-            public static extern int MessageBox(int hWnd, String text,
-                String caption, uint type);
             /*[System.Runtime.InteropServices.DllImport("user32.dll")]
             public static extern bool GetCursorPos(out Point lpPoint);*/
             [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
@@ -88,33 +95,130 @@ namespace Dota_Buff
             public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
             [DllImport("user32.dll")]
             public static extern bool SetForegroundWindow(IntPtr hWnd);
+            public static void PrintEncolored(string text, ConsoleColor color, params object[] arguments)
+            {
+                var clr = Console.ForegroundColor;
+                Console.ForegroundColor = color;
+                Console.WriteLine(text, arguments);
+                Console.ForegroundColor = clr;
+            }
         }
 
         static void Main(string[] args)
         {
-            Game.OnWndProc += Game_OnGameWndProc;
+
+            SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("DBKey", "Menu hot key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
+            SubMenu.AddToMainMenu();
+            MaxPlayers = 1;
             IsFormClose = false;
-            frm.comboBox1.Items.Clear();
-            for (int i = 0; i < KeysName.Length; i++)
+            frm.comboBox2.SelectedIndex = 0;
+            for (int i = 0; i < 20; i++)
             {
-                frm.comboBox1.Items.Add(KeysName[i]);
+                RWA[i] = "NULL";
             }
-            if (System.IO.File.Exists(filename))
-            {
-                var IniFile = new IniFile(filename);
-                var k = IniFile.Read("OpenKey", "HotKeys");
-                OpenKey = int.Parse(k);
-                frm.comboBox1.SelectedIndex = int.Parse(k);
-            }
-            else
+            if (!System.IO.File.Exists(filename))
             {
                 var IniFile = new IniFile(filename);
-                IniFile.Write("OpenKey", "0", "HotKeys");
-                OpenKey = 0;
-                frm.comboBox1.SelectedIndex = 0;
-                //System.IO.File.SetAttributes(filename, System.IO.FileAttributes.System);
+                IniFile.Write("TEST", "1", "TEST");
             }
-            //Win32.MessageBox(0, "Your HotKey = "+KeysName[OpenKey], "Dota_Buff", 0);
+            FontArray = new Font(
+                Drawing.Direct3DDevice9,
+                new FontDescription
+                {
+                    FaceName = "Tahoma",
+                    Height = 12,
+                    OutputPrecision = FontPrecision.Default,
+                    Quality = FontQuality.Default
+                });
+            Drawing.OnPreReset += Drawing_OnPreReset;
+            Drawing.OnPostReset += Drawing_OnPostReset;
+            Drawing.OnEndScene += Drawing_OnEndScene;
+            Game.OnWndProc += Game_OnGameWndProc;
+            aTimer = new System.Timers.Timer(1000);
+            aTimer.Elapsed += OnTimedEvent;
+            aTimer.Enabled = true;
+        }
+
+        private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            if (ObjectMgr.LocalPlayer != null && ObjectMgr.LocalPlayer.Hero == null)
+            {
+                IsPlayersLoad = true;
+                for (int i = 0; i < 20; i++)
+                {
+                    Player p = null;
+                    p = ObjectMgr.GetPlayerById((uint)i);
+                    if (p == null)
+                    {
+                        RWA[i] = "Loading...";
+                        continue;
+                    }
+                    if (RWA[i] == "NULL")
+                    {
+                        if (Repos[i].SteamId != p.PlayerSteamID)
+                        {
+                            if (System.IO.File.Exists(filename))
+                            {
+                                var IniFile = new IniFile(filename);
+                                if (IniFile.KeyExists("Mark", "" + p.PlayerSteamID))
+                                {
+                                    var Mark = IniFile.Read("Mark", "" + p.PlayerSteamID);
+                                    var RepoText = IniFile.Read("RepoText", "" + p.PlayerSteamID);
+                                    Repos[i].SteamId = p.PlayerSteamID;
+                                    Repos[i].RepoM = Mark;
+                                    Repos[i].RepoT = RepoText;
+                                }
+                                else Repos[i].RepoM = "-";
+                            }
+                            else Repos[i].RepoM = "-";
+                        }
+                        RWA[i] = "Loading inf...";
+                        String text = "";
+                        var webRequest = WebRequest.Create("http://www.dotabuff.com/players/"+p.PlayerSteamID+"/matches?date=patch_6.85b&hero=&skill_bracket=&lobby_type=ranked_matchmaking&game_mode=&region=&faction=&duration=&timezone=Etc%2FUTC");
+                        ((HttpWebRequest)webRequest).UserAgent = ".NET Framework Example Client";
+                        webRequest.Method = "GET";
+                        using (var response = webRequest.GetResponse())
+                        using (var content = response.GetResponseStream())
+                        using (var reader = new System.IO.StreamReader(content))
+                        {
+                            var strContent = reader.ReadToEnd();
+                            text = strContent;
+                        }
+                        int startpos = text.IndexOf("r-stats-grid r-stats-grid-padded");
+                        if (startpos == -1)
+                        {
+                            RWA[p.ID] = "NONE";
+                        }
+                        else if (startpos > -1)
+                        {
+                            int finishpos = text.IndexOf("/article", startpos);
+                            text = text.Substring(startpos, finishpos - startpos);
+                            int NextPos = text.IndexOf("Matches</small></div><div class=\"kv\"><span class=\"color-stat-win\">", 0);
+                            RWA[p.ID] = text.Substring(NextPos + 66, text.IndexOf("<", NextPos) - NextPos - 66);
+                        }
+                    }
+                    else if (RWA[i] == "Loading...")
+                    {
+                        RWA[i] = "NULL";
+                    }
+                    if (i + 1 > MaxPlayers) MaxPlayers = i + 1;
+                }
+            }
+            else IsPlayersLoad = false;
+        }
+
+        private static void Drawing_OnPostReset(EventArgs args)
+        {
+            for (var i = 0; i <= 20; i++)
+                if (FontArray != null)
+                    FontArray.OnLostDevice();
+        }
+
+        private static void Drawing_OnPreReset(EventArgs args)
+        {
+            for (var i = 0; i <= 20; i++)
+                if (FontArray != null)
+                    FontArray.OnLostDevice();
         }
 
         public partial class Form1 : Form
@@ -129,14 +233,15 @@ namespace Dota_Buff
                 listBox1 = new System.Windows.Forms.ListBox();
                 listBox2 = new System.Windows.Forms.ListBox();
                 button1 = new System.Windows.Forms.Button();
-                label1 = new System.Windows.Forms.Label();
                 linkLabel1 = new System.Windows.Forms.LinkLabel();
                 linkLabel2 = new System.Windows.Forms.LinkLabel();
                 button2 = new System.Windows.Forms.Button();
                 radioButton1 = new System.Windows.Forms.RadioButton();
                 radioButton3 = new System.Windows.Forms.RadioButton();
-                comboBox1 = new System.Windows.Forms.ComboBox();
                 textBox1 = new System.Windows.Forms.TextBox();
+                this.button3 = new System.Windows.Forms.Button();
+                this.comboBox2 = new System.Windows.Forms.ComboBox();
+                this.textBox2 = new System.Windows.Forms.TextBox();
                 SuspendLayout();
                 // 
                 // listBox1
@@ -151,22 +256,12 @@ namespace Dota_Buff
                 // 
                 // textBox1
                 // 
-                textBox1.Location = new System.Drawing.Point(167, 23);
+                textBox1.Location = new System.Drawing.Point(167, 44);
                 textBox1.Multiline = true;
                 textBox1.Name = "textBox1";
-                textBox1.Size = new System.Drawing.Size(621, 365);
+                textBox1.Size = new System.Drawing.Size(621, 344);
                 textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
                 textBox1.TabIndex = 14;
-                // 
-                // comboBox1
-                // 
-                comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-                comboBox1.FormattingEnabled = true;
-                comboBox1.Location = new System.Drawing.Point(79, 23);
-                comboBox1.Name = "comboBox1";
-                comboBox1.Size = new System.Drawing.Size(82, 21);
-                comboBox1.TabIndex = 10;
-                comboBox1.SelectedIndexChanged += new System.EventHandler(comboBox1_SelectedIndexChanged);
                 // 
                 // listBox2
                 // 
@@ -188,15 +283,6 @@ namespace Dota_Buff
                 button1.Text = "DB HIDE";
                 button1.UseVisualStyleBackColor = true;
                 button1.Click += new System.EventHandler(button1_Click);
-                // 
-                // label1
-                // 
-                label1.AutoSize = true;
-                label1.Location = new System.Drawing.Point(2, 26);
-                label1.Name = "label1";
-                label1.Size = new System.Drawing.Size(122, 13);
-                label1.TabIndex = 5;
-                label1.Text = "HotKey:";
                 // 
                 // linkLabel1
                 // 
@@ -257,6 +343,45 @@ namespace Dota_Buff
                 radioButton3.UseVisualStyleBackColor = true;
                 radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
                 // 
+                // button3
+                // 
+                this.button3.Location = new System.Drawing.Point(653, 4);
+                this.button3.Name = "button3";
+                this.button3.Size = new System.Drawing.Size(70, 20);
+                this.button3.TabIndex = 19;
+                this.button3.Text = "Add Repo";
+                this.button3.UseVisualStyleBackColor = true;
+                button3.Click += new System.EventHandler(this.button3_Click);
+                // 
+                // comboBox2
+                // 
+                this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+                this.comboBox2.FormattingEnabled = true;
+                this.comboBox2.Items.AddRange(new object[] {
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10"});
+                this.comboBox2.Location = new System.Drawing.Point(729, 3);
+                this.comboBox2.Name = "comboBox2";
+                this.comboBox2.Size = new System.Drawing.Size(59, 21);
+                this.comboBox2.TabIndex = 20;
+                // 
+                // textBox2
+                // 
+                this.textBox2.Location = new System.Drawing.Point(370, 23);
+                this.textBox2.Name = "textBox2";
+                this.textBox2.Size = new System.Drawing.Size(418, 20);
+                this.textBox2.TabIndex = 21;
+                this.textBox2.Text = "RepoText - NONE";
+                this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+                // 
                 // Form1
                 // 
                 AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -264,9 +389,11 @@ namespace Dota_Buff
                 BackColor = System.Drawing.SystemColors.Highlight;
                 ClientSize = new System.Drawing.Size(965, 426);
                 ControlBox = false;
+                this.Controls.Add(this.textBox2);
+                this.Controls.Add(this.comboBox2);
+                this.Controls.Add(this.button3);
                 Controls.Add(linkLabel2);
                 Controls.Add(linkLabel1);
-                Controls.Add(label1);
                 Controls.Add(button1);
                 Controls.Add(listBox2);
                 Controls.Add(listBox1);
@@ -274,7 +401,6 @@ namespace Dota_Buff
                 Controls.Add(radioButton1);
                 Controls.Add(textBox1);
                 Controls.Add(button2);
-                Controls.Add(comboBox1);
                 FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
                 Name = "Form1";
                 ShowIcon = false;
@@ -291,18 +417,19 @@ namespace Dota_Buff
             public System.Windows.Forms.ListBox listBox1;
             public System.Windows.Forms.ListBox listBox2;
             private System.Windows.Forms.Button button1;
-            private System.Windows.Forms.Label label1;
             private System.Windows.Forms.LinkLabel linkLabel1;
             private System.Windows.Forms.LinkLabel linkLabel2;
             private System.Windows.Forms.Button button2;
             private System.Windows.Forms.RadioButton radioButton1;
             private System.Windows.Forms.RadioButton radioButton3;
-            public System.Windows.Forms.ComboBox comboBox1;
             private System.Windows.Forms.TextBox textBox1;
+            private System.Windows.Forms.Button button3;
+            public System.Windows.Forms.ComboBox comboBox2;
+            public System.Windows.Forms.TextBox textBox2;
 
             private void Form1_Load(object sender, EventArgs e)
             {
-                Width = 900; Height = 400;
+                Width = 800; Height = 400;
                 IsFormClose = false;
             }
 
@@ -312,12 +439,14 @@ namespace Dota_Buff
                 {
                     if (radioButton1.Checked)
                     {
+                        if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...") return;
                         if (LoadedSteamID[listBox1.SelectedIndex] == listBox1.Items[listBox1.SelectedIndex].ToString())
                         {
                             textBox1.Text = LoadedInformation[listBox1.SelectedIndex];
                         }
                         else
                         {
+
                             textBox1.Text = "Loading...";
                             String result = "";
 
@@ -417,8 +546,16 @@ namespace Dota_Buff
                                     }
                                 }
                             }
+                            if (Repos[listBox1.SelectedIndex].RepoM != "-")
+                            {
+                                textBox1.Text += "\r\nSteamID: " + Repos[listBox1.SelectedIndex].SteamId;
+                                textBox1.Text += "\r\nMark: " + Repos[listBox1.SelectedIndex].RepoM;
+                                textBox1.Text += "\r\nRepoText: " + Repos[listBox1.SelectedIndex].RepoT;
+                                textBox2.Text = Repos[listBox1.SelectedIndex].RepoT;
+                            }
                             LoadedInformation[listBox1.SelectedIndex] = textBox1.Text;
                             LoadedSteamID[listBox1.SelectedIndex] = listBox1.Items[listBox1.SelectedIndex].ToString();
+                            
                         }
                     }
                     else
@@ -439,17 +576,6 @@ namespace Dota_Buff
                 listBox1.SelectedIndex = listBox2.SelectedIndex;
             }
 
-            private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-            {
-                if (OpenKey != comboBox1.SelectedIndex)
-                {
-                    String str = "" + comboBox1.SelectedIndex;
-                    var IniFile = new IniFile(filename);
-                    IniFile.Write("OpenKey", str, "HotKeys");
-                }
-                OpenKey = comboBox1.SelectedIndex;
-            }
-
             private void button1_Click(object sender, EventArgs e)
             {
                 if (Width != 800)
@@ -462,6 +588,29 @@ namespace Dota_Buff
                     Win32.ShowWindow(Win32.FindWindow(null, "Dota 2"), 10);
                     Win32.ShowWindow(Win32.FindWindow(null, "Dota 2"), 5);
                     Win32.SetForegroundWindow(Win32.FindWindow(null, "Dota 2"));
+                }
+            }
+
+            private void button3_Click(object sender, EventArgs e)
+            {
+                if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...")
+                {
+                    Win32.PrintEncolored("Dota_Buff: Player not loaded...", ConsoleColor.Red);
+                }
+                else
+                {
+                    if (System.IO.File.Exists(filename))
+                    {
+                        var IniFile = new IniFile(filename);
+                        IniFile.Write("Mark", comboBox2.Items[comboBox2.SelectedIndex].ToString(), listBox1.Items[listBox1.SelectedIndex].ToString());
+                        IniFile.Write("RepoText", frm.textBox2.Text, listBox1.Items[listBox1.SelectedIndex].ToString());
+                        Repos[listBox1.SelectedIndex].RepoM = comboBox2.Items[comboBox2.SelectedIndex].ToString();
+                        Repos[listBox1.SelectedIndex].RepoT = frm.textBox2.Text;
+                    }
+                    else
+                    {
+                        Win32.PrintEncolored("Dota_Buff: File " + filename + " not founded!", ConsoleColor.Red);
+                    }
                 }
             }
 
@@ -510,41 +659,65 @@ namespace Dota_Buff
     
         static Form1 frm = new Form1();
 
+        private static void Drawing_OnEndScene(EventArgs args)
+        {
+            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed)
+            {
+                return;
+            }
+            if (IsPlayersLoad)
+            {
+                for (int i = 0; i < MaxPlayers; i++)
+                {
+                    var text = string.Format("ID:{0} | REPM:{2} | RWR:{1}", i, RWA[i], Repos[i].RepoM);
+                    
+                    FontArray.DrawText(null, text, Drawing.Width - 475, (Drawing.Height / 17) * 3 + (int)(Drawing.Height / 22.58) * 
+                        (
+                            (i > 4)
+                            ? (i + 1)
+                            : i
+                        )
+                   , Color.HotPink);
+                }
+            }
+        }
+
         public static void Game_OnGameWndProc(WndEventArgs args)
         {
             if (Game.IsChatOpen || Game.IsWatchingGame) return;
             try
             {
-                if (OpenKey > KeysValue.Length-1 || OpenKey < 0) { OpenKey = 0; Win32.MessageBox(0, "Your HotKey changed to SHIFT+5 (%)", "Dota_Buff", 0); }
-                if (args.Msg == 0x0101 && args.WParam == KeysValue[OpenKey])
+                if (args.Msg == 0x0101 && args.WParam == SubMenu.Item("DBKey").GetValue<Ensage.Common.Menu.KeyBind>().Key)
                 {
                     if (IsFormClose)
                     {
-                        Win32.MessageBox(0, "You close form!\r\n Reload script for openning!", "Dota_Buff", 0);
+                        Win32.PrintEncolored("Dota_Buff: You close form! Reload script for openning!", ConsoleColor.Red);
                         return;
                     }
                     frm.Width = 800; frm.Height = 400;
                     frm.Show();
                     var enemies = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
                     frm.listBox1.Items.Clear();
-                    frm.listBox2.Items.Clear(); ;
+                    frm.listBox2.Items.Clear();
+                    for (int i = 0; i < MaxPlayers; i++)
+                    {
+                        frm.listBox1.Items.Add("Loading...");
+                        frm.listBox2.Items.Add("Loading...");
+                    }
                     foreach (var enemy in enemies)
                     {
                         if (enemy == null || enemy.IsFakeClient) continue;
                         uint id = enemy.PlayerSteamID;
-                        if (id > 0)
-                        {
-                            frm.listBox1.Items.Add(id);
-                            frm.listBox2.Items.Add(enemy.Name);
-                            
-                        }
+                        frm.listBox1.Items[enemy.ID] = ""+id;
+                        frm.listBox2.Items[enemy.ID] = ""+enemy.Name;
                     }
+                    frm.listBox1.SelectedIndex = 0;
                 }
             }
             catch (Exception e)
             {
                 if (e.Source != null)
-                    MessageBox.Show("Error: " + e.Source);
+                    Win32.PrintEncolored("Dota_Buff Error: " + e.Source, ConsoleColor.Red);
                 throw;
             }
         }
