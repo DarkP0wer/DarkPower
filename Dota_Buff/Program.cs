@@ -703,7 +703,7 @@
                             uint id = enemy.PlayerSteamID;
                             Win32.PrintEncolored(enemy.ID + " | " + (frm.listBox1.Items.Count - 1), ConsoleColor.Red); 
                             if (enemy.ID > frm.listBox1.Items.Count - 1)
-                                for (int i = 0; i < enemy.ID - frm.listBox1.Items.Count; i++ )
+                                for (int i = 0; i < enemy.ID - frm.listBox1.Items.Count - 1; i++ )
                                 {
                                     frm.listBox1.Items.Add("Loading...");
                                     frm.listBox2.Items.Add("Loading...");
