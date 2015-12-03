@@ -151,6 +151,8 @@
                         if (p == null)
                         {
                             RWA[i] = "Loading...";
+                            Repos[i].RepoM = "-";
+                            Repos[i].SteamId = 228;
                             continue;
                         }
                         if (RWA[i] == "NULL")
@@ -704,7 +706,8 @@
                             Win32.PrintEncolored(enemy.ID + " | " + frm.listBox1.Items.Count , ConsoleColor.Red);
                             if (enemy.ID+1 > frm.listBox1.Items.Count)
                             {
-                                for (int i = 0; i < enemy.ID+1 - frm.listBox1.Items.Count; i++)
+                                int d = frm.listBox1.Items.Count;
+                                for (int i = 0; i < enemy.ID+1 - d; i++)
                                 {
                                     frm.listBox1.Items.Add("Loading...");
                                     frm.listBox2.Items.Add("Loading...");
