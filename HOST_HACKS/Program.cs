@@ -674,7 +674,7 @@ namespace HOST_HACKS
                         {
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Game.MousePosition.X);
-                            s = Pointer("dota2", "server.dll+1BFEF78", new int[] { 0, 0x0, 0x48, 0xD8 }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", "server.dll+1C704A8", new int[] { 0, 0x0, 0xC0, 0x48, 0xD8 }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                         }
                         catch { }
@@ -683,7 +683,7 @@ namespace HOST_HACKS
                         {
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Game.MousePosition.Y);
-                            s = Pointer("dota2", "server.dll+1BFEF78", new int[] { 0, 0x0, 0x48, 0xDC }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", "server.dll+1C704A8", new int[] { 0, 0x0, 0xC0, 0x48, 0xDC }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                             
                         }
@@ -695,7 +695,7 @@ namespace HOST_HACKS
                         {
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Game.MousePosition.X);
-                            s = Pointer("dota2", "client.dll+1E57248", new int[] { 0, 0x1f8, 0x0, 0xd8 }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", "client.dll+1EEF698", new int[] { 0, 0x0, 0x1B0, 0x48, 0xd8 }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                         }
                         catch { }
@@ -704,7 +704,7 @@ namespace HOST_HACKS
                         {
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Game.MousePosition.Y);
-                            s = Pointer("dota2", "client.dll+1E57248", new int[] { 0, 0x1f8, 0x0, 0xdC }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", "client.dll+1EEF698", new int[] { 0, 0x0, 0x1B0, 0x48, 0xdC }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                         }
                         catch { }
