@@ -155,6 +155,7 @@ namespace HOST_HACKS
             IsFormClose = false;
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("HHKey", "Form Key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("TPKey", "TP Key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
+            SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("AutoGO", "AutoGO after TP").SetValue(true));
             SubMenu.AddToMainMenu();
             #endregion
             aTimer = new System.Timers.Timer(1000);
@@ -662,39 +663,52 @@ namespace HOST_HACKS
                         frm.Width = 365; frm.Height = 235;
                         frm.Show();
                     }
-                    else if(args.WParam == SubMenu.Item("TPKey").GetValue<Ensage.Common.Menu.KeyBind>().Key)
+                    else if (args.WParam == SubMenu.Item("TPKey").GetValue<Ensage.Common.Menu.KeyBind>().Key)
                     {
+                        var player = ObjectMgr.LocalHero;
+                        if (!Game.IsInGame || player == null) return;
+                        Process[] P = Process.GetProcessesByName("dota2");
+                        if (P.Length == 0) return;
+                        int bytesWritten; byte[] buffer; String s;
                         try
                         {
-                            var player = ObjectMgr.LocalHero;
-                            if (!Game.IsInGame || player == null) return;
-
-                            Process[] P = Process.GetProcessesByName("dota2");
-                            if (P.Length == 0) return;
-                            int bytesWritten = 0;
-                            byte[] buffer = BitConverter.GetBytes(Game.MousePosition.X);
-                            String s = Pointer("dota2", "server.dll+1BFEF78", new int[] { 0, 0x18, 0x48, 0xD8 }, true, 1).Adress.ToString("X");
+                            bytesWritten = 0;
+                            buffer = BitConverter.GetBytes(Game.MousePosition.X);
+                            s = Pointer("dota2", "server.dll+1BFEF78", new int[] { 0, 0x18, 0x48, 0xD8 }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
+                        }
+                        catch { }
 
+                        try
+                        {
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Game.MousePosition.Y);
                             s = Pointer("dota2", "server.dll+1BFEF78", new int[] { 0, 0x18, 0x48, 0xDC }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
-                            player.Move(new SharpDX.Vector3(Game.MousePosition.X+4, Game.MousePosition.Y, Game.MousePosition.Z));
+                            
+                        }
+                        catch { }
+                        if(SubMenu.Item("AutoGO").GetValue<bool>())
+                            player.Move(new SharpDX.Vector3(Game.MousePosition.X + 4, Game.MousePosition.Y, Game.MousePosition.Z));
 
+                        try
+                        {
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Game.MousePosition.X);
                             s = Pointer("dota2", "client.dll+1E57248", new int[] { 0, 0x1f8, 0x0, 0xd8 }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
-
-                            bytesWritten = 0;
-                            buffer = BitConverter.GetBytes(Game.MousePosition.Y);
-                            s = Pointer("dota2", "client.dll+1E57248", new int[] { 0, 0x1f8, 0x0, 0xd8 }, true, 1).Adress.ToString("X");
-                            Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
-                        
                         }
                         catch { }
-                    }  
+
+                        try
+                        {
+                            bytesWritten = 0;
+                            buffer = BitConverter.GetBytes(Game.MousePosition.Y);
+                            s = Pointer("dota2", "client.dll+1E57248", new int[] { 0, 0x1f8, 0x0, 0xdC }, true, 1).Adress.ToString("X");
+                            Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
+                        }
+                        catch { }
+                    }
                 }
             }
             catch (Exception e)
