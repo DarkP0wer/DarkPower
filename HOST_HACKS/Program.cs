@@ -1,21 +1,21 @@
 using System;
 using Ensage;
-using Ensage.Common;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Globalization;
 using System.Text;
+using Ensage.Common.Menu;
 
 
 namespace HOST_HACKS
 {
     class Program
     {
-        #region CFG
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
         private static readonly Ensage.Common.Menu.Menu SubMenu = new Ensage.Common.Menu.Menu("Host Hacks", "HOST HACKS", true);
+        
         public static Boolean IsFormClose;
         public static IntPtr GHandle;
         public struct AdressAndValue
@@ -23,7 +23,6 @@ namespace HOST_HACKS
             public long Adress;
             public long Value;
         }
-        #endregion
 
         public class Win32
         {
@@ -60,8 +59,6 @@ namespace HOST_HACKS
             public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
             [DllImportAttribute("user32.dll")]
             public static extern bool ReleaseCapture();
-            /*[System.Runtime.InteropServices.DllImport("user32.dll")]
-            public static extern bool GetCursorPos(out Point lpPoint);*/
             [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
             public static extern IntPtr FindWindow(string lpClassName,
                 string lpWindowName);
@@ -151,19 +148,17 @@ namespace HOST_HACKS
         private static System.Timers.Timer aTimer;
         static void Main(string[] args)
         {
-            #region FormC
             IsFormClose = false;
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("HHKey", "Form Key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("TPKey", "TP Key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("AutoGO", "AutoGO after TP").SetValue(true));
             SubMenu.AddToMainMenu();
-            #endregion
             aTimer = new System.Timers.Timer(1000);
             aTimer.Elapsed += OnTimedEvent;
             aTimer.Enabled = true;
             Game.OnWndProc += Game_OnGameWndProc;
         }
-
+        
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
             if (frm.checkBox1.Checked && Game.IsInGame)
@@ -175,16 +170,18 @@ namespace HOST_HACKS
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label2.Text = Convert.ToString(value);
-                }  catch { }
-                
-                
+                }
+                catch { }
+
+
                 try
                 {
                     s = Pointer("dota2", "server.dll+1C70A28", new int[] { 0, 0x2c8, 0x18 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label1.Text = Convert.ToString(value);
-                } catch { }
+                }
+                catch { }
 
                 try
                 {
@@ -195,9 +192,10 @@ namespace HOST_HACKS
                     s = Pointer("dota2", "server.dll+1C704A8", new int[] { 0, 0x58, 0x0, 0x428, 0x710, 0x0, 0x20, 0x5A0 }, true, 1).Adress.ToString("X");
                     Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(s, NumberStyles.HexNumber)), buff1, buff1.Length, ref o);
                     frm.label3.Text = Convert.ToString(BitConverter.ToSingle(buff1, 0));
-                } catch { }
+                }
+                catch { }
             }
-            /* if (frm.textBox1.Text == "MAP")
+             /*if (frm.textBox1.Text == "MAP")
              {
                  string [] lines = frm.textBox2.Text.Split('\n');
                  string[] lines2 = frm.textBox2.Text.Split('\n');
@@ -227,235 +225,235 @@ namespace HOST_HACKS
 
             private void InitializeComponent()
             {
-                this.button1 = new System.Windows.Forms.Button();
-                this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-                this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-                this.button2 = new System.Windows.Forms.Button();
-                this.panel1 = new System.Windows.Forms.Panel();
-                this.label2 = new System.Windows.Forms.Label();
-                this.button3 = new System.Windows.Forms.Button();
-                this.textBox1 = new System.Windows.Forms.TextBox();
-                this.textBox4 = new System.Windows.Forms.TextBox();
-                this.textBox3 = new System.Windows.Forms.TextBox();
-                this.textBox2 = new System.Windows.Forms.TextBox();
-                this.checkBox1 = new System.Windows.Forms.CheckBox();
-                this.textBox5 = new System.Windows.Forms.TextBox();
-                this.button5 = new System.Windows.Forms.Button();
-                this.label1 = new System.Windows.Forms.Label();
-                this.textBox6 = new System.Windows.Forms.TextBox();
-                this.button4 = new System.Windows.Forms.Button();
-                this.label3 = new System.Windows.Forms.Label();
-                this.panel1.SuspendLayout();
-                this.SuspendLayout();
+                button1 = new System.Windows.Forms.Button();
+                linkLabel1 = new System.Windows.Forms.LinkLabel();
+                linkLabel2 = new System.Windows.Forms.LinkLabel();
+                button2 = new System.Windows.Forms.Button();
+                panel1 = new System.Windows.Forms.Panel();
+                label2 = new System.Windows.Forms.Label();
+                button3 = new System.Windows.Forms.Button();
+                textBox1 = new System.Windows.Forms.TextBox();
+                textBox4 = new System.Windows.Forms.TextBox();
+                textBox3 = new System.Windows.Forms.TextBox();
+                textBox2 = new System.Windows.Forms.TextBox();
+                checkBox1 = new System.Windows.Forms.CheckBox();
+                textBox5 = new System.Windows.Forms.TextBox();
+                button5 = new System.Windows.Forms.Button();
+                label1 = new System.Windows.Forms.Label();
+                textBox6 = new System.Windows.Forms.TextBox();
+                button4 = new System.Windows.Forms.Button();
+                label3 = new System.Windows.Forms.Label();
+                panel1.SuspendLayout();
+                SuspendLayout();
                 // 
                 // button1
                 // 
-                this.button1.BackColor = System.Drawing.SystemColors.ControlLightLight;
-                this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-                this.button1.Location = new System.Drawing.Point(2, 2);
-                this.button1.Name = "button1";
-                this.button1.Size = new System.Drawing.Size(80, 21);
-                this.button1.TabIndex = 4;
-                this.button1.Text = "HH HIDE";
-                this.button1.UseVisualStyleBackColor = true;
-                this.button1.Click += new System.EventHandler(this.button1_Click);
+                button1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+                button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+                button1.Location = new System.Drawing.Point(2, 2);
+                button1.Name = "button1";
+                button1.Size = new System.Drawing.Size(80, 21);
+                button1.TabIndex = 4;
+                button1.Text = "HH HIDE";
+                button1.UseVisualStyleBackColor = true;
+                button1.Click += new System.EventHandler(button1_Click);
                 // 
                 // linkLabel1
                 // 
-                this.linkLabel1.AutoSize = true;
-                this.linkLabel1.LinkColor = System.Drawing.Color.White;
-                this.linkLabel1.Location = new System.Drawing.Point(88, 6);
-                this.linkLabel1.Name = "linkLabel1";
-                this.linkLabel1.Size = new System.Drawing.Size(73, 13);
-                this.linkLabel1.TabIndex = 6;
-                this.linkLabel1.TabStop = true;
-                this.linkLabel1.Text = "Forum Thread";
-                this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+                linkLabel1.AutoSize = true;
+                linkLabel1.LinkColor = System.Drawing.Color.White;
+                linkLabel1.Location = new System.Drawing.Point(88, 6);
+                linkLabel1.Name = "linkLabel1";
+                linkLabel1.Size = new System.Drawing.Size(73, 13);
+                linkLabel1.TabIndex = 6;
+                linkLabel1.TabStop = true;
+                linkLabel1.Text = "Forum Thread";
+                linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(linkLabel1_LinkClicked);
                 // 
                 // linkLabel2
                 // 
-                this.linkLabel2.AutoSize = true;
-                this.linkLabel2.LinkColor = System.Drawing.Color.White;
-                this.linkLabel2.Location = new System.Drawing.Point(167, 6);
-                this.linkLabel2.Name = "linkLabel2";
-                this.linkLabel2.Size = new System.Drawing.Size(96, 13);
-                this.linkLabel2.TabIndex = 7;
-                this.linkLabel2.TabStop = true;
-                this.linkLabel2.Text = "GitHub DarkP0wer";
-                this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+                linkLabel2.AutoSize = true;
+                linkLabel2.LinkColor = System.Drawing.Color.White;
+                linkLabel2.Location = new System.Drawing.Point(167, 6);
+                linkLabel2.Name = "linkLabel2";
+                linkLabel2.Size = new System.Drawing.Size(96, 13);
+                linkLabel2.TabIndex = 7;
+                linkLabel2.TabStop = true;
+                linkLabel2.Text = "GitHub DarkP0wer";
+                linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(linkLabel2_LinkClicked);
                 // 
                 // button2
                 // 
-                this.button2.BackColor = System.Drawing.SystemColors.ControlLightLight;
-                this.button2.Location = new System.Drawing.Point(269, 2);
-                this.button2.Name = "button2";
-                this.button2.Size = new System.Drawing.Size(86, 24);
-                this.button2.TabIndex = 8;
-                this.button2.Text = "Close";
-                this.button2.UseVisualStyleBackColor = true;
-                this.button2.Click += new System.EventHandler(this.button2_Click);
+                button2.BackColor = System.Drawing.SystemColors.ControlLightLight;
+                button2.Location = new System.Drawing.Point(269, 2);
+                button2.Name = "button2";
+                button2.Size = new System.Drawing.Size(86, 24);
+                button2.TabIndex = 8;
+                button2.Text = "Close";
+                button2.UseVisualStyleBackColor = true;
+                button2.Click += new System.EventHandler(button2_Click);
                 // 
                 // panel1
                 // 
-                this.panel1.BackColor = System.Drawing.Color.DeepSkyBlue;
-                this.panel1.Controls.Add(this.label3);
-                this.panel1.Controls.Add(this.button4);
-                this.panel1.Controls.Add(this.textBox6);
-                this.panel1.Controls.Add(this.label1);
-                this.panel1.Controls.Add(this.button5);
-                this.panel1.Controls.Add(this.textBox5);
-                this.panel1.Controls.Add(this.checkBox1);
-                this.panel1.Controls.Add(this.label2);
-                this.panel1.Controls.Add(this.button3);
-                this.panel1.Controls.Add(this.textBox1);
-                this.panel1.Controls.Add(this.textBox4);
-                this.panel1.Controls.Add(this.textBox3);
-                this.panel1.Controls.Add(this.textBox2);
-                this.panel1.Location = new System.Drawing.Point(12, 29);
-                this.panel1.Name = "panel1";
-                this.panel1.Size = new System.Drawing.Size(343, 199);
-                this.panel1.TabIndex = 14;
-                this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+                panel1.BackColor = System.Drawing.Color.DeepSkyBlue;
+                panel1.Controls.Add(label3);
+                panel1.Controls.Add(button4);
+                panel1.Controls.Add(textBox6);
+                panel1.Controls.Add(label1);
+                panel1.Controls.Add(button5);
+                panel1.Controls.Add(textBox5);
+                panel1.Controls.Add(checkBox1);
+                panel1.Controls.Add(label2);
+                panel1.Controls.Add(button3);
+                panel1.Controls.Add(textBox1);
+                panel1.Controls.Add(textBox4);
+                panel1.Controls.Add(textBox3);
+                panel1.Controls.Add(textBox2);
+                panel1.Location = new System.Drawing.Point(12, 29);
+                panel1.Name = "panel1";
+                panel1.Size = new System.Drawing.Size(343, 199);
+                panel1.TabIndex = 14;
+                panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(Form1_MouseDown);
                 // 
                 // label2
                 // 
-                this.label2.AutoSize = true;
-                this.label2.Location = new System.Drawing.Point(185, 25);
-                this.label2.Name = "label2";
-                this.label2.Size = new System.Drawing.Size(29, 13);
-                this.label2.TabIndex = 17;
-                this.label2.Text = "Gold";
+                label2.AutoSize = true;
+                label2.Location = new System.Drawing.Point(185, 25);
+                label2.Name = "label2";
+                label2.Size = new System.Drawing.Size(29, 13);
+                label2.TabIndex = 17;
+                label2.Text = "Gold";
                 // 
                 // button3
                 // 
-                this.button3.Location = new System.Drawing.Point(110, 21);
-                this.button3.Name = "button3";
-                this.button3.Size = new System.Drawing.Size(69, 20);
-                this.button3.TabIndex = 16;
-                this.button3.Text = "SetGold";
-                this.button3.UseVisualStyleBackColor = true;
-                this.button3.Click += new System.EventHandler(this.button3_Click);
+                button3.Location = new System.Drawing.Point(110, 21);
+                button3.Name = "button3";
+                button3.Size = new System.Drawing.Size(69, 20);
+                button3.TabIndex = 16;
+                button3.Text = "SetGold";
+                button3.UseVisualStyleBackColor = true;
+                button3.Click += new System.EventHandler(button3_Click);
                 // 
                 // textBox1
                 // 
-                this.textBox1.Location = new System.Drawing.Point(3, 21);
-                this.textBox1.Name = "textBox1";
-                this.textBox1.Size = new System.Drawing.Size(101, 20);
-                this.textBox1.TabIndex = 14;
-                this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
+                textBox1.Location = new System.Drawing.Point(3, 21);
+                textBox1.Name = "textBox1";
+                textBox1.Size = new System.Drawing.Size(101, 20);
+                textBox1.TabIndex = 14;
+                textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(textBox1_KeyPress);
                 // 
                 // textBox4
                 // 
-                this.textBox4.Location = new System.Drawing.Point(203, 117);
-                this.textBox4.Multiline = true;
-                this.textBox4.Name = "textBox4";
-                this.textBox4.Size = new System.Drawing.Size(100, 75);
-                this.textBox4.TabIndex = 21;
+                textBox4.Location = new System.Drawing.Point(203, 117);
+                textBox4.Multiline = true;
+                textBox4.Name = "textBox4";
+                textBox4.Size = new System.Drawing.Size(100, 75);
+                textBox4.TabIndex = 21;
                 // 
                 // textBox3
                 // 
-                this.textBox3.Location = new System.Drawing.Point(110, 117);
-                this.textBox3.Multiline = true;
-                this.textBox3.Name = "textBox3";
-                this.textBox3.Size = new System.Drawing.Size(87, 75);
-                this.textBox3.TabIndex = 20;
+                textBox3.Location = new System.Drawing.Point(110, 117);
+                textBox3.Multiline = true;
+                textBox3.Name = "textBox3";
+                textBox3.Size = new System.Drawing.Size(87, 75);
+                textBox3.TabIndex = 20;
                 // 
                 // textBox2
                 // 
-                this.textBox2.Location = new System.Drawing.Point(3, 117);
-                this.textBox2.Multiline = true;
-                this.textBox2.Name = "textBox2";
-                this.textBox2.Size = new System.Drawing.Size(101, 75);
-                this.textBox2.TabIndex = 19;
+                textBox2.Location = new System.Drawing.Point(3, 117);
+                textBox2.Multiline = true;
+                textBox2.Name = "textBox2";
+                textBox2.Size = new System.Drawing.Size(101, 75);
+                textBox2.TabIndex = 19;
                 // 
                 // checkBox1
                 // 
-                this.checkBox1.AutoSize = true;
-                this.checkBox1.Checked = true;
-                this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-                this.checkBox1.Location = new System.Drawing.Point(3, 3);
-                this.checkBox1.Name = "checkBox1";
-                this.checkBox1.Size = new System.Drawing.Size(92, 17);
-                this.checkBox1.TabIndex = 22;
-                this.checkBox1.Text = "Check Values";
-                this.checkBox1.UseVisualStyleBackColor = true;
+                checkBox1.AutoSize = true;
+                checkBox1.Checked = true;
+                checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+                checkBox1.Location = new System.Drawing.Point(3, 3);
+                checkBox1.Name = "checkBox1";
+                checkBox1.Size = new System.Drawing.Size(92, 17);
+                checkBox1.TabIndex = 22;
+                checkBox1.Text = "Check Values";
+                checkBox1.UseVisualStyleBackColor = true;
                 // 
                 // textBox5
                 // 
-                this.textBox5.Location = new System.Drawing.Point(3, 47);
-                this.textBox5.Name = "textBox5";
-                this.textBox5.Size = new System.Drawing.Size(101, 20);
-                this.textBox5.TabIndex = 23;
+                textBox5.Location = new System.Drawing.Point(3, 47);
+                textBox5.Name = "textBox5";
+                textBox5.Size = new System.Drawing.Size(101, 20);
+                textBox5.TabIndex = 23;
                 // 
                 // button5
                 // 
-                this.button5.Location = new System.Drawing.Point(110, 46);
-                this.button5.Name = "button5";
-                this.button5.Size = new System.Drawing.Size(69, 20);
-                this.button5.TabIndex = 24;
-                this.button5.Text = "SetGold";
-                this.button5.UseVisualStyleBackColor = true;
-                this.button5.Click += new System.EventHandler(this.button5_Click);
+                button5.Location = new System.Drawing.Point(110, 46);
+                button5.Name = "button5";
+                button5.Size = new System.Drawing.Size(69, 20);
+                button5.TabIndex = 24;
+                button5.Text = "SetGold";
+                button5.UseVisualStyleBackColor = true;
+                button5.Click += new System.EventHandler(button5_Click);
                 // 
                 // label1
                 // 
-                this.label1.AutoSize = true;
-                this.label1.Location = new System.Drawing.Point(185, 50);
-                this.label1.Name = "label1";
-                this.label1.Size = new System.Drawing.Size(29, 13);
-                this.label1.TabIndex = 25;
-                this.label1.Text = "Gold";
+                label1.AutoSize = true;
+                label1.Location = new System.Drawing.Point(185, 50);
+                label1.Name = "label1";
+                label1.Size = new System.Drawing.Size(29, 13);
+                label1.TabIndex = 25;
+                label1.Text = "Gold";
                 // 
                 // textBox6
                 // 
-                this.textBox6.Location = new System.Drawing.Point(3, 72);
-                this.textBox6.Name = "textBox6";
-                this.textBox6.Size = new System.Drawing.Size(101, 20);
-                this.textBox6.TabIndex = 26;
+                textBox6.Location = new System.Drawing.Point(3, 72);
+                textBox6.Name = "textBox6";
+                textBox6.Size = new System.Drawing.Size(101, 20);
+                textBox6.TabIndex = 26;
                 // 
                 // button4
                 // 
-                this.button4.Location = new System.Drawing.Point(110, 72);
-                this.button4.Name = "button4";
-                this.button4.Size = new System.Drawing.Size(69, 20);
-                this.button4.TabIndex = 27;
-                this.button4.Text = "SetStr";
-                this.button4.UseVisualStyleBackColor = true;
-                this.button4.Click += new System.EventHandler(this.button4_Click);
+                button4.Location = new System.Drawing.Point(110, 72);
+                button4.Name = "button4";
+                button4.Size = new System.Drawing.Size(69, 20);
+                button4.TabIndex = 27;
+                button4.Text = "SetStr";
+                button4.UseVisualStyleBackColor = true;
+                button4.Click += new System.EventHandler(button4_Click);
                 // 
                 // label3
                 // 
-                this.label3.AutoSize = true;
-                this.label3.Location = new System.Drawing.Point(185, 76);
-                this.label3.Name = "label3";
-                this.label3.Size = new System.Drawing.Size(47, 13);
-                this.label3.TabIndex = 28;
-                this.label3.Text = "Strength";
+                label3.AutoSize = true;
+                label3.Location = new System.Drawing.Point(185, 76);
+                label3.Name = "label3";
+                label3.Size = new System.Drawing.Size(47, 13);
+                label3.TabIndex = 28;
+                label3.Text = "Strength";
                 // 
                 // Form1
                 // 
-                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-                this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-                this.BackColor = System.Drawing.SystemColors.Highlight;
-                this.ClientSize = new System.Drawing.Size(365, 235);
-                this.ControlBox = false;
-                this.Controls.Add(this.panel1);
-                this.Controls.Add(this.linkLabel2);
-                this.Controls.Add(this.linkLabel1);
-                this.Controls.Add(this.button1);
-                this.Controls.Add(this.button2);
-                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-                this.Name = "Form1";
-                this.Opacity = 0.85D;
-                this.ShowIcon = false;
-                this.Text = "Host_Hacks";
-                this.TopMost = true;
-                this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
-                this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
-                this.panel1.ResumeLayout(false);
-                this.panel1.PerformLayout();
-                this.ResumeLayout(false);
-                this.PerformLayout();
+                AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+                AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+                BackColor = System.Drawing.SystemColors.Highlight;
+                ClientSize = new System.Drawing.Size(365, 235);
+                ControlBox = false;
+                Controls.Add(panel1);
+                Controls.Add(linkLabel2);
+                Controls.Add(linkLabel1);
+                Controls.Add(button1);
+                Controls.Add(button2);
+                FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+                Name = "Form1";
+                Opacity = 0.85D;
+                ShowIcon = false;
+                Text = "Host_Hacks";
+                TopMost = true;
+                FormClosed += new System.Windows.Forms.FormClosedEventHandler(Form1_FormClosed);
+                MouseDown += new System.Windows.Forms.MouseEventHandler(Form1_MouseDown);
+                panel1.ResumeLayout(false);
+                panel1.PerformLayout();
+                ResumeLayout(false);
+                PerformLayout();
 
             }
 
@@ -498,7 +496,7 @@ namespace HOST_HACKS
                 IsFormClose = true;
                 Close();
             }
-            
+
             private void button5_Click(object sender, EventArgs e)
             {
                 label1.Text = Pointer("dota2", "server.dll+1C70A28", new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(frm.textBox1.Text)).Value.ToString("N");
@@ -515,7 +513,7 @@ namespace HOST_HACKS
 
             private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
             {
-                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar)/* && (e.KeyChar != '.')*/)
+                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar)) // && (e.KeyChar != '.')
                 {
                     e.Handled = true;
                 }
@@ -643,9 +641,8 @@ namespace HOST_HACKS
             }
             return -1;
         }
-
+        
         static Form1 frm = new Form1();
-
         public static void Game_OnGameWndProc(WndEventArgs args)
         {
             if (Game.IsChatOpen || Game.IsWatchingGame) return;
@@ -685,10 +682,10 @@ namespace HOST_HACKS
                             buffer = BitConverter.GetBytes(Game.MousePosition.Y);
                             s = Pointer("dota2", "server.dll+1C704A8", new int[] { 0, 0x0, 0xC0, 0x48, 0xDC }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
-                            
+
                         }
                         catch { }
-                        if(SubMenu.Item("AutoGO").GetValue<bool>())
+                        if (SubMenu.Item("AutoGO").GetValue<bool>())
                             player.Move(new SharpDX.Vector3(Game.MousePosition.X + 4, Game.MousePosition.Y, Game.MousePosition.Z));
 
                         try
@@ -718,5 +715,6 @@ namespace HOST_HACKS
                 throw;
             }
         }
+        
     }
 }
