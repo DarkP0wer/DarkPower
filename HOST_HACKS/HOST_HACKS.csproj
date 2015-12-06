@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0865FF9A-7AC7-4609-B9F1-EF8C137F6C96}</ProjectGuid>
+    <ProjectGuid>{9C76C8AE-FD4B-4309-B1AF-863233AC5823}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HOST_HACKS</RootNamespace>
@@ -41,6 +41,12 @@
     </Reference>
     <Reference Include="Ensage.Common">
       <HintPath>C:\Users\DarkPower\Desktop\Новая папка\GOP\LeagueSharp\System\Ensage.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>C:\Users\DarkPower\Desktop\Новая папка\GOP\LeagueSharp\System\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D9">
+      <HintPath>C:\Users\DarkPower\Desktop\Новая папка\GOP\LeagueSharp\System\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
