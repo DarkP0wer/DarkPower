@@ -402,7 +402,7 @@ namespace Translate
                     label1.Text = "▼ Google Translate By DarkPower - " + ((IsSayTeam) ? "SayTeam" : "SayGlobal");
                     Width = 132;
                     Height = 28;
-                    Opacity = 0.50D;
+                    Opacity = 0.40D;
                 }
                 else
                 {
