@@ -13,6 +13,7 @@ namespace Translate
         public const int HT_CAPTION = 0x2;
         public static Boolean IsSayTeam;
         public static Boolean ExitGUI;
+        private static readonly Ensage.Common.Menu.Menu SubMenu = new Ensage.Common.Menu.Menu("Google Translate", "GOOGLE TRANSLATE", true);
 
         public class Win32
         {
@@ -20,9 +21,6 @@ namespace Translate
             public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
             [DllImportAttribute("user32.dll")]
             public static extern bool ReleaseCapture();
-            [DllImport("user32.dll", CharSet = CharSet.Auto)]
-            public static extern int MessageBox(int hWnd, String text,
-                String caption, uint type);
             /*[System.Runtime.InteropServices.DllImport("user32.dll")]
             public static extern bool GetCursorPos(out Point lpPoint);*/
             [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
@@ -36,6 +34,8 @@ namespace Translate
 
         static void Main(string[] args)
         {
+            SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("GTKey", "Form Key").SetValue(new Ensage.Common.Menu.KeyBind(13, Ensage.Common.Menu.KeyBindType.Press)));
+            SubMenu.AddToMainMenu();
             frm.comboBox1.SelectedIndex = 0;
             frm.comboBox2.SelectedIndex = 8;
             Game.OnWndProc += Game_OnGameWndProc;
@@ -303,8 +303,7 @@ namespace Translate
                     else Game.ExecuteCommand(((IsSayTeam) ? "say_team " : "say ") + textBox2.Text);
                     if (checkBox3.Checked)
                     {
-                        Width = 132;
-                        Height = 28;
+                        label1_Click(sender, e);
                         Win32.ShowWindow(Win32.FindWindow(null, "Dota 2"), 10);
                         Win32.ShowWindow(Win32.FindWindow(null, "Dota 2"), 5);
                         Win32.SetForegroundWindow(Win32.FindWindow(null, "Dota 2"));
@@ -340,8 +339,7 @@ namespace Translate
                     label1.Text = "▼ Google Translate By DarkPower - " + ((IsSayTeam) ? "SayTeam" : "SayGlobal");
                     if (checkBox3.Checked)
                     {
-                        Width = 132;
-                        Height = 28;
+                        label1_Click(sender, e);
                         Win32.ShowWindow(Win32.FindWindow(null, "Dota 2"), 10);
                         Win32.ShowWindow(Win32.FindWindow(null, "Dota 2"), 5);
                         Win32.SetForegroundWindow(Win32.FindWindow(null, "Dota 2"));
@@ -404,12 +402,14 @@ namespace Translate
                     label1.Text = "▼ Google Translate By DarkPower - " + ((IsSayTeam) ? "SayTeam" : "SayGlobal");
                     Width = 132;
                     Height = 28;
+                    Opacity = 0.50D;
                 }
                 else
                 {
                     label1.Text = "▲ Google Translate By DarkPower - " + ((IsSayTeam) ? "SayTeam" : "SayGlobal");
                     Width = 505;
                     Height = 175;
+                    Opacity = 0.75D;
                 }
             }
 
@@ -437,7 +437,7 @@ namespace Translate
             if (Game.IsChatOpen) return;
             try
             {
-                if (args.Msg == 0x0101 && args.WParam == 0x0D)
+                if (args.Msg == 0x0101 && args.WParam == SubMenu.Item("GTKey").GetValue<Ensage.Common.Menu.KeyBind>().Key)
                 {
                     if (ExitGUI)
                     {
@@ -451,12 +451,13 @@ namespace Translate
                     frm.Width = 505;
                     frm.Height = 175;
                     frm.label1.Text = "▲ Google Translate By DarkPower - " + ((IsSayTeam) ? "SayTeam" : "SayGlobal");
+                    frm.Opacity = 0.75D;
                 }
             }
             catch (Exception e)
             {
                 if (e.Source != null)
-                    MessageBox.Show("Error: " + e.Source);
+                    Console.WriteLine("GOOGLE TRANSLATE Error: " + e.Source);
                 throw;
             }
         }
