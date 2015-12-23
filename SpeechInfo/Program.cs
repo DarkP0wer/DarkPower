@@ -39,7 +39,10 @@ namespace SpeechInfo
         {
             System.Media.SoundPlayer player =
                 new System.Media.SoundPlayer();
-            player.SoundLocation = path;
+            String fullpath = Environment.CurrentDirectory;
+            fullpath = fullpath.Remove(fullpath.Length - 10);
+            fullpath+= @"\dota\materials\sounds\"+path;
+            player.SoundLocation = fullpath;
             player.Load();
             player.Play();
         }
@@ -59,34 +62,30 @@ namespace SpeechInfo
             if (!Game.IsInGame) return;
             var me = ObjectMgr.LocalPlayer;
             if (me == null || me.Hero == null) return;
+            Boolean SRU = Menu.Item("S_RU").GetValue<bool>();
             
-            //Boolean SRU = Menu.Item("S_RU").GetValue<bool>();
-            //playSound("materials/sounds/RoshanMbAliveRU.wav");
-            Console.WriteLine("SAPI");
-            Console.WriteLine(Environment.CurrentDirectory);
-/*
             if (Menu.Item("S_Rune").GetValue<bool>() && ((Math.Round(Game.GameTime) + Menu.Item("S_Rune_T").GetValue<Slider>().Value) % 120) == 0)
-                playSound("materials/sounds/CheckRune" + ((SRU)?"RU":"EN") + ".wav");
+                playSound("CheckRune" + ((SRU)?"RU":"EN") + ".wav");
 
             if (Menu.Item("S_Midas").GetValue<bool>())
             {
                 var Midas = me.Hero.FindItem("item_hand_of_midas");
                 if (Midas != null && Midas.Cooldown == Menu.Item("S_Midas_T").GetValue<Slider>().Value)
                 {
-                    playSound("materials/sounds/UseMidas" + ((SRU) ? "RU" : "EN") + ".wav");
+                    playSound("UseMidas" + ((SRU) ? "RU" : "EN") + ".wav");
                 }
             }
 
             if (Menu.Item("S_Roshan").GetValue<bool>() && roshanDead)
             {
                 if(--roshanRespawnMinTime+5 == 0)
-                    playSound("materials/sounds/RoshanMbAlive" + ((SRU) ? "RU" : "EN") + ".wav");
+                    playSound("RoshanMbAlive" + ((SRU) ? "RU" : "EN") + ".wav");
                 if (--roshanRespawnMaxTime + 5 == 0)
                 {
-                    playSound("materials/sounds/RoshanAlive" + ((SRU) ? "RU" : "EN") + ".wav");
+                    playSound("RoshanAlive" + ((SRU) ? "RU" : "EN") + ".wav");
                     roshanDead = false;
                 }
-            }*/
+            }
         }
     }
 }
