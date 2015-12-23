@@ -60,8 +60,9 @@ namespace SpeechInfo
             var me = ObjectMgr.LocalPlayer;
             if (me == null || me.Hero == null) return;
             
-            Boolean SRU = Menu.Item("S_RU").GetValue<bool>();
-            playSound("materials/sounds/RoshanMbAliveRU.wav");
+            //Boolean SRU = Menu.Item("S_RU").GetValue<bool>();
+            //playSound("materials/sounds/RoshanMbAliveRU.wav");
+            Console.WriteLine("SAPI");
             Console.WriteLine(System.Reflection.Assembly.GetEntryAssembly().Location);
 /*
             if (Menu.Item("S_Rune").GetValue<bool>() && ((Math.Round(Game.GameTime) + Menu.Item("S_Rune_T").GetValue<Slider>().Value) % 120) == 0)
