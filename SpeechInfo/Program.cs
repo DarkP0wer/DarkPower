@@ -70,7 +70,7 @@ namespace SpeechInfo
             if (Menu.Item("S_Midas").GetValue<bool>())
             {
                 var Midas = me.Hero.FindItem("item_hand_of_midas");
-                if (Midas != null && Midas.Cooldown == Menu.Item("S_Midas_T").GetValue<Slider>().Value)
+                if (Midas != null && Math.Round(Midas.Cooldown) == Menu.Item("S_Midas_T").GetValue<Slider>().Value)
                 {
                     playSound("UseMidas" + ((SRU) ? "RU" : "EN") + ".wav");
                 }
