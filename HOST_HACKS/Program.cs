@@ -166,7 +166,7 @@ namespace HOST_HACKS
                 String s; int value;
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1C70A20", new int[] { 0, 0x2c8, 0x18 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x18 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label1.Text = Convert.ToString(value);
@@ -174,7 +174,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1C70A20", new int[] { 0, 0x2c8, 0xA8 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0xA8 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label2.Text = Convert.ToString(value);
@@ -182,7 +182,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1C70A20", new int[] { 0, 0x2c8, 0x138 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x138 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label3.Text = Convert.ToString(value);
@@ -190,7 +190,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1C70A20", new int[] { 0, 0x2c8, 0x1C8 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x1C8 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label4.Text = Convert.ToString(value);
@@ -198,7 +198,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1C70A20", new int[] { 0, 0x2c8, 0x258 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x258 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label5.Text = Convert.ToString(value);
@@ -206,7 +206,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1C70A28", new int[] { 0, 0x2c8, 0x18 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x18 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label6.Text = Convert.ToString(value);
@@ -214,7 +214,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1C70A28", new int[] { 0, 0x2c8, 0xA8 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0xA8 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label7.Text = Convert.ToString(value);
@@ -222,7 +222,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1C70A28", new int[] { 0, 0x2c8, 0x138 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x138 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label8.Text = Convert.ToString(value);
@@ -230,7 +230,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1C70A28", new int[] { 0, 0x2c8, 0x1C8 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x1C8 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label9.Text = Convert.ToString(value);
@@ -238,7 +238,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1C70A28", new int[] { 0, 0x2c8, 0x258 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x258 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label10.Text = Convert.ToString(value);
@@ -822,52 +822,52 @@ namespace HOST_HACKS
 
             private void button1_Click(object sender, EventArgs e)
             {
-                label1.Text = Pointer("dota2", "server.dll+1C70A20", new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(textBox1.Text)).Value.ToString("X");
+                label1.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(textBox1.Text)).Value.ToString("X");
             }
 
             private void button2_Click(object sender, EventArgs e)
             {
-                label2.Text = Pointer("dota2", "server.dll+1C70A20", new int[] { 0, 0x2c8, 0xA8 }, false, Convert.ToInt32(textBox2.Text)).Value.ToString("X");
+                label2.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0xA8 }, false, Convert.ToInt32(textBox2.Text)).Value.ToString("X");
             }
 
             private void button3_Click(object sender, EventArgs e)
             {
-                label3.Text = Pointer("dota2", "server.dll+1C70A20", new int[] { 0, 0x2c8, 0x138 }, false, Convert.ToInt32(textBox3.Text)).Value.ToString("X");
+                label3.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x138 }, false, Convert.ToInt32(textBox3.Text)).Value.ToString("X");
             }
 
             private void button4_Click(object sender, EventArgs e)
             {
-                label4.Text = Pointer("dota2", "server.dll+1C70A20", new int[] { 0, 0x2c8, 0x1C8 }, false, Convert.ToInt32(textBox4.Text)).Value.ToString("X");
+                label4.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x1C8 }, false, Convert.ToInt32(textBox4.Text)).Value.ToString("X");
             }
 
             private void button5_Click(object sender, EventArgs e)
             {
-                label5.Text = Pointer("dota2", "server.dll+1C70A20", new int[] { 0, 0x2c8, 0x258 }, false, Convert.ToInt32(textBox5.Text)).Value.ToString("X");
+                label5.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x258 }, false, Convert.ToInt32(textBox5.Text)).Value.ToString("X");
             }
 
             private void button6_Click(object sender, EventArgs e)
             {
-                label6.Text = Pointer("dota2", "server.dll+1C70A28", new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(frm.textBox6.Text)).Value.ToString("N");
+                label6.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(frm.textBox6.Text)).Value.ToString("N");
             }
 
             private void button7_Click(object sender, EventArgs e)
             {
-                label7.Text = Pointer("dota2", "server.dll+1C70A28", new int[] { 0, 0x2c8, 0xA8 }, false, Convert.ToInt32(frm.textBox7.Text)).Value.ToString("N");
+                label7.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0xA8 }, false, Convert.ToInt32(frm.textBox7.Text)).Value.ToString("N");
             }
 
             private void button8_Click(object sender, EventArgs e)
             {
-                label8.Text = Pointer("dota2", "server.dll+1C70A28", new int[] { 0, 0x2c8, 0x138 }, false, Convert.ToInt32(frm.textBox8.Text)).Value.ToString("N");
+                label8.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x138 }, false, Convert.ToInt32(frm.textBox8.Text)).Value.ToString("N");
             }
 
             private void button9_Click(object sender, EventArgs e)
             {
-                label9.Text = Pointer("dota2", "server.dll+1C70A28", new int[] { 0, 0x2c8, 0x1C8 }, false, Convert.ToInt32(frm.textBox9.Text)).Value.ToString("N");
+                label9.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x1C8 }, false, Convert.ToInt32(frm.textBox9.Text)).Value.ToString("N");
             }
 
             private void button10_Click(object sender, EventArgs e)
             {
-                label10.Text = Pointer("dota2", "server.dll+1C70A28", new int[] { 0, 0x2c8, 0x258 }, false, Convert.ToInt32(frm.textBox10.Text)).Value.ToString("N");
+                label10.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x258 }, false, Convert.ToInt32(frm.textBox10.Text)).Value.ToString("N");
             }
 
             private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
