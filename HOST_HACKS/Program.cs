@@ -815,13 +815,34 @@ namespace HOST_HACKS
                 Close();
             }
 
+            private static void playSound(string path)
+            {
+                System.Media.SoundPlayer player =
+                    new System.Media.SoundPlayer();
+                String fullpath = Environment.CurrentDirectory;
+                fullpath = fullpath.Remove(fullpath.Length - 10);
+                fullpath += @"\dota\materials\sounds\" + path;
+                player.SoundLocation = fullpath;
+                player.Load();
+                player.Play();
+            }
+
             private void button666_Click(object sender, EventArgs e)
             {
                 if (frm.textBox666.Text.Length > 0)
                 {
                     Clipboard.SetText(frm.label666.Text);
+                    if (FindManaWSignature() != -1)
+                    {
+                        playSound("FIND.wav");
+                        textBox666.Text = Convert.ToString(FindManaWSignature());
+                    }
+                    else
+                    {
+                        playSound("NOFIND.wav");
+                        textBox666.Text = Convert.ToString(FindManaWSignature());
+                    }
                     //label666.Text = Pointer("dota2", "server.dll+1C704A8", new int[] { 0, 0x58, 0x0, 0x428, 0x710, 0x0, 0x20, 0x5A0 }, false, Convert.ToInt32(frm.textBox666.Text)).Value.ToString("F");
-             
                 }
              }
 
@@ -954,13 +975,14 @@ namespace HOST_HACKS
                 //VirtualFreeEx(handle, (IntPtr)0x09E90000, 0, FreeType.Release); //Освобождает выделенную память, подумать над тем, как сделать освобождение памяти после того как отключать дллку
             }
         }
-        
-        public int FindGoldWSignature()
+        */
+        static public int FindManaWSignature()
         {
             var moduleName = "server.dll";
             var startAddress = 0;
             var sizeToAllocate = 0;
-            var pattern = new byte[] { 0x89, 0x7B, 0x18, 0x48, 0x8B, 0x5C, 0x24, 0x30 };
+                                     //F3    0F    11    BB    EC    07    00    00    F3    0F    10    8B    EC    07    00    00
+            var pattern = new byte[] { 0xF3, 0x0F, 0x11, 0xBB, 0xEC, 0x07, 0x00, 0x00, 0xF3, 0x0F, 0x10, 0x8B, 0xEC, 0x07, 0x00, 0x00  };
             if (GHandle != IntPtr.Zero)
             {
                 foreach (var p in Process.GetProcesses())
@@ -1014,7 +1036,7 @@ namespace HOST_HACKS
             }
             return -1;
         }
-        */
+        
         static Form1 frm = new Form1();
         public static void Game_OnGameWndProc(WndEventArgs args)
         {
