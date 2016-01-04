@@ -426,7 +426,7 @@ namespace HOST_HACKS
                 this.label666.Name = "label666";
                 this.label666.Size = new System.Drawing.Size(47, 13);
                 this.label666.TabIndex = 28;
-                this.label666.Text = "Strength";
+                this.label666.Text = "Player Adress";
                 // 
                 // button666
                 // 
@@ -434,7 +434,7 @@ namespace HOST_HACKS
                 this.button666.Name = "button666";
                 this.button666.Size = new System.Drawing.Size(69, 20);
                 this.button666.TabIndex = 27;
-                this.button666.Text = "SetGold";
+                this.button666.Text = "test";
                 this.button666.UseVisualStyleBackColor = true;
                 this.button666.Click += new System.EventHandler(this.button666_Click);
                 // 
