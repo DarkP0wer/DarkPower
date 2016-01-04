@@ -15,7 +15,7 @@ namespace HOST_HACKS
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
         private static readonly Ensage.Common.Menu.Menu SubMenu = new Ensage.Common.Menu.Menu("Host Hacks", "HOST HACKS", true);
-        
+
         public static Boolean IsFormClose;
         public static IntPtr GHandle;
         public struct AdressAndValue
@@ -158,7 +158,7 @@ namespace HOST_HACKS
             aTimer.Enabled = true;
             Game.OnWndProc += Game_OnGameWndProc;
         }
-        
+
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
             if (frm.checkBox1.Checked && Game.IsInGame)
@@ -251,33 +251,33 @@ namespace HOST_HACKS
                     if (P.Length == 0) return;
                     int o = 0;
                     byte[] buff1 = new byte[128];
-                    s = Pointer("dota2", "server.dll+1C704A8", new int[] { 0, 0x58, 0x0, 0x428, 0x710, 0x0, 0x20, 0x5A0 }, true, 1).Adress.ToString("X");
+                    s = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x18, 0x48, 0x590}, true, 1).Adress.ToString("X");
                     Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(s, NumberStyles.HexNumber)), buff1, buff1.Length, ref o);
-                    frm.label666.Text = Convert.ToString(BitConverter.ToSingle(buff1, 0));
+                    frm.label666.Text = Convert.ToString(BitConverter.ToInt32(buff1,0)/*BitConverter.ToSingle(buff1, 0)*/);
                 }
                 catch { }
             }
-             /*if (frm.textBox1.Text == "MAP")
-             {
-                 string [] lines = frm.textBox2.Text.Split('\n');
-                 string[] lines2 = frm.textBox2.Text.Split('\n');
-                 string[] lines3 = frm.textBox2.Text.Split('\n');
-                 frm.textBox3.Clear(); frm.textBox4.Clear();
-                 for (int i = 0; i < lines.Length - 1; i++)
-                 {
-                     Process[] P = Process.GetProcessesByName("dota2");
-                     if (P.Length == 0) return;
-                     int o = 0;
-                     byte[] buff1 = new byte[128];
-                     Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(frm.textBox2.Text, NumberStyles.HexNumber) + 216), buff1, buff1.Length, ref o);
-                     byte[] buff2 = new byte[128];
-                     Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(frm.textBox2.Text, NumberStyles.HexNumber) + 220), buff2, buff2.Length, ref o);
-                     frm.textBox3.Text = Convert.ToString(BitConverter.ToSingle(buff1, 0));
-                     frm.textBox4.Text = Convert.ToString(BitConverter.ToSingle(buff2, 0));
-                 }
-             }*/
+            /*if (frm.textBox1.Text == "MAP")
+            {
+                string [] lines = frm.textBox2.Text.Split('\n');
+                string[] lines2 = frm.textBox2.Text.Split('\n');
+                string[] lines3 = frm.textBox2.Text.Split('\n');
+                frm.textBox3.Clear(); frm.textBox4.Clear();
+                for (int i = 0; i < lines.Length - 1; i++)
+                {
+                    Process[] P = Process.GetProcessesByName("dota2");
+                    if (P.Length == 0) return;
+                    int o = 0;
+                    byte[] buff1 = new byte[128];
+                    Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(frm.textBox2.Text, NumberStyles.HexNumber) + 216), buff1, buff1.Length, ref o);
+                    byte[] buff2 = new byte[128];
+                    Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(frm.textBox2.Text, NumberStyles.HexNumber) + 220), buff2, buff2.Length, ref o);
+                    frm.textBox3.Text = Convert.ToString(BitConverter.ToSingle(buff1, 0));
+                    frm.textBox4.Text = Convert.ToString(BitConverter.ToSingle(buff2, 0));
+                }
+            }*/
         }
-    
+
         public partial class Form1 : Form
         {
             public Form1()
@@ -946,7 +946,6 @@ namespace HOST_HACKS
             var startAddress = 0;
             var sizeToAllocate = 0;
             var pattern = new byte[] { 0x89, 0x7B, 0x18, 0x48, 0x8B, 0x5C, 0x24, 0x30 };
-
             if (GHandle != IntPtr.Zero)
             {
                 foreach (var p in Process.GetProcesses())
@@ -1056,6 +1055,6 @@ namespace HOST_HACKS
                 throw;
             }
         }
-        
+
     }
 }
