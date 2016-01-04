@@ -819,7 +819,7 @@ namespace HOST_HACKS
             {
                 if (frm.textBox666.Text.Length > 0)
                 {
-                    Clipboard.SetText(label666.Text);
+                    Clipboard.SetText(frm.label666.Text);
                     //label666.Text = Pointer("dota2", "server.dll+1C704A8", new int[] { 0, 0x58, 0x0, 0x428, 0x710, 0x0, 0x20, 0x5A0 }, false, Convert.ToInt32(frm.textBox666.Text)).Value.ToString("F");
              
                 }
