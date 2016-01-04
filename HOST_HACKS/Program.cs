@@ -253,7 +253,7 @@ namespace HOST_HACKS
                     byte[] buff1 = new byte[128];
                     s = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x18, 0x48, 0x590}, true, 1).Adress.ToString("X");
                     Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(s, NumberStyles.HexNumber)), buff1, buff1.Length, ref o);
-                    frm.label666.Text = Convert.ToString(BitConverter.ToInt32(buff1,0)/*BitConverter.ToSingle(buff1, 0)*/);
+                    frm.label666.Text = BitConverter.ToInt32(buff1, 0).ToString("X");/*BitConverter.ToSingle(buff1, 0)*/;
                 }
                 catch { }
             }
@@ -817,57 +817,68 @@ namespace HOST_HACKS
 
             private void button666_Click(object sender, EventArgs e)
             {
-                label666.Text = Pointer("dota2", "server.dll+1C704A8", new int[] { 0, 0x58, 0x0, 0x428, 0x710, 0x0, 0x20, 0x5A0 }, false, Convert.ToInt32(frm.textBox666.Text)).Value.ToString("F");
+                if(frm.textBox666.Text.Length > 0)
+                    label666.Text = Pointer("dota2", "server.dll+1C704A8", new int[] { 0, 0x58, 0x0, 0x428, 0x710, 0x0, 0x20, 0x5A0 }, false, Convert.ToInt32(frm.textBox666.Text)).Value.ToString("F");
             }
 
             private void button1_Click(object sender, EventArgs e)
             {
-                label1.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(textBox1.Text)).Value.ToString("X");
+                if (frm.textBox1.Text.Length > 0)
+                    label1.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(textBox1.Text)).Value.ToString("X");
             }
 
             private void button2_Click(object sender, EventArgs e)
             {
-                label2.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0xA8 }, false, Convert.ToInt32(textBox2.Text)).Value.ToString("X");
+                if (frm.textBox2.Text.Length > 0)
+                    label2.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0xA8 }, false, Convert.ToInt32(textBox2.Text)).Value.ToString("X");
             }
 
             private void button3_Click(object sender, EventArgs e)
             {
-                label3.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x138 }, false, Convert.ToInt32(textBox3.Text)).Value.ToString("X");
+                if (frm.textBox3.Text.Length > 0)
+                    label3.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x138 }, false, Convert.ToInt32(textBox3.Text)).Value.ToString("X");
             }
 
             private void button4_Click(object sender, EventArgs e)
             {
-                label4.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x1C8 }, false, Convert.ToInt32(textBox4.Text)).Value.ToString("X");
+                if (frm.textBox4.Text.Length > 0)
+                    label4.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x1C8 }, false, Convert.ToInt32(textBox4.Text)).Value.ToString("X");
             }
 
             private void button5_Click(object sender, EventArgs e)
             {
-                label5.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x258 }, false, Convert.ToInt32(textBox5.Text)).Value.ToString("X");
+                if (frm.textBox5.Text.Length > 0)
+                    label5.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x258 }, false, Convert.ToInt32(textBox5.Text)).Value.ToString("X");
             }
 
             private void button6_Click(object sender, EventArgs e)
             {
-                label6.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(frm.textBox6.Text)).Value.ToString("N");
+                if (frm.textBox6.Text.Length > 0)
+                    label6.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(frm.textBox6.Text)).Value.ToString("N");
             }
 
             private void button7_Click(object sender, EventArgs e)
             {
-                label7.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0xA8 }, false, Convert.ToInt32(frm.textBox7.Text)).Value.ToString("N");
+                if (frm.textBox7.Text.Length > 0)
+                    label7.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0xA8 }, false, Convert.ToInt32(frm.textBox7.Text)).Value.ToString("N");
             }
 
             private void button8_Click(object sender, EventArgs e)
             {
-                label8.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x138 }, false, Convert.ToInt32(frm.textBox8.Text)).Value.ToString("N");
+                if (frm.textBox8.Text.Length > 0)
+                    label8.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x138 }, false, Convert.ToInt32(frm.textBox8.Text)).Value.ToString("N");
             }
 
             private void button9_Click(object sender, EventArgs e)
             {
-                label9.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x1C8 }, false, Convert.ToInt32(frm.textBox9.Text)).Value.ToString("N");
+                if (frm.textBox9.Text.Length > 0)
+                    label9.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x1C8 }, false, Convert.ToInt32(frm.textBox9.Text)).Value.ToString("N");
             }
 
             private void button10_Click(object sender, EventArgs e)
             {
-                label10.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x258 }, false, Convert.ToInt32(frm.textBox10.Text)).Value.ToString("N");
+                if (frm.textBox10.Text.Length > 0)
+                    label10.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x258 }, false, Convert.ToInt32(frm.textBox10.Text)).Value.ToString("N");
             }
 
             private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
