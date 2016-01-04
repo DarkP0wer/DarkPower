@@ -249,6 +249,7 @@ namespace HOST_HACKS
                 {
                     Process[] P = Process.GetProcessesByName("dota2");
                     if (P.Length == 0) return;
+                    GHandle = P[0].Handle;
                     int o = 0;
                     byte[] buff1 = new byte[128];
                     s = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x0, 0x48, 0x590}, true, 1).Adress.ToString("X");
@@ -831,6 +832,9 @@ namespace HOST_HACKS
             {
                 if (frm.textBox666.Text.Length > 0)
                 {
+                    Process[] P = Process.GetProcessesByName("dota2");
+                    if (P.Length == 0) return;
+                    GHandle = P[0].Handle;
                     Clipboard.SetText(frm.label666.Text);
                     if (FindManaWSignature() != -1)
                     {
