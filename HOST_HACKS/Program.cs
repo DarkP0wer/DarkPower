@@ -251,7 +251,7 @@ namespace HOST_HACKS
                     if (P.Length == 0) return;
                     int o = 0;
                     byte[] buff1 = new byte[128];
-                    s = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x18, 0x48, 0x590}, true, 1).Adress.ToString("X");
+                    s = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x0, 0x48, 0x590}, true, 1).Adress.ToString("X");
                     Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(s, NumberStyles.HexNumber)), buff1, buff1.Length, ref o);
                     frm.label666.Text = BitConverter.ToInt32(buff1, 0).ToString("X");/*BitConverter.ToSingle(buff1, 0)*/;
                 }
