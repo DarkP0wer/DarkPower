@@ -846,8 +846,13 @@ namespace HOST_HACKS
                         HpRegAddress = MakeNOP(valueon, valueoff, patern, offsetmodule);
                         isNOPHpReg = true;
                         frm.button666.Text = "UnSetHpReg";
+						
+						int bytesWritten; byte[] buffer; String s;
+						bytesWritten = 0;
+                        buffer = BitConverter.GetBytes(Game.MousePosition.X);
+                        s = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x0, 0x48, 0x590, 0x7а4 }, true, 1).Adress.ToString("X");
+                        Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                     }
-                    label666.Text = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x0, 0x48, 0x590, 0x7f4 }, false, Convert.ToInt32(textBox666.Text)).Value.ToString("X");
                 }
              }
 
