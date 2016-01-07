@@ -145,68 +145,6 @@ namespace HOST_HACKS
             return res;
         }
 
-        public static AdressAndValue Pointer(string ProcessName, object Address, int[] Offsets, Boolean ReadOnly, float WValue)
-        {
-            long BaseAddy = -1;
-            AdressAndValue res = new AdressAndValue();
-
-            Process[] P = Process.GetProcessesByName(ProcessName);
-            if (P.Length == 0)
-            {
-                res.Adress = -1;
-                res.Value = -1;
-                return res;
-            }
-
-            if (Address.GetType() == typeof(String))
-            {
-                string[] tmp = Convert.ToString(Address).Split('+');
-                if (tmp[0].ToLower() == "non")
-                {
-                    BaseAddy = int.Parse(tmp[1], NumberStyles.HexNumber);
-                }
-                else
-                {
-                    foreach (ProcessModule M in P[0].Modules)
-                        if (M.ModuleName.ToLower() == tmp[0].ToLower())
-                            BaseAddy = M.BaseAddress.ToInt64() + int.Parse(tmp[1], NumberStyles.HexNumber);
-                }
-            }
-            else
-            {
-                res.Adress = BaseAddy;
-                int o = 0;
-                byte[] buff2 = new byte[64];
-                Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(BaseAddy), buff2, 64, ref o);
-                GHandle = P[0].Handle;
-                BaseAddy = BitConverter.ToInt64(buff2, 0);
-                res.Value = BaseAddy;
-                return res;
-            }
-
-            byte[] buff = new byte[64];
-            long Final_Address = -1;
-            for (int i = 0; i < Offsets.Length; i++)
-            {
-                int o = 0;
-                Final_Address = BaseAddy + Offsets[i];
-                Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(BaseAddy + Offsets[i]), buff, 64, ref o);
-                BaseAddy = BitConverter.ToInt64(buff, 0);
-            }
-
-            if (Final_Address != -1 && !ReadOnly)
-            {
-                int bytesWritten = 0;
-                byte[] buffer = BitConverter.GetBytes(WValue);
-
-                Win32.WriteProcessMemory(P[0].Handle, Final_Address, buffer, buffer.Length, ref bytesWritten);
-            }
-
-            res.Adress = Final_Address;
-            res.Value = BaseAddy;
-            return res;
-        }
-
         private static System.Timers.Timer aTimer;
         static void Main(string[] args)
         {
@@ -908,7 +846,7 @@ namespace HOST_HACKS
                         HpRegAddress = MakeNOP(valueon, valueoff, patern, offsetmodule);
                         isNOPHpReg = true;
                         frm.button666.Text = "UnSetHpReg";
-                        label666.Text = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0, 0x48, 0x590, 0x7A4 }, false, ((float)Convert.ToInt32(textBox666.Text))).Value.ToString("X");
+                        label666.Text = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0, 0x48, 0x590, 0x7A4 }, false, (Convert.ToInt32(textBox666.Text)*2)).Value.ToString("X");
                     }
                 }
              }
