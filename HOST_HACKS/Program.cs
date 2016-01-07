@@ -159,6 +159,9 @@ namespace HOST_HACKS
             Game.OnWndProc += Game_OnGameWndProc;
         }
 
+        static string OffsetGoldR = "server.dll+1CC23D0";
+        static string OffsetGoldD = "server.dll+1CC23D8";
+
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
             if (frm.checkBox1.Checked && Game.IsInGame)
@@ -166,7 +169,7 @@ namespace HOST_HACKS
                 String s; int value;
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x18 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0x18 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label1.Text = Convert.ToString(value);
@@ -174,7 +177,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0xA8 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0xA8 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label2.Text = Convert.ToString(value);
@@ -182,7 +185,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x138 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0x138 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label3.Text = Convert.ToString(value);
@@ -190,7 +193,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x1C8 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0x1C8 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label4.Text = Convert.ToString(value);
@@ -198,7 +201,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x258 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0x258 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label5.Text = Convert.ToString(value);
@@ -206,7 +209,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x18 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", OffsetGoldD, new int[] { 0, 0x2c8, 0x18 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label6.Text = Convert.ToString(value);
@@ -214,7 +217,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0xA8 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", OffsetGoldD, new int[] { 0, 0x2c8, 0xA8 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label7.Text = Convert.ToString(value);
@@ -222,7 +225,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x138 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", OffsetGoldD, new int[] { 0, 0x2c8, 0x138 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label8.Text = Convert.ToString(value);
@@ -230,7 +233,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x1C8 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", OffsetGoldD, new int[] { 0, 0x2c8, 0x1C8 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label9.Text = Convert.ToString(value);
@@ -238,7 +241,7 @@ namespace HOST_HACKS
                 catch { }
                 try
                 {
-                    s = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x258 }, true, 1).Value.ToString("X");
+                    s = Pointer("dota2", OffsetGoldD, new int[] { 0, 0x2c8, 0x258 }, true, 1).Value.ToString("X");
                     s = s.Substring(8);
                     value = Convert.ToInt32(s, 16);
                     frm.label10.Text = Convert.ToString(value);
@@ -435,7 +438,7 @@ namespace HOST_HACKS
                 this.button666.Name = "button666";
                 this.button666.Size = new System.Drawing.Size(69, 20);
                 this.button666.TabIndex = 27;
-                this.button666.Text = "test";
+                this.button666.Text = "SetHpRegenaration";
                 this.button666.UseVisualStyleBackColor = true;
                 this.button666.Click += new System.EventHandler(this.button666_Click);
                 // 
@@ -816,17 +819,8 @@ namespace HOST_HACKS
                 Close();
             }
 
-            private static void playSound(string path)
-            {
-                System.Media.SoundPlayer player =
-                    new System.Media.SoundPlayer();
-                String fullpath = Environment.CurrentDirectory;
-                fullpath = fullpath.Remove(fullpath.Length - 10);
-                fullpath += @"\dota\materials\sounds\" + path;
-                player.SoundLocation = fullpath;
-                player.Load();
-                player.Play();
-            }
+            public static Boolean isNOPHpReg;
+            public static long HpRegAddress;
 
             private void button666_Click(object sender, EventArgs e)
             {
@@ -835,79 +829,87 @@ namespace HOST_HACKS
                     Process[] P = Process.GetProcessesByName("dota2");
                     if (P.Length == 0) return;
                     GHandle = P[0].Handle;
-                    Clipboard.SetText(frm.label666.Text);
-                    if (FindManaWSignature() != -1)
+                    //Clipboard.SetText(frm.label666.Text);
+                    var valueon = new byte[] { 0x50, 0x48, 0xA1, 0xB8, 0x08, 0xCE, 0xD6, 0xFE, 0x07, 0x00, 0x00, 0x48, 0x8B, 0x00, 0x48, 0x8B, 0x40, 0x48, 0x48, 0x05, 0x90, 0x05, 0x00, 0x00, 0x48, 0x3B, 0x18, 0x74, 0x0C, 0x90, 0x90, 0x90, 0x90, 0xF3, 0x0F, 0x11, 0xBB, 0xEC, 0x07, 0x00, 0x00, 0x58 };
+                    var valueoff = new byte[] { 0xF3, 0x0F, 0x11, 0xB3, 0xF4, 0x07, 0x00, 0x00 }; // Байты оригинальной команды
+                    var patern = new byte[] { 0xF3, 0x0F, 0x11, 0xB3, 0xF4, 0x07, 0x00, 0x00, 0xF3, 0x0F, 0x10, 0x8B, 0xF4, 0x07, 0x00, 0x00 };
+                    long offsetmodule = 0x01C508B8;
+                    //MakeCave(valueon, valueoff, patern, offsetmodule);
+                    string HpRegenarationValue = textBox666.Text;
+                    if (isNOPHpReg)
                     {
-                        playSound("FIND.wav");
-                        textBox666.Text = Convert.ToString(FindManaWSignature());
+                        UNNOP(HpRegAddress, valueoff);
+                        isNOPHpReg = false;
+                        frm.button666.Text = "SetHpReg";
                     }
                     else
                     {
-                        playSound("NOFIND.wav");
-                        textBox666.Text = Convert.ToString(FindManaWSignature());
+                        HpRegAddress = MakeNOP(valueon, valueoff, patern, offsetmodule);
+                        isNOPHpReg = true;
+                        frm.button666.Text = "UnSetHpReg";
                     }
-                    //label666.Text = Pointer("dota2", "server.dll+1C704A8", new int[] { 0, 0x58, 0x0, 0x428, 0x710, 0x0, 0x20, 0x5A0 }, false, Convert.ToInt32(frm.textBox666.Text)).Value.ToString("F");
+                    label666.Text = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(HpRegenarationValue)).Value.ToString("X");
                 }
              }
 
             private void button1_Click(object sender, EventArgs e)
             {
                 if (frm.textBox1.Text.Length > 0)
-                    label1.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(textBox1.Text)).Value.ToString("X");
+                    label1.Text = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(textBox1.Text)).Value.ToString("X");
             }
 
             private void button2_Click(object sender, EventArgs e)
             {
                 if (frm.textBox2.Text.Length > 0)
-                    label2.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0xA8 }, false, Convert.ToInt32(textBox2.Text)).Value.ToString("X");
+                    label2.Text = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0xA8 }, false, Convert.ToInt32(textBox2.Text)).Value.ToString("X");
             }
 
             private void button3_Click(object sender, EventArgs e)
             {
                 if (frm.textBox3.Text.Length > 0)
-                    label3.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x138 }, false, Convert.ToInt32(textBox3.Text)).Value.ToString("X");
+                    label3.Text = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0x138 }, false, Convert.ToInt32(textBox3.Text)).Value.ToString("X");
             }
 
             private void button4_Click(object sender, EventArgs e)
             {
                 if (frm.textBox4.Text.Length > 0)
-                    label4.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x1C8 }, false, Convert.ToInt32(textBox4.Text)).Value.ToString("X");
+                    label4.Text = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0x1C8 }, false, Convert.ToInt32(textBox4.Text)).Value.ToString("X");
             }
 
             private void button5_Click(object sender, EventArgs e)
             {
                 if (frm.textBox5.Text.Length > 0)
-                    label5.Text = Pointer("dota2", "server.dll+1CC23F0", new int[] { 0, 0x2c8, 0x258 }, false, Convert.ToInt32(textBox5.Text)).Value.ToString("X");
+                    label5.Text = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0x258 }, false, Convert.ToInt32(textBox5.Text)).Value.ToString("X");
             }
 
             private void button6_Click(object sender, EventArgs e)
             {
                 if (frm.textBox6.Text.Length > 0)
-                    label6.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(frm.textBox6.Text)).Value.ToString("N");
+                    label6.Text = Pointer("dota2", OffsetGoldD, new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(frm.textBox6.Text)).Value.ToString("N");
             }
 
             private void button7_Click(object sender, EventArgs e)
             {
                 if (frm.textBox7.Text.Length > 0)
-                    label7.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0xA8 }, false, Convert.ToInt32(frm.textBox7.Text)).Value.ToString("N");
+                    label7.Text = Pointer("dota2", OffsetGoldD, new int[] { 0, 0x2c8, 0xA8 }, false, Convert.ToInt32(frm.textBox7.Text)).Value.ToString("N");
             }
 
             private void button8_Click(object sender, EventArgs e)
             {
                 if (frm.textBox8.Text.Length > 0)
-                    label8.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x138 }, false, Convert.ToInt32(frm.textBox8.Text)).Value.ToString("N");
+                    label8.Text = Pointer("dota2", OffsetGoldD, new int[] { 0, 0x2c8, 0x138 }, false, Convert.ToInt32(frm.textBox8.Text)).Value.ToString("N");
             }
 
             private void button9_Click(object sender, EventArgs e)
             {
                 if (frm.textBox9.Text.Length > 0)
-                    label9.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x1C8 }, false, Convert.ToInt32(frm.textBox9.Text)).Value.ToString("N");
+                    label9.Text = Pointer("dota2", OffsetGoldD, new int[] { 0, 0x2c8, 0x1C8 }, false, Convert.ToInt32(frm.textBox9.Text)).Value.ToString("N");
             }
 
             private void button10_Click(object sender, EventArgs e)
             {
                 if (frm.textBox10.Text.Length > 0)
-                    label10.Text = Pointer("dota2", "server.dll+1CC23F8", new int[] { 0, 0x2c8, 0x258 }, false, Convert.ToInt32(frm.textBox10.Text)).Value.ToString("N");
+                    label10.Text = Pointer("dota2", OffsetGoldD, new int[] { 0, 0x2c8, 0x258 }, false, Convert.ToInt32(frm.textBox10.Text)).Value.ToString("N");
             }
 
             private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
@@ -948,60 +950,133 @@ namespace HOST_HACKS
             }
 
         }
-        /*
-        public void MakeCave()
+
+        private static void playSound(string path)
+        {
+            System.Media.SoundPlayer player =
+                new System.Media.SoundPlayer();
+            String fullpath = Environment.CurrentDirectory;
+            fullpath = fullpath.Remove(fullpath.Length - 10);
+            fullpath += @"\dota\materials\sounds\" + path;
+            player.SoundLocation = fullpath;
+            player.Load();
+            player.Play();
+        }
+
+        public static void UNNOP(long address, byte[] valueoff)
         {
             if (GHandle != IntPtr.Zero)
             {
-                var valueon = new byte[] { 0xC7, 0x80, 0xD0, 0x05, 0x00, 0x00, 0x40, 0x42, 0x0F, 0x00 }; // Байты команд на которые поменяются оригинальные команды
-                var valueoff = new byte[] { 0x89, 0x7B, 0x18, 0x48, 0x8B, 0x5C, 0x24, 0x30 }; // Байты оригинальной команды
-                var caveAddress = (Int32)(Win32.VirtualAllocEx(GHandle, IntPtr.Zero, (IntPtr)(valueon.Length + 5), Win32.AllocationType.Commit, Win32.MemoryProtection.ExecuteReadWrite));
-                var addressFrom = FindGoldWSignature();
-                if (addressFrom == -1) return;
-                var addressTo = addressFrom - caveAddress - valueon.Length;
+                var dummy1 = 0;
+                Win32.WriteProcessMemory(GHandle, (long)address, valueoff, (int)valueoff.Length, ref dummy1);
+            }
+        }
+
+        public static long MakeNOP(byte[] valueon, byte[] valueoff, byte[] patern, long offsetmodule)
+        {
+            if (GHandle != IntPtr.Zero)
+            {
+                Sign signature;
+                signature = FindWSignature(patern);
+                long addressFrom = signature.AdressSignature;
+                if (addressFrom != -1)
+                {
+                    Console.WriteLine(addressFrom.ToString("X"));
+                    //playSound("FIND.wav");
+                }
+                else
+                {
+                    Console.WriteLine("HOST_HACKS: instruction NOT FINDED");
+                    //playSound("NOFIND.wav");
+                    return -1;
+                }
                 var buffer = new byte[valueoff.Length];
-                buffer[0] = 0xE9;
-                var f = BitConverter.GetBytes(caveAddress - addressFrom - 5);
-                Array.Copy(f, 0, buffer, 1, f.Length);
-                for (var i = buffer.Length - 1; i < valueoff.Length; i++)
+                for (var i = 0; i < valueoff.Length; i++)
                 {
                     buffer[i] = 0x90;
                 }
+                var dummy1 = 0;
+                Win32.WriteProcessMemory(GHandle, (long)addressFrom, buffer, (int)buffer.Length, ref dummy1);
+                return addressFrom;
+            }
+            else return -1;
+        }
+
+        public static void MakeCave(byte[] valueon, byte[] valueoff, byte[] patern, long offsetmodule)
+        {
+            if (GHandle != IntPtr.Zero)
+            {
+                long caveAddress = (long)(Win32.VirtualAllocEx(GHandle, IntPtr.Zero, (IntPtr)(valueon.Length + 12), Win32.AllocationType.Commit, Win32.MemoryProtection.ExecuteReadWrite));
+                Sign signature;
+                signature = FindWSignature(patern);
+                offsetmodule = offsetmodule + signature.ModuleAdress;
+                var offs = BitConverter.GetBytes(offsetmodule);
+                Array.Copy(offs, 0, valueon, 2, offs.Length);
+                long addressFrom = signature.AdressSignature;
+                if (addressFrom != -1)
+                {
+                    Console.WriteLine(addressFrom.ToString("X"));
+                    //playSound("FIND.wav");
+                }
+                else
+                {
+                    Console.WriteLine("NOT FINDED");
+                    //playSound("NOFIND.wav");
+                    return;
+                }
+                long addressTo = addressFrom + valueoff.Length;
+                var buffer = new byte[valueoff.Length];
+                buffer[0] = 0x50;
+                buffer[1] = 0x48; buffer[2] = 0xB8;
+                var f = BitConverter.GetBytes(caveAddress);
+                Array.Copy(f, 0, buffer, 3, f.Length);
+                buffer[11] = 0xFF; buffer[12] = 0xE0;
+                for (var i = 13; i < valueoff.Length; i++)
+                {
+                    buffer[i] = 0x90;
+                }
+                buffer[valueoff.Length - 1] = 0x58;
                 var dummy = 0;
-                var caveBuffer = new byte[valueon.Length + 5];
+                var caveBuffer = new byte[valueon.Length + 12];
                 Array.Copy(valueon, caveBuffer, valueon.Length);
-                caveBuffer[valueon.Length] = 0xE9;
-                var retAddress = BitConverter.GetBytes(addressTo);
-                Array.Copy(retAddress, 0, caveBuffer, valueon.Length + 1, retAddress.Length);
+                caveBuffer[valueon.Length] = 0x48; caveBuffer[valueon.Length + 1] = 0xB8;
+                var retAddress = BitConverter.GetBytes(addressTo - 1);
+                Array.Copy(retAddress, 0, caveBuffer, valueon.Length + 2, retAddress.Length);
+                caveBuffer[caveBuffer.Length - 2] = 0xFF; caveBuffer[caveBuffer.Length - 1] = 0xE0;
                 Win32.WriteProcessMemory(GHandle, (long)caveAddress, caveBuffer, (int)caveBuffer.Length, ref dummy);
                 var dummy1 = 0;
                 Win32.WriteProcessMemory(GHandle, (long)addressFrom, buffer, (int)buffer.Length, ref dummy1);
-                //VirtualFreeEx(handle, (IntPtr)0x09E90000, 0, FreeType.Release); //Освобождает выделенную память, подумать над тем, как сделать освобождение памяти после того как отключать дллку
+                //Win32.VirtualFreeEx((IntPtr)GHandle, (IntPtr)caveAddress, (UIntPtr)0, (uint)0x8000);
+                Console.ReadKey();
             }
         }
-        */
-        static public int FindManaWSignature()
+
+        public struct Sign
         {
+            public long AdressSignature;
+            public long ModuleAdress;
+        }
+
+        static public Sign FindWSignature(byte[] pattern)
+        {
+            Sign GG_WP;
+            GG_WP.ModuleAdress = -1;
+            GG_WP.AdressSignature = -1;
             var moduleName = "server.dll";
-            var startAddress = 0;
-            var sizeToAllocate = 0;
-                                     //F3    0F    11    BB    EC    07    00    00    F3    0F    10    8B    EC    07    00    00
-            var pattern = new byte[] { 0xF3, 0x0F, 0x11, 0xBB, 0xEC, 0x07, 0x00, 0x00, 0xF3, 0x0F, 0x10, 0x8B, 0xEC, 0x07, 0x00, 0x00  };
+            long startAddress = 0;
+            long sizeToAllocate = 0;
             if (GHandle != IntPtr.Zero)
             {
-                foreach (var p in Process.GetProcesses())
+                Process[] P = Process.GetProcessesByName("dota2");
+                GHandle = P[0].Handle;
+                foreach (ProcessModule m in P[0].Modules)
                 {
-                    if (p.Handle == GHandle)
+                    if (m.ModuleName == moduleName)
                     {
-                        foreach (ProcessModule m in p.Modules)
-                        {
-                            if (m.ModuleName == moduleName)
-                            {
-                                startAddress = (int)m.BaseAddress;
-                                sizeToAllocate = m.ModuleMemorySize;
-                                break;
-                            }
-                        }
+                        startAddress = (long)m.BaseAddress;
+                        GG_WP.ModuleAdress = startAddress;
+                        sizeToAllocate = m.ModuleMemorySize;
+                        break;
                     }
                 }
                 var handle = GHandle;
@@ -1025,7 +1100,8 @@ namespace HOST_HACKS
                                         if (counter == pattern.Length)
                                         {
                                             var result = i + startAddress;
-                                            return (int)result;
+                                            GG_WP.AdressSignature = (long)result;
+                                            return GG_WP;
                                         }
                                     }
                                     else
@@ -1038,7 +1114,8 @@ namespace HOST_HACKS
                     }
                 }
             }
-            return -1;
+            GG_WP.AdressSignature = -1;
+            return GG_WP;
         }
         
         static Form1 frm = new Form1();
