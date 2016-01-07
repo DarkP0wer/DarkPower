@@ -850,8 +850,8 @@ namespace HOST_HACKS
                         {
                             int bytesWritten; byte[] buffer; String s;
                             bytesWritten = 0;
-                            buffer = BitConverter.GetBytes(Game.MousePosition.Y);
-                            s = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x0, 0x48, 0x590, 0x7F4C }, true, 1).Adress.ToString("X");
+                            buffer = BitConverter.GetBytes(Convert.ToSingle(textBox1.Text));
+                            s = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x0, 0x48, 0x590, 0x7F4 }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
 
                         }
