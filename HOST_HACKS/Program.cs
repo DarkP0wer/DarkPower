@@ -835,7 +835,6 @@ namespace HOST_HACKS
                     var patern = new byte[] { 0xF3, 0x0F, 0x11, 0xB3, 0xF4, 0x07, 0x00, 0x00, 0xF3, 0x0F, 0x10, 0x8B, 0xF4, 0x07, 0x00, 0x00 };
                     long offsetmodule = 0x01C508B8;
                     //MakeCave(valueon, valueoff, patern, offsetmodule);
-                    string HpRegenarationValue = textBox666.Text;
                     if (isNOPHpReg)
                     {
                         UNNOP(HpRegAddress, valueoff);
@@ -847,8 +846,9 @@ namespace HOST_HACKS
                         HpRegAddress = MakeNOP(valueon, valueoff, patern, offsetmodule);
                         isNOPHpReg = true;
                         frm.button666.Text = "UnSetHpReg";
+						label666.Text = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(textBox666.Text)).Value.ToString("X");
                     }
-                    label666.Text = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(HpRegenarationValue)).Value.ToString("X");
+                    label666.Text = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(textBox666.Text)).Value.ToString("X");
                 }
              }
 
