@@ -853,7 +853,7 @@ namespace HOST_HACKS
                             buffer = BitConverter.GetBytes(Convert.ToSingle(textBox1.Text));
                             s = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x0, 0x48, 0x590, 0x7F4 }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
-							Console.WiteLine(Convert.ToSingle(textBox1.Text));
+							Console.WriteLine(Convert.ToSingle(textBox1.Text));
                         //}
                         //catch { }
                     }
