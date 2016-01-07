@@ -846,9 +846,8 @@ namespace HOST_HACKS
                         HpRegAddress = MakeNOP(valueon, valueoff, patern, offsetmodule);
                         isNOPHpReg = true;
                         frm.button666.Text = "UnSetHpReg";
-						label666.Text = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(textBox666.Text)).Value.ToString("X");
                     }
-                    label666.Text = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x2c8, 0x18 }, false, Convert.ToInt32(textBox666.Text)).Value.ToString("X");
+                    label666.Text = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x0, 0x48, 0x590, 0x7f4 }, false, Convert.ToInt32(textBox666.Text)).Value.ToString("X");
                 }
              }
 
