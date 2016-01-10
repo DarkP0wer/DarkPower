@@ -159,8 +159,8 @@ namespace HOST_HACKS
             Game.OnWndProc += Game_OnGameWndProc;
         }
 
-        static string OffsetGoldR = "server.dll+1CC23D0";
-        static string OffsetGoldD = "server.dll+1CC23D8";
+        static string OffsetGoldR = "server.dll+1CC2240";
+        static string OffsetGoldD = "server.dll+1CC2248";
 
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
@@ -255,7 +255,7 @@ namespace HOST_HACKS
                     GHandle = P[0].Handle;
                     int o = 0;
                     byte[] buff1 = new byte[128];
-                    s = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x0, 0x48, 0x590}, true, 1).Adress.ToString("X");
+                    s = Pointer("dota2", "server.dll+01C50898", new int[] { 0, 0x0, 0x48, 0x590}, true, 1).Adress.ToString("X");
                     Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(s, NumberStyles.HexNumber)), buff1, buff1.Length, ref o);
                     frm.label666.Text = BitConverter.ToInt32(buff1, 0).ToString("X");/*BitConverter.ToSingle(buff1, 0)*/;
                 }
@@ -833,7 +833,7 @@ namespace HOST_HACKS
                     var valueon = new byte[] { 0x50, 0x48, 0xA1, 0xB8, 0x08, 0xCE, 0xD6, 0xFE, 0x07, 0x00, 0x00, 0x48, 0x8B, 0x00, 0x48, 0x8B, 0x40, 0x48, 0x48, 0x05, 0x90, 0x05, 0x00, 0x00, 0x48, 0x3B, 0x18, 0x74, 0x0C, 0x90, 0x90, 0x90, 0x90, 0xF3, 0x0F, 0x11, 0xBB, 0xEC, 0x07, 0x00, 0x00, 0x58 };
                     var valueoff = new byte[] { 0xF3, 0x0F, 0x11, 0xB3, 0xF4, 0x07, 0x00, 0x00 }; // Байты оригинальной команды
                     var patern = new byte[] { 0xF3, 0x0F, 0x11, 0xB3, 0xF4, 0x07, 0x00, 0x00, 0xF3, 0x0F, 0x10, 0x8B, 0xF4, 0x07, 0x00, 0x00 };
-                    long offsetmodule = 0x01C508B8;
+                    long offsetmodule = 0x01C50898;
                     //MakeCave(valueon, valueoff, patern, offsetmodule);
                     if (isNOPHpReg)
                     {
@@ -851,7 +851,7 @@ namespace HOST_HACKS
                             int bytesWritten; byte[] buffer; String s;
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Convert.ToSingle(textBox666.Text));
-                            s = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x0, 0x48, 0x590, 0x7F4 }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", "server.dll+01C50898", new int[] { 0, 0x0, 0x48, 0x590, 0x7F4 }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                         }
                         catch { }
@@ -1154,7 +1154,7 @@ namespace HOST_HACKS
                         {
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Game.MousePosition.X);
-                            s = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x0, 0x48, 0xD8 }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", "server.dll+01C50898", new int[] { 0, 0x0, 0x48, 0xD8 }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                         }
                         catch { }
@@ -1163,7 +1163,7 @@ namespace HOST_HACKS
                         {
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Game.MousePosition.Y);
-                            s = Pointer("dota2", "server.dll+01C508B8", new int[] { 0, 0x0, 0x48, 0xDC }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", "server.dll+01C50898", new int[] { 0, 0x0, 0x48, 0xDC }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
 
                         }
