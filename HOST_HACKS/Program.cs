@@ -1182,7 +1182,7 @@ namespace HOST_HACKS
                         int bytesWritten; byte[] buffer; String s;
                         try
                         {
-                            label666.Text = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x0, 0x48, 0x590, 0x128 }, false, 99999).Value.ToString("X");
+                            frm.label666.Text = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x0, 0x48, 0x590, 0x128 }, false, 99999).Value.ToString("X");
 						}
                         catch { }
                     }
