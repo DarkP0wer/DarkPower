@@ -152,6 +152,7 @@ namespace HOST_HACKS
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("HHKey", "Form Key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("TPKey", "TP Key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("AutoGO", "AutoGO after TP").SetValue(true));
+			SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("RHKey", "Restore Health Key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
             SubMenu.AddToMainMenu();
             aTimer = new System.Timers.Timer(1000);
             aTimer.Elapsed += OnTimedEvent;
@@ -159,8 +160,9 @@ namespace HOST_HACKS
             Game.OnWndProc += Game_OnGameWndProc;
         }
 
-        static string OffsetGoldR = "server.dll+1CC2240";
-        static string OffsetGoldD = "server.dll+1CC2248";
+        static string OffsetGoldR = "server.dll+1CC3240";
+        static string OffsetGoldD = "server.dll+1CC3248";
+		static string OffsetPlayer = "server.dll+01C51898";
 
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
@@ -255,7 +257,7 @@ namespace HOST_HACKS
                     GHandle = P[0].Handle;
                     int o = 0;
                     byte[] buff1 = new byte[128];
-                    s = Pointer("dota2", "server.dll+01C50898", new int[] { 0, 0x0, 0x48, 0x590}, true, 1).Adress.ToString("X");
+                    s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x590}, true, 1).Adress.ToString("X");
                     Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(s, NumberStyles.HexNumber)), buff1, buff1.Length, ref o);
                     frm.label666.Text = BitConverter.ToInt32(buff1, 0).ToString("X");/*BitConverter.ToSingle(buff1, 0)*/;
                 }
@@ -833,7 +835,7 @@ namespace HOST_HACKS
                     var valueon = new byte[] { 0x50, 0x48, 0xA1, 0xB8, 0x08, 0xCE, 0xD6, 0xFE, 0x07, 0x00, 0x00, 0x48, 0x8B, 0x00, 0x48, 0x8B, 0x40, 0x48, 0x48, 0x05, 0x90, 0x05, 0x00, 0x00, 0x48, 0x3B, 0x18, 0x74, 0x0C, 0x90, 0x90, 0x90, 0x90, 0xF3, 0x0F, 0x11, 0xBB, 0xEC, 0x07, 0x00, 0x00, 0x58 };
                     var valueoff = new byte[] { 0xF3, 0x0F, 0x11, 0xB3, 0xF4, 0x07, 0x00, 0x00 }; // Байты оригинальной команды
                     var patern = new byte[] { 0xF3, 0x0F, 0x11, 0xB3, 0xF4, 0x07, 0x00, 0x00, 0xF3, 0x0F, 0x10, 0x8B, 0xF4, 0x07, 0x00, 0x00 };
-                    long offsetmodule = 0x01C50898;
+                    long offsetmodule = 0x01C508B8;
                     //MakeCave(valueon, valueoff, patern, offsetmodule);
                     if (isNOPHpReg)
                     {
@@ -851,7 +853,7 @@ namespace HOST_HACKS
                             int bytesWritten; byte[] buffer; String s;
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Convert.ToSingle(textBox666.Text));
-                            s = Pointer("dota2", "server.dll+01C50898", new int[] { 0, 0x0, 0x48, 0x590, 0x7F4 }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x590, 0x7F4 }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                         }
                         catch { }
@@ -1154,7 +1156,7 @@ namespace HOST_HACKS
                         {
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Game.MousePosition.X);
-                            s = Pointer("dota2", "server.dll+01C50898", new int[] { 0, 0x0, 0x48, 0xD8 }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0xD8 }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                         }
                         catch { }
@@ -1163,13 +1165,26 @@ namespace HOST_HACKS
                         {
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Game.MousePosition.Y);
-                            s = Pointer("dota2", "server.dll+01C50898", new int[] { 0, 0x0, 0x48, 0xDC }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0xDC }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
 
                         }
                         catch { }
                         if (SubMenu.Item("AutoGO").GetValue<bool>())
                             player.Move(new SharpDX.Vector3(Game.MousePosition.X + 4, Game.MousePosition.Y, Game.MousePosition.Z));
+                    }
+					else if (args.WParam == SubMenu.Item("RHKey").GetValue<Ensage.Common.Menu.KeyBind>().Key)
+                    {
+                        var player = ObjectMgr.LocalHero;
+                        if (!Game.IsInGame || player == null) return;
+                        Process[] P = Process.GetProcessesByName("dota2");
+                        if (P.Length == 0) return;
+                        int bytesWritten; byte[] buffer; String s;
+                        try
+                        {
+                            label666.Text = Pointer("dota2", OffsetGoldR, new int[] { 0, 0x0, 0x48, 0x590, 0x128 }, false, 99999).Value.ToString("X");
+						}
+                        catch { }
                     }
                 }
             }
