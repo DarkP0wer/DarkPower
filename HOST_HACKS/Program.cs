@@ -1191,7 +1191,7 @@ namespace HOST_HACKS
                         	catch { }
                         }
                         
-                        else if(SubMenu.Item("RM").GetValue<bool>())
+                        if(SubMenu.Item("RM").GetValue<bool>())
                         {
                         	try
                         	{
