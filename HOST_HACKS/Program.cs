@@ -1185,6 +1185,15 @@ namespace HOST_HACKS
                             frm.label666.Text = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x590, 0x128 }, false, 99999).Value.ToString("X");
 						}
                         catch { }
+                        try
+                        {
+                            bytesWritten = 0;
+                            float mana = 99999;
+                            buffer = BitConverter.GetBytes(mana);
+                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x590, 0x7e0 }, true, 1).Adress.ToString("X");
+                            Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
+                        }
+                        catch { }
                     }
                 }
             }
