@@ -152,7 +152,9 @@ namespace HOST_HACKS
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("HHKey", "Form Key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("TPKey", "TP Key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("AutoGO", "AutoGO after TP").SetValue(true));
-			SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("RHKey", "Restore Health Key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
+	    SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("RKey", "Restore Health/Mana Key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
+            SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("RH", "Resotre Helath").SetValue(true));
+            SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("RM", "Resotre Mana").SetValue(true));
             SubMenu.AddToMainMenu();
             aTimer = new System.Timers.Timer(1000);
             aTimer.Elapsed += OnTimedEvent;
@@ -1173,27 +1175,34 @@ namespace HOST_HACKS
                         if (SubMenu.Item("AutoGO").GetValue<bool>())
                             player.Move(new SharpDX.Vector3(Game.MousePosition.X + 4, Game.MousePosition.Y, Game.MousePosition.Z));
                     }
-					else if (args.WParam == SubMenu.Item("RHKey").GetValue<Ensage.Common.Menu.KeyBind>().Key)
+					else if (args.WParam == SubMenu.Item("RKey").GetValue<Ensage.Common.Menu.KeyBind>().Key)
                     {
                         var player = ObjectMgr.LocalHero;
                         if (!Game.IsInGame || player == null) return;
                         Process[] P = Process.GetProcessesByName("dota2");
                         if (P.Length == 0) return;
                         int bytesWritten; byte[] buffer; String s;
-                        try
+                        if(SubMenu.Item("RH").GetValue<bool>())
                         {
-                            frm.label666.Text = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x590, 0x128 }, false, 99999).Value.ToString("X");
-						}
-                        catch { }
-                        try
-                        {
-                            bytesWritten = 0;
-                            float mana = 99999;
-                            buffer = BitConverter.GetBytes(mana);
-                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x590, 0x7e0 }, true, 1).Adress.ToString("X");
-                            Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
+                        	try
+                        	{
+                        	 frm.label666.Text = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x590, 0x128 }, false, 99999).Value.ToString("X");
+				}
+                        	catch { }
                         }
-                        catch { }
+                        
+                        else if(SubMenu.Item("RM").GetValue<bool>())
+                        {
+                        	try
+                        	{
+	                            bytesWritten = 0;
+	                            float mana = 99999;
+	                            buffer = BitConverter.GetBytes(mana);
+	                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x590, 0x7e0 }, true, 1).Adress.ToString("X");
+	                            Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
+                        	}
+                        	catch { }
+                        }
                     }
                 }
             }
