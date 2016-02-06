@@ -162,9 +162,9 @@ namespace HOST_HACKS
             Game.OnWndProc += Game_OnGameWndProc;
         }
 
-        static string OffsetGoldR = "server.dll+1CC3240";
-        static string OffsetGoldD = "server.dll+1CC3248";
-		static string OffsetPlayer = "server.dll+01C51898";
+        static string OffsetGoldR = "server.dll+1D89910";
+        static string OffsetGoldD = "server.dll+1D89918";
+		static string OffsetPlayer = "server.dll+01D96460";
 
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
