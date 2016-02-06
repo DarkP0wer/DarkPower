@@ -334,6 +334,12 @@ namespace HOST_HACKS
                 this.label10 = new System.Windows.Forms.Label();
                 this.button10 = new System.Windows.Forms.Button();
                 this.textBox10 = new System.Windows.Forms.TextBox();
+                this.textBoxStr = new System.Windows.Forms.TextBox();
+                this.buttonStr = new System.Windows.Forms.Button();
+                this.buttonAlg = new System.Windows.Forms.Button();
+                this.textBoxAlg = new System.Windows.Forms.TextBox();
+                this.buttonInt = new System.Windows.Forms.Button();
+                this.textBoxInt = new System.Windows.Forms.TextBox();
                 this.panel1.SuspendLayout();
                 this.SuspendLayout();
                 // 
@@ -387,6 +393,12 @@ namespace HOST_HACKS
                 // panel1
                 // 
                 this.panel1.BackColor = System.Drawing.Color.DeepSkyBlue;
+                this.panel1.Controls.Add(this.buttonInt);
+                this.panel1.Controls.Add(this.textBoxInt);
+                this.panel1.Controls.Add(this.buttonAlg);
+                this.panel1.Controls.Add(this.textBoxAlg);
+                this.panel1.Controls.Add(this.buttonStr);
+                this.panel1.Controls.Add(this.textBoxStr);
                 this.panel1.Controls.Add(this.label10);
                 this.panel1.Controls.Add(this.button10);
                 this.panel1.Controls.Add(this.textBox10);
@@ -734,6 +746,60 @@ namespace HOST_HACKS
                 this.textBox10.Size = new System.Drawing.Size(101, 20);
                 this.textBox10.TabIndex = 53;
                 this.textBox10.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
+                //
+                // textBoxStr
+                // 
+                this.textBoxStr.Location = new System.Drawing.Point(289, 174);
+                this.textBoxStr.Name = "textBoxStr";
+                this.textBoxStr.Size = new System.Drawing.Size(38, 20);
+                this.textBoxStr.TabIndex = 56;
+                this.textBoxStr.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
+                // 
+                // buttonStr
+                // 
+                this.buttonStr.Location = new System.Drawing.Point(333, 175);
+                this.buttonStr.Name = "buttonStr";
+                this.buttonStr.Size = new System.Drawing.Size(44, 20);
+                this.buttonStr.TabIndex = 57;
+                this.buttonStr.Text = "SetStr";
+                this.buttonStr.UseVisualStyleBackColor = true;
+                this.buttonStr.Click += new System.EventHandler(this.buttonStr_Click);
+                // 
+                // buttonAlg
+                // 
+                this.buttonAlg.Location = new System.Drawing.Point(427, 175);
+                this.buttonAlg.Name = "buttonAlg";
+                this.buttonAlg.Size = new System.Drawing.Size(49, 21);
+                this.buttonAlg.TabIndex = 59;
+                this.buttonAlg.Text = "SetAlg";
+                this.buttonAlg.UseVisualStyleBackColor = true;
+                this.buttonAlg.Click += new System.EventHandler(this.buttonAlg_Click);
+                // 
+                // textBoxAlg
+                // 
+                this.textBoxAlg.Location = new System.Drawing.Point(383, 174);
+                this.textBoxAlg.Name = "textBoxAlg";
+                this.textBoxAlg.Size = new System.Drawing.Size(38, 20);
+                this.textBoxAlg.TabIndex = 58;
+                this.textBoxAlg.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
+                // 
+                // buttonInt
+                // 
+                this.buttonInt.Location = new System.Drawing.Point(523, 174);
+                this.buttonInt.Name = "buttonInt";
+                this.buttonInt.Size = new System.Drawing.Size(49, 21);
+                this.buttonInt.TabIndex = 61;
+                this.buttonInt.Text = "SetInt";
+                this.buttonInt.UseVisualStyleBackColor = true;
+                this.buttonInt.Click += new System.EventHandler(this.buttonInt_Click);
+                // 
+                // textBoxInt
+                // 
+                this.textBoxInt.Location = new System.Drawing.Point(479, 175);
+                this.textBoxInt.Name = "textBoxInt";
+                this.textBoxInt.Size = new System.Drawing.Size(38, 20);
+                this.textBoxInt.TabIndex = 60;
+                this.textBoxInt.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
                 // 
                 // Form1
                 // 
@@ -801,6 +867,12 @@ namespace HOST_HACKS
             public System.Windows.Forms.Label label2;
             private System.Windows.Forms.Button button2;
             public System.Windows.Forms.TextBox textBox2;
+            private System.Windows.Forms.Button buttonStr;
+            public System.Windows.Forms.TextBox textBoxStr;
+            private System.Windows.Forms.Button buttonAlg;
+            public System.Windows.Forms.TextBox textBoxAlg;
+            private System.Windows.Forms.Button buttonInt;
+            public System.Windows.Forms.TextBox textBoxInt;
 
             private void buttonH_Click(object sender, EventArgs e)
             {
@@ -862,6 +934,123 @@ namespace HOST_HACKS
                     }
                 }
              }
+
+            public static Boolean isNOPStr;
+            public static long StrAddress;
+
+            private void buttonStr_Click(object sender, EventArgs e)
+            {
+                if (frm.textBoxStr.Text.Length > 0)
+                {
+                    Process[] P = Process.GetProcessesByName("dota2");
+                    if (P.Length == 0) return;
+                    GHandle = P[0].Handle;
+                    var valueon = new byte[] { 0x50, 0x48, 0xA1, 0xB8, 0x08, 0xCE, 0xD6, 0xFE, 0x07, 0x00, 0x00, 0x48, 0x8B, 0x00, 0x48, 0x8B, 0x40, 0x48, 0x48, 0x05, 0x90, 0x05, 0x00, 0x00, 0x48, 0x3B, 0x18, 0x74, 0x0C, 0x90, 0x90, 0x90, 0x90, 0xF3, 0x0F, 0x11, 0xBB, 0xEC, 0x07, 0x00, 0x00, 0x58 };
+                    var valueoff = new byte[] { 0xF3, 0x0F, 0x11, 0xB7, 0xE8, 0x10, 0x00, 0x00 }; // Байты оригинальной команды
+                    var patern = new byte[] { 0xF3, 0x0F, 0x11, 0xB7, 0xE8, 0x10, 0x00, 0x00, 0xF3, 0x0F, 0x10, 0x8F, 0xE8, 0x10, 0x00, 0x00 };
+                    long offsetmodule = 0x01C508B8;
+                    //MakeCave(valueon, valueoff, patern, offsetmodule);
+                    if (isNOPStr)
+                    {
+                        UNNOP(StrAddress, valueoff);
+                        isNOPStr = false;
+                        frm.buttonStr.Text = "SetStr";
+                    }
+                    else
+                    {
+                        StrAddress = MakeNOP(valueon, valueoff, patern, offsetmodule);
+                        isNOPStr = true;
+                        frm.buttonStr.Text = "UnSetStr";
+                        try
+                        {
+                            int bytesWritten; byte[] buffer; String s;
+                            bytesWritten = 0;
+                            buffer = BitConverter.GetBytes(Convert.ToSingle(textBoxStr.Text));
+                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x590, 0x10e8 }, true, 1).Adress.ToString("X");
+                            Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
+                        }
+                        catch { }
+                    }
+                }
+            }
+
+            public static Boolean isNOPAlg;
+            public static long AlgAddress;
+
+            private void buttonAlg_Click(object sender, EventArgs e)
+            {
+                if (frm.textBoxAlg.Text.Length > 0)
+                {
+                    Process[] P = Process.GetProcessesByName("dota2");
+                    if (P.Length == 0) return;
+                    GHandle = P[0].Handle;
+                    var valueon = new byte[] { 0x50, 0x48, 0xA1, 0xB8, 0x08, 0xCE, 0xD6, 0xFE, 0x07, 0x00, 0x00, 0x48, 0x8B, 0x00, 0x48, 0x8B, 0x40, 0x48, 0x48, 0x05, 0x90, 0x05, 0x00, 0x00, 0x48, 0x3B, 0x18, 0x74, 0x0C, 0x90, 0x90, 0x90, 0x90, 0xF3, 0x0F, 0x11, 0xBB, 0xEC, 0x07, 0x00, 0x00, 0x58 };
+                    var valueoff = new byte[] { 0xF3, 0x0F, 0x11, 0xBB, 0xEC, 0x10, 0x00, 0x00 }; // Байты оригинальной команды
+                    var patern = new byte[] { 0xF3, 0x0F, 0x11, 0xBB, 0xEC, 0x10, 0x00, 0x00, 0xF3, 0x0F, 0x10, 0x8B, 0xEC, 0x10, 0x00, 0x00 };
+                    long offsetmodule = 0x01C508B8;
+                    //MakeCave(valueon, valueoff, patern, offsetmodule);
+                    if (isNOPAlg)
+                    {
+                        UNNOP(AlgAddress, valueoff);
+                        isNOPAlg = false;
+                        frm.buttonAlg.Text = "SetAlg";
+                    }
+                    else
+                    {
+                        AlgAddress = MakeNOP(valueon, valueoff, patern, offsetmodule);
+                        isNOPAlg = true;
+                        frm.buttonAlg.Text = "UnSetAlg";
+                        try
+                        {
+                            int bytesWritten; byte[] buffer; String s;
+                            bytesWritten = 0;
+                            buffer = BitConverter.GetBytes(Convert.ToSingle(textBoxAlg.Text));
+                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x590, 0x10ec }, true, 1).Adress.ToString("X");
+                            Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
+                        }
+                        catch { }
+                    }
+                }
+            }
+
+            public static Boolean isNOPInt;
+            public static long IntAddress;
+
+            private void buttonInt_Click(object sender, EventArgs e)
+            {
+                if (frm.textBoxInt.Text.Length > 0)
+                {
+                    Process[] P = Process.GetProcessesByName("dota2");
+                    if (P.Length == 0) return;
+                    GHandle = P[0].Handle;
+                    var valueon = new byte[] { 0x50, 0x48, 0xA1, 0xB8, 0x08, 0xCE, 0xD6, 0xFE, 0x07, 0x00, 0x00, 0x48, 0x8B, 0x00, 0x48, 0x8B, 0x40, 0x48, 0x48, 0x05, 0x90, 0x05, 0x00, 0x00, 0x48, 0x3B, 0x18, 0x74, 0x0C, 0x90, 0x90, 0x90, 0x90, 0xF3, 0x0F, 0x11, 0xBB, 0xEC, 0x07, 0x00, 0x00, 0x58 };
+                    var valueoff = new byte[] { 0xF3, 0x0F, 0x11, 0xBB, 0xF0, 0x10, 0x00, 0x00 }; // Байты оригинальной команды
+                    var patern = new byte[] { 0xF3, 0x0F, 0x11, 0xBB, 0xF0, 0x10, 0x00, 0x00, 0xF3, 0x0F, 0x10, 0x8B, 0xEC, 0x10, 0x00, 0x00 };
+                    long offsetmodule = 0x01C508B8;
+                    //MakeCave(valueon, valueoff, patern, offsetmodule);
+                    if (isNOPInt)
+                    {
+                        UNNOP(IntAddress, valueoff);
+                        isNOPInt = false;
+                        frm.buttonInt.Text = "SetInt";
+                    }
+                    else
+                    {
+                        IntAddress = MakeNOP(valueon, valueoff, patern, offsetmodule);
+                        isNOPInt = true;
+                        frm.buttonInt.Text = "UnSetInt";
+                        try
+                        {
+                            int bytesWritten; byte[] buffer; String s;
+                            bytesWritten = 0;
+                            buffer = BitConverter.GetBytes(Convert.ToSingle(textBoxInt.Text));
+                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x590, 0x10f0 }, true, 1).Adress.ToString("X");
+                            Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
+                        }
+                        catch { }
+                    }
+                }
+            }
 
             private void button1_Click(object sender, EventArgs e)
             {
