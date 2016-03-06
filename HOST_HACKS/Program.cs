@@ -259,7 +259,7 @@ namespace HOST_HACKS
                     GHandle = P[0].Handle;
                     int o = 0;
                     byte[] buff1 = new byte[128];
-                    s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x50}, true, 1).Adress.ToString("X");
+                    s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x50, 0x0}, true, 1).Adress.ToString("X");
                     Win32.ReadProcessMemory(P[0].Handle, (IntPtr)(long.Parse(s, NumberStyles.HexNumber)), buff1, buff1.Length, ref o);
                     frm.label666.Text = BitConverter.ToInt32(buff1, 0).ToString("X");/*BitConverter.ToSingle(buff1, 0)*/;
                 }
@@ -927,7 +927,7 @@ namespace HOST_HACKS
                             int bytesWritten; byte[] buffer; String s;
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Convert.ToSingle(textBox666.Text));
-                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x50, 0x7F4 }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x50, 0x0, 0x7F4 }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                         }
                         catch { }
@@ -966,7 +966,7 @@ namespace HOST_HACKS
                             int bytesWritten; byte[] buffer; String s;
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Convert.ToSingle(textBoxStr.Text));
-                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x50, 0x10e8 }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x50, 0x0, 0x10e8 }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                         }
                         catch { }
@@ -1005,7 +1005,7 @@ namespace HOST_HACKS
                             int bytesWritten; byte[] buffer; String s;
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Convert.ToSingle(textBoxAlg.Text));
-                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x50, 0x10ec }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x50, 0x0, 0x10ec }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                         }
                         catch { }
@@ -1044,7 +1044,7 @@ namespace HOST_HACKS
                             int bytesWritten; byte[] buffer; String s;
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Convert.ToSingle(textBoxInt.Text));
-                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x50, 0x10f0 }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x50, 0x0, 0x10f0 }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                         }
                         catch { }
@@ -1347,7 +1347,7 @@ namespace HOST_HACKS
                         {
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Game.MousePosition.X);
-                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x78, 0xC0, 0xD8 }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x50, 0x0, 0xC0, 0xD8 }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                         }
                         catch { }
@@ -1356,7 +1356,7 @@ namespace HOST_HACKS
                         {
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Game.MousePosition.Y);
-                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x78, 0xC0, 0xDC }, true, 1).Adress.ToString("X");
+                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x50, 0x0, 0xC0, 0xDC }, true, 1).Adress.ToString("X");
                             Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
 
                         }
@@ -1375,7 +1375,7 @@ namespace HOST_HACKS
                         {
                         	try
                         	{
-                        	 frm.label666.Text = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x50, 0x128 }, false, 99999).Value.ToString("X");
+                        	 frm.label666.Text = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x50, 0x0, 0x128 }, false, 99999).Value.ToString("X");
 				}
                         	catch { }
                         }
@@ -1387,7 +1387,7 @@ namespace HOST_HACKS
 	                            bytesWritten = 0;
 	                            float mana = 99999;
 	                            buffer = BitConverter.GetBytes(mana);
-	                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x50, 0x7e0 }, true, 1).Adress.ToString("X");
+	                            s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x50, 0x0, 0x7e0 }, true, 1).Adress.ToString("X");
 	                            Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                         	}
                         	catch { }
