@@ -164,7 +164,7 @@ namespace HOST_HACKS
 
         static string OffsetGoldR = "server.dll+1CF6D50";
         static string OffsetGoldD = "server.dll+1CF6D58";
-	static string OffsetPlayer = "server.dll+01D03650";
+	static string OffsetPlayer = "server.dll+1D03650";
 
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
