@@ -742,10 +742,10 @@ namespace Dota_Buff
                     {
                         if (enemy == null || enemy.IsFakeClient) continue;
                         uint id = enemy.PlayerSteamID;
-                        if (enemy.ID + 1 > frm.listBox1.Items.Count)
+                        if (enemy.ID > frm.listBox1.Items.Count)
                         {
                             int d = frm.listBox1.Items.Count;
-                            for (int i = 0; i < enemy.ID + 1 - d; i++)
+                            for (int i = 0; i < enemy.ID - d; i++)
                             {
                                 frm.listBox1.Items.Add("Loading...");
                                 frm.listBox2.Items.Add("Loading...");
