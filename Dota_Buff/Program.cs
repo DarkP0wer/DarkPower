@@ -170,16 +170,16 @@ namespace Dota_Buff
                                 Repos[i].RepoM = Mark;
                                 Repos[i].RepoT = RepoText;
                                 Repos[i].GamesPlayed = Convert.ToInt32(GamesPlayed) + 1;
-                                    
-                                IniFile.Write("GamesPlayed", "" + p.PlayerSteamID, Repos[i].GamesPlayed.ToString());
+
+                                IniFile.Write("GamesPlayed", Repos[i].GamesPlayed.ToString(), "" + p.PlayerSteamID);
                             }
                             else
                             {
                                 Repos[i].RepoM = "-";
 
-                                IniFile.Write("Mark", "" + p.PlayerSteamID, "Played");
-                                IniFile.Write("RepoText", "" + p.PlayerSteamID, "You play with " + p.Name + "1 count");
-                                IniFile.Write("GamesPlayed", "" + p.PlayerSteamID, "1");
+                                IniFile.Write("Mark", "Played", "" + p.PlayerSteamID);
+                                IniFile.Write("RepoText", "You play with " + p.Name + " 1 count", "" + p.PlayerSteamID);
+                                IniFile.Write("GamesPlayed", "1", "" + p.PlayerSteamID);
                             }
                         }
                         else Repos[i].RepoM = "-";
