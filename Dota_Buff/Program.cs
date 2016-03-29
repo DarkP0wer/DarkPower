@@ -731,7 +731,7 @@ namespace Dota_Buff
                     frm.Width = 800; frm.Height = 400;
                     frm.Show();
                     var enemies = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
-                    if (LoadedSteamID[0] != ObjectMgr.GetPlayerById(0).PlayerSteamID.ToString())
+                    if (frm.listBox1.Items[0] != ObjectMgr.GetPlayerById(0).PlayerSteamID.ToString())
                     {
                         frm.listBox1.Items.Clear();
                         frm.listBox2.Items.Clear();
