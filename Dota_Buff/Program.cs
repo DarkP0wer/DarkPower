@@ -160,7 +160,6 @@ namespace Dota_Buff
                     {
                         RWA[i] = "Loading...";
                         Repos[i].RepoM = "-";
-                        Repos[i].SteamId = 228;
                         continue;
                     }
                     if (RWA[i] == "NULL")
@@ -460,8 +459,8 @@ namespace Dota_Buff
                         if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...")
                         {
                             textBox1.Text = "This persson not loaded or disconnected!";
-                            textBox1.Text += "\r\n" + Repos[listBox1.SelectedIndex].SteamId;
-                            textBox1.Text += "\r\n" + HeroName[listBox1.SelectedIndex];
+                            textBox1.Text += "\r\nSteamid: " + Repos[listBox1.SelectedIndex].SteamId;
+                            textBox1.Text += "\r\nHero: " + HeroName[listBox1.SelectedIndex];
                             return;
                         }
                         if (LoadedSteamID[listBox1.SelectedIndex] == listBox1.Items[listBox1.SelectedIndex].ToString())
