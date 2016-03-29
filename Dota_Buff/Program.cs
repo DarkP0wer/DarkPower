@@ -143,7 +143,8 @@ namespace Dota_Buff
 
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
-            if (ObjectMgr.LocalPlayer != null && ObjectMgr.LocalPlayer.Hero == null)
+
+            if (ObjectMgr.LocalPlayer != null/* && ObjectMgr.LocalPlayer.Hero == null*/)
             {
                 IsPlayersLoad = true;
                 for (int i = 0; i < 20; i++)
