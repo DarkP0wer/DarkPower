@@ -25,7 +25,9 @@ namespace Dota_Buff
         private static String[] LoadedInformation = new String[20];
         private static String[] LoadedSteamID = new String[20];
         private static String[] RWA = new String[20];
+
         private static String[] HeroName = new String[20];
+        private static String[] PlayerName = new String[20];
         public struct Repo
         {
             public String RepoM;
@@ -147,7 +149,10 @@ namespace Dota_Buff
             foreach (var enemy in enemies)
             {
                 if (enemy.Player != null)
+                {
                     HeroName[enemy.Player.ID] = enemy.Name;
+                    PlayerName[enemy.Player.ID] = enemy.Player.Name;
+                }
             }
             if (ObjectMgr.LocalPlayer != null /*&& ObjectMgr.LocalPlayer.Hero == null*/)
             {
@@ -459,6 +464,7 @@ namespace Dota_Buff
                         if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...")
                         {
                             textBox1.Text = "This persson not loaded or disconnected!";
+                            textBox1.Text += "\r\nPlayer Name : " + PlayerName[listBox1.SelectedIndex];
                             textBox1.Text += "\r\nSteamid: " + Repos[listBox1.SelectedIndex].SteamId;
                             textBox1.Text += "\r\nHero: " + HeroName[listBox1.SelectedIndex];
                             return;
