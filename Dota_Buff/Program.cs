@@ -578,7 +578,7 @@ namespace Dota_Buff
                 catch (Exception e2)
                 {
                     if (e2.Source != null)
-                        System.Windows.Forms.MessageBox.Show("Error: " + e2.Source);
+                        Win32.PrintEncolored("Dota_Buff Error: " + e2.Source, ConsoleColor.Red);
                     throw;
                 }
             }
