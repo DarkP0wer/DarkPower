@@ -143,8 +143,13 @@ namespace Dota_Buff
 
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
-
-            if (ObjectMgr.LocalPlayer != null/* && ObjectMgr.LocalPlayer.Hero == null*/)
+            var enemies = ObjectMgr.GetEntities<Hero>().Where(enemy => enemy != null).ToList();
+            foreach (var enemy in enemies)
+            {
+                if (enemy.Player != null)
+                    HeroName[enemy.Player.ID] = enemy.Name;
+            }
+            if (ObjectMgr.LocalPlayer != null /*&& ObjectMgr.LocalPlayer.Hero == null*/)
             {
                 IsPlayersLoad = true;
                 for (int i = 0; i < 20; i++)
@@ -452,7 +457,13 @@ namespace Dota_Buff
                 {
                     if (radioButton1.Checked)
                     {
-                        if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...") return;
+                        if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...")
+                        {
+                            textBox1.Text = "This persson not loaded or disconnected!";
+                            textBox1.Text += "\r\n" + Repos[listBox1.SelectedIndex].SteamId;
+                            textBox1.Text += "\r\n" + HeroName[listBox1.SelectedIndex];
+                            return;
+                        }
                         if (LoadedSteamID[listBox1.SelectedIndex] == listBox1.Items[listBox1.SelectedIndex].ToString())
                         {
                             textBox1.Text = LoadedInformation[listBox1.SelectedIndex];
@@ -609,6 +620,25 @@ namespace Dota_Buff
                 if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...")
                 {
                     Win32.PrintEncolored("Dota_Buff: Player not loaded...", ConsoleColor.Red);
+                    var enemies = ObjectMgr.GetEntities<Hero>().Where(enemy => enemy != null).ToList();
+                    foreach (var enemy in enemies)
+                    {
+                        if (HeroName[listBox1.SelectedIndex] == enemy.Name && enemy.Player == null)
+                        {
+                            if (System.IO.File.Exists(filename))
+                            {
+                                var IniFile = new IniFile(filename);
+                                IniFile.Write("Mark", comboBox2.Items[comboBox2.SelectedIndex].ToString(), Repos[listBox1.SelectedIndex].SteamId.ToString());
+                                IniFile.Write("RepoText", frm.textBox2.Text, Repos[listBox1.SelectedIndex].SteamId.ToString());
+                                Repos[listBox1.SelectedIndex].RepoM = comboBox2.Items[comboBox2.SelectedIndex].ToString();
+                                Repos[listBox1.SelectedIndex].RepoT = frm.textBox2.Text;
+                            }
+                            else
+                            {
+                                Win32.PrintEncolored("Dota_Buff: File " + filename + " not founded!", ConsoleColor.Red);
+                            }
+                        }
+                    }
                 }
                 else
                 {
