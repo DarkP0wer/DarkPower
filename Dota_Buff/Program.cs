@@ -731,23 +731,19 @@ namespace Dota_Buff
                     frm.Width = 800; frm.Height = 400;
                     frm.Show();
                     var enemies = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
-                    //if (frm.listBox1.Items[0] != ObjectMgr.GetPlayerById(0).PlayerSteamID.ToString())
-                    {
-                        frm.listBox1.Items.Clear();
-                        frm.listBox2.Items.Clear();
-                    }
-                    
+
+                    frm.listBox1.Items.Clear();
+                    frm.listBox2.Items.Clear();
                     frm.listBox1.Items.Add("Loading...");
                     frm.listBox2.Items.Add("Loading...");
                     foreach (var enemy in enemies)
                     {
                         if (enemy == null || enemy.IsFakeClient) continue;
                         uint id = enemy.PlayerSteamID;
-                        
-                        if (enemy.ID > frm.listBox1.Items.Count)
+                        if (enemy.ID + 1 > frm.listBox1.Items.Count)
                         {
                             int d = frm.listBox1.Items.Count;
-                            for (int i = 0; i < enemy.ID - d; i++)
+                            for (int i = 0; i < enemy.ID + 1 - d; i++)
                             {
                                 frm.listBox1.Items.Add("Loading...");
                                 frm.listBox2.Items.Add("Loading...");
