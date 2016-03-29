@@ -25,6 +25,7 @@ namespace Dota_Buff
         private static String[] LoadedInformation = new String[20];
         private static String[] LoadedSteamID = new String[20];
         private static String[] RWA = new String[20];
+        private static String[] HeroName = new String[20];
         public struct Repo
         {
             public String RepoM;
@@ -176,7 +177,7 @@ namespace Dota_Buff
                             else
                             {
                                 Repos[i].RepoM = "-";
-
+                                Repos[i].GamesPlayed = 0;
                                 IniFile.Write("Mark", "Played", "" + p.PlayerSteamID);
                                 IniFile.Write("RepoText", "You play with " + p.Name + " 1 count", "" + p.PlayerSteamID);
                                 IniFile.Write("GamesPlayed", "1", "" + p.PlayerSteamID);
@@ -682,7 +683,7 @@ namespace Dota_Buff
                 {
                     var text = string.Format("RWinRate: {1} | Games: {2}", i, RWA[i], Repos[i].GamesPlayed);
                     Color text_color;
-                    switch(Repos[i].RepoM)
+                    switch (Repos[i].RepoM)
                     {
                         case "GoodGuy":
                             {
@@ -730,10 +731,13 @@ namespace Dota_Buff
                     frm.Width = 800; frm.Height = 400;
                     frm.Show();
                     var enemies = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
-                    frm.listBox1.Items.Clear();
-                    frm.listBox2.Items.Clear();
-                    frm.listBox1.Items.Add("Loading...");
-                    frm.listBox2.Items.Add("Loading...");
+                    if (LoadedSteamID[0] != ObjectMgr.GetPlayerById(0).PlayerSteamID.ToString())
+                    {
+                        frm.listBox1.Items.Clear();
+                        frm.listBox2.Items.Clear();
+                    }
+                    //frm.listBox1.Items.Add("Loading...");
+                    //frm.listBox2.Items.Add("Loading...");
                     foreach (var enemy in enemies)
                     {
                         if (enemy == null || enemy.IsFakeClient) continue;
