@@ -737,8 +737,8 @@ namespace Dota_Buff
                         frm.listBox2.Items.Clear();
                     }
                     
-                    //frm.listBox1.Items.Add("Loading...");
-                    //frm.listBox2.Items.Add("Loading...");
+                    frm.listBox1.Items.Add("Loading...");
+                    frm.listBox2.Items.Add("Loading...");
                     foreach (var enemy in enemies)
                     {
                         if (enemy == null || enemy.IsFakeClient) continue;
