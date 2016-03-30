@@ -303,11 +303,7 @@ namespace Translate
                 {
                     if (checkBox1.Checked) Game.ExecuteCommand(((IsSayTeam)?"say_team ":"say ") + textBox3.Text);
                     else Game.ExecuteCommand(((IsSayTeam) ? "say_team " : "say ") + textBox2.Text);
-                    Console.WriteLine(Game.IPAddress);
-                    string str = textBox2.Text;
-                    var pMem = Marshal.StringToHGlobalUni( str );
-    		    str = Marshal.PtrToStringUni( pMem );
-    		    Game.ExecuteCommand("say " + str);
+                    
                     if (checkBox3.Checked)
                     {
                         label1_Click(sender, e);
