@@ -181,7 +181,7 @@ namespace Dota_Buff
                         if (p.ID + 1 > frm.listBox1.Items.Count)
                         {
                             int d = frm.listBox1.Items.Count;
-                            for (int i = 0; i < p.ID + 1 - d; i++)
+                            for (int j = 0; j < p.ID + 1 - d; j++)
                             {
                                 frm.listBox1.Items.Add("Loading...");
                                 frm.listBox2.Items.Add("Loading...");
