@@ -210,7 +210,7 @@ namespace Dota_Buff
                                 Repos[i].RepoM = "-";
                                 Repos[i].GamesPlayed = 0;
                                 IniFile.Write("Mark", "Played", "" + p.PlayerSteamID);
-                                IniFile.Write("RepoText", "You play with " + p.Name + " 1 count", "" + p.PlayerSteamID);
+                                IniFile.Write("RepoText", "None", "" + p.PlayerSteamID);
                                 IniFile.Write("GamesPlayed", "1", "" + p.PlayerSteamID);
                             }
                         }
