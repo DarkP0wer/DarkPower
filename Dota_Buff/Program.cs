@@ -152,6 +152,7 @@ namespace Dota_Buff
                 {
                     HeroName[enemy.Player.ID] = enemy.Name;
                     PlayerName[enemy.Player.ID] = enemy.Player.Name;
+                    Repos[listBox1.SelectedIndex].SteamId;
                 }
             }
             if (ObjectMgr.LocalPlayer != null && ObjectMgr.LocalPlayer.Hero == null)
