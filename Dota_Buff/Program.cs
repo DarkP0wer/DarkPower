@@ -154,6 +154,7 @@ namespace Dota_Buff
                     PlayerName[enemy.Player.ID] = enemy.Player.Name;
                 }
             }
+            if (ObjectMgr.LocalPlayer == null) GameIp = "NotServer";
             if (Game.IPAddress != GameIp)
             {
                 GameIp = Game.IPAddress;
