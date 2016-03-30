@@ -154,15 +154,6 @@ namespace Dota_Buff
                     PlayerName[enemy.Player.ID] = enemy.Player.Name;
                 }
             }
-            if (ObjectMgr.LocalPlayer == null) GameIp = "NotServer";
-            if (Game.IPAddress != GameIp)
-            {
-                GameIp = Game.IPAddress;
-                frm.listBox1.Items.Clear();
-                frm.listBox2.Items.Clear();
-                frm.listBox1.Items.Add("Loading...");
-                frm.listBox2.Items.Add("Loading...");   
-            }
             if (ObjectMgr.LocalPlayer != null && ObjectMgr.LocalPlayer.Hero == null)
             {
                 IsPlayersLoad = true;
@@ -178,19 +169,6 @@ namespace Dota_Buff
                     }
                     if (RWA[i] == "NULL")
                     {
-                        uint id = p.PlayerSteamID;
-                        if (p.ID + 1 > frm.listBox1.Items.Count)
-                        {
-                            int d = frm.listBox1.Items.Count;
-                            for (int j = 0; j < p.ID + 1 - d; j++)
-                            {
-                                frm.listBox1.Items.Add("Loading...");
-                                frm.listBox2.Items.Add("Loading...");
-                            }
-                        }
-                        frm.listBox1.Items[p.ID] = "" + id;
-                        frm.listBox2.Items[p.ID] = "" + p.Name;
-
                         if (System.IO.File.Exists(filename))
                         {
                             var IniFile = new IniFile(filename);
@@ -788,6 +766,27 @@ namespace Dota_Buff
                     }
                     frm.Width = 800; frm.Height = 400;
                     frm.Show();
+                    var enemies = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
+                    frm.listBox1.Items.Clear();
+                    frm.listBox2.Items.Clear();
+                    frm.listBox1.Items.Add("Loading...");
+                    frm.listBox2.Items.Add("Loading...");
+                    foreach (var enemy in enemies)
+                    {
+                        if (enemy == null) continue;
+                        uint id = enemy.PlayerSteamID;
+                        if (enemy.ID + 1 > frm.listBox1.Items.Count)
+                        {
+                            int d = frm.listBox1.Items.Count;
+                            for (int i = 0; i < enemy.ID + 1 - d; i++)
+                            {
+                                frm.listBox1.Items.Add("Loading...");
+                                frm.listBox2.Items.Add("Loading...");
+                            }
+                        }
+                        frm.listBox1.Items[enemy.ID] = "" + id;
+                        frm.listBox2.Items[enemy.ID] = "" + enemy.Name;
+                    }
                     frm.listBox1.SelectedIndex = 0;
                 }
             }
