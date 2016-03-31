@@ -480,6 +480,29 @@ namespace Dota_Buff
                 IsFormClose = false;
             }
 
+            private string Win1251ToUTF8(string source)
+            {
+
+                Encoding utf8 = Encoding.GetEncoding("utf-8");
+                Encoding win1251 = Encoding.GetEncoding("windows-1251");
+
+                byte[] utf8Bytes = win1251.GetBytes(source);
+                byte[] win1251Bytes = Encoding.Convert(win1251, utf8, utf8Bytes);
+                source = win1251.GetString(win1251Bytes);
+                return source;
+
+            }
+
+            internal static string UTF8ToWin1251(string sourceStr)
+            {
+                Encoding utf8 = Encoding.UTF8;
+                Encoding win1251 = Encoding.GetEncoding("Windows-1251");
+
+                byte[] utf8Bytes = utf8.GetBytes(sourceStr);
+                byte[] win1251Bytes = Encoding.Convert(utf8, win1251, utf8Bytes);
+                return win1251.GetString(win1251Bytes);
+            }
+
             private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
             {
                 try
@@ -493,7 +516,8 @@ namespace Dota_Buff
                             textBox1.Text += "\r\nSteamid: " + Repos[listBox1.SelectedIndex].SteamId;
                             textBox1.Text += "\r\nHero: " + _HeroName[listBox1.SelectedIndex];
 
-                            textBox1.Text = System.Text.Encoding.GetEncoding(1251).GetString(System.Text.Encoding.UTF8.GetBytes(textBox1.Text));
+                            textBox1.Text = UTF8ToWin1251(textBox1.Text);
+                            textBox2.Text = Win1251ToUTF8(textBox1.Text);
                             return;
                         }
                         if (LoadedSteamID[listBox1.SelectedIndex] == listBox1.Items[listBox1.SelectedIndex].ToString())
