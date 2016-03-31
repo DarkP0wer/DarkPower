@@ -26,8 +26,8 @@ namespace Dota_Buff
         private static String[] LoadedSteamID = new String[20];
         private static String[] RWA = new String[20];
 
-        private static String[] HeroName = new String[20];
-        private static String[] PlayerName = new String[20];
+        private static String[] _HeroName = new String[20];
+        private static String[] _PlayerName = new String[20];
         private static String GameIp;
         private static int players_count;
         public struct Repo
@@ -175,8 +175,8 @@ namespace Dota_Buff
 
                             if (p.Hero != null)
                             {
-                                HeroName[p.ID] = p.Hero.Name;
-                                PlayerName[p.ID] = p.Name;
+                                _HeroName[p.ID] = p.Hero.Name;
+                                _PlayerName[p.ID] = p.Name;
                                 Repos[p.ID].SteamId = p.PlayerSteamID;
                             }
                         }
@@ -494,9 +494,9 @@ namespace Dota_Buff
                         if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...")
                         {
                             textBox1.Text = "This persson not loaded or disconnected!";
-                            textBox1.Text += "\r\nPlayer Name : " + PlayerName[listBox1.SelectedIndex];
+                            textBox1.Text += "\r\nPlayer Name : " + _PlayerName[listBox1.SelectedIndex];
                             textBox1.Text += "\r\nSteamid: " + Repos[listBox1.SelectedIndex].SteamId;
-                            textBox1.Text += "\r\nHero: " + HeroName[listBox1.SelectedIndex];
+                            textBox1.Text += "\r\nHero: " + _HeroName[listBox1.SelectedIndex];
                             return;
                         }
                         if (LoadedSteamID[listBox1.SelectedIndex] == listBox1.Items[listBox1.SelectedIndex].ToString())
@@ -658,7 +658,7 @@ namespace Dota_Buff
                     var enemies = ObjectMgr.GetEntities<Hero>().Where(enemy => enemy != null).ToList();
                     foreach (var enemy in enemies)
                     {
-                        if (HeroName[listBox1.SelectedIndex] == enemy.Name && enemy.Player == null)
+                        if (_HeroName[listBox1.SelectedIndex] == enemy.Name && enemy.Player == null)
                         {
                             if (System.IO.File.Exists(filename))
                             {
