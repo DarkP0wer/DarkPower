@@ -487,25 +487,13 @@ namespace Dota_Buff
                 {
                     if (radioButton1.Checked)
                     {
+                        textBox2.Text = _HeroName[listBox1.SelectedIndex];
                         if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...")
                         {
                             textBox1.Text = "This persson not loaded or disconnected!";
                             textBox1.Text += "\r\nPlayer Name : " + _PlayerName[listBox1.SelectedIndex];
                             textBox1.Text += "\r\nSteamid: " + Repos[listBox1.SelectedIndex].SteamId;
                             textBox1.Text += "\r\nHero: " + _HeroName[listBox1.SelectedIndex];
-
-
-                            Encoding cyrillic = Encoding.GetEncoding(866);
-                            Encoding win1251 = Encoding.GetEncoding("Windows-1251");
-                            byte[] win1251Bytes = win1251.GetBytes(textBox1.Text);
-                            byte[] cyrillicBytes = Encoding.Convert(win1251, cyrillic, win1251Bytes);
-                            textBox1.Text = cyrillic.GetString(cyrillicBytes);
-
-                            Console.WriteLine(cyrillic.GetString(cyrillicBytes));
-                            Console.WriteLine("BodyName: " + Console.OutputEncoding.BodyName);
-                            Console.WriteLine("HeaderName: " + Console.OutputEncoding.HeaderName);
-                            Console.WriteLine("WebName: " + Console.OutputEncoding.WebName);
-                            Console.WriteLine("CodePage: " + Console.OutputEncoding.CodePage);
                             return;
                         }
                         if (LoadedSteamID[listBox1.SelectedIndex] == listBox1.Items[listBox1.SelectedIndex].ToString())
@@ -619,7 +607,6 @@ namespace Dota_Buff
                                 textBox1.Text += "\r\nSteamID: " + Repos[listBox1.SelectedIndex].SteamId;
                                 textBox1.Text += "\r\nMark: " + Repos[listBox1.SelectedIndex].RepoM;
                                 textBox1.Text += "\r\nText About: " + Repos[listBox1.SelectedIndex].RepoT;
-                                textBox2.Text = Repos[listBox1.SelectedIndex].RepoT;
                             }
                             LoadedInformation[listBox1.SelectedIndex] = textBox1.Text;
                             LoadedSteamID[listBox1.SelectedIndex] = listBox1.Items[listBox1.SelectedIndex].ToString();
