@@ -501,7 +501,7 @@ namespace Dota_Buff
                             byte[] cyrillicBytes = Encoding.Convert(utf8, cyrillic, utfBytes);
                             textBox1.Text = cyrillic.GetString(cyrillicBytes);
 
-                            Console.WriteLine(Console.OutputEncoding);
+                            Console.WriteLine(cyrillic.GetString(cyrillicBytes));
                             Console.WriteLine("BodyName: " + Console.OutputEncoding.BodyName);
                             Console.WriteLine("HeaderName: " + Console.OutputEncoding.HeaderName);
                             Console.WriteLine("WebName: " + Console.OutputEncoding.WebName);
