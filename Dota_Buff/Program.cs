@@ -29,6 +29,7 @@ namespace Dota_Buff
         private static String[] HeroName = new String[20];
         private static String[] PlayerName = new String[20];
         private static String GameIp;
+        private static int players_count;
         public struct Repo
         {
             public String RepoM;
@@ -145,6 +146,18 @@ namespace Dota_Buff
 
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
+            if (GameIp != Game.IPAddress)
+            {
+                GameIp = Game.IPAddress;
+                players_count = 0;
+                frm.listBox1.Items.Clear();
+                frm.listBox2.Items.Clear();
+                for (int i = 0; i < Game.MaximumClients; i++)
+                {
+                    frm.listBox1.Items.Add("Loading...");
+                    frm.listBox2.Items.Add("Loading...");
+                }
+            }
             var enemies = ObjectMgr.GetEntities<Hero>().Where(enemy => enemy != null).ToList();
             foreach (var enemy in enemies)
             {
@@ -155,6 +168,21 @@ namespace Dota_Buff
                     Repos[frm.listBox1.SelectedIndex].SteamId = enemy.Player.PlayerSteamID;
                 }
             }
+            if (players_count < Game.MaximumClients)
+            {
+                if (ObjectMgr.LocalPlayer != null)
+                {
+                    var players = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
+                    foreach (var _player in players)
+                    {
+                        if (_player == null) continue;
+                        frm.listBox1.Items[_player.ID] = "" + _player.PlayerSteamID;
+                        frm.listBox2.Items[_player.ID] = "" + _player.Name;
+                        players_count++;
+                    }
+                }
+            }
+
             if (ObjectMgr.LocalPlayer != null && ObjectMgr.LocalPlayer.Hero == null)
             {
                 IsPlayersLoad = true;
@@ -767,28 +795,6 @@ namespace Dota_Buff
                     }
                     frm.Width = 800; frm.Height = 400;
                     frm.Show();
-                    var enemies = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
-                    frm.listBox1.Items.Clear();
-                    frm.listBox2.Items.Clear();
-                    frm.listBox1.Items.Add("Loading...");
-                    frm.listBox2.Items.Add("Loading...");
-                    foreach (var enemy in enemies)
-                    {
-                        if (enemy == null) continue;
-                        uint id = enemy.PlayerSteamID;
-                        if (enemy.ID + 1 > frm.listBox1.Items.Count)
-                        {
-                            int d = frm.listBox1.Items.Count;
-                            for (int i = 0; i < enemy.ID + 1 - d; i++)
-                            {
-                                frm.listBox1.Items.Add("Loading...");
-                                frm.listBox2.Items.Add("Loading...");
-                            }
-                        }
-                        frm.listBox1.Items[enemy.ID] = "" + id;
-                        frm.listBox2.Items[enemy.ID] = "" + enemy.Name;
-                    }
-                    frm.listBox1.SelectedIndex = 0;
                 }
             }
             catch (Exception e)
