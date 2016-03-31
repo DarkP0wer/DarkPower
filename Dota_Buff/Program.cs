@@ -152,17 +152,18 @@ namespace Dota_Buff
                 players_count = 0;
                 frm.listBox1.Items.Clear();
                 frm.listBox2.Items.Clear();
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 11; i++)
                 {
                     frm.listBox1.Items.Add("Loading...");
                     frm.listBox2.Items.Add("Loading...");
                 }
             }
 
-            if (players_count < 10)
+            if (players_count < 11)
             {
                 if (ObjectMgr.LocalPlayer != null)
                 {
+                    Console.WriteLine(players_count);
                     Player p = null;
                     for(int i = 0; i < 10; i++)
                     {
