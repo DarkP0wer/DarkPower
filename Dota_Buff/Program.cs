@@ -501,16 +501,8 @@ namespace Dota_Buff
                             byte[] unicodeBytes = Encoding.Convert(utf8, unicode, utfBytes);
                             textBox1.Text = unicode.GetString(unicodeBytes);
 
-
-                            Encoding Win1251 = Encoding.GetEncoding("Windows-1251");
-                            byte[] Win1251Bytes = Win1251.GetBytes(textBox1.Text);
-                            byte[] unicodeBytes2 = Encoding.Convert(Win1251, unicode, Win1251Bytes);
-                            textBox2.Text = unicode.GetString(unicodeBytes2);
-
-                            Console.WriteLine("Юникод: " + unicode.GetString(unicodeBytes));
-                            Console.WriteLine("Юникод2: " + unicode.GetString(unicodeBytes2));
-                            Console.WriteLine(_PlayerName[listBox1.SelectedIndex]);
-                            Console.WriteLine("Name: " + _PlayerName[listBox1.SelectedIndex]);
+                            Console.WriteLine(Console.OutputEncoding);
+                            Console.WriteLine("Кодировка: " + Console.OutputEncoding);
                             return;
                         }
                         if (LoadedSteamID[listBox1.SelectedIndex] == listBox1.Items[listBox1.SelectedIndex].ToString())
