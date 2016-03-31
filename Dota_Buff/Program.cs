@@ -139,7 +139,7 @@ namespace Dota_Buff
             Drawing.OnPostReset += Drawing_OnPostReset;
             Drawing.OnEndScene += Drawing_OnEndScene;
             Game.OnWndProc += Game_OnGameWndProc;
-            aTimer = new System.Timers.Timer(1000);
+            aTimer = new System.Timers.Timer(2500);
             aTimer.Elapsed += OnTimedEvent;
             aTimer.Enabled = true;
         }
@@ -158,27 +158,28 @@ namespace Dota_Buff
                     frm.listBox2.Items.Add("Loading...");
                 }
             }
-            var enemies = ObjectMgr.GetEntities<Hero>().Where(enemy => enemy != null).ToList();
-            foreach (var enemy in enemies)
-            {
-                if (enemy.Player != null)
-                {
-                    HeroName[enemy.Player.ID] = enemy.Name;
-                    PlayerName[enemy.Player.ID] = enemy.Player.Name;
-                    Repos[frm.listBox1.SelectedIndex].SteamId = enemy.Player.PlayerSteamID;
-                }
-            }
+
             if (players_count < 10)
             {
                 if (ObjectMgr.LocalPlayer != null)
                 {
-                    var players = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
-                    foreach (var _player in players)
+                    Player p = null;
+                    for(int i = 0; i < 10; i++)
                     {
-                        if (_player == null) continue;
-                        frm.listBox1.Items[_player.ID] = "" + _player.PlayerSteamID;
-                        frm.listBox2.Items[_player.ID] = "" + _player.Name;
-                        players_count++;
+                        p = ObjectMgr.GetPlayerById((uint)i);
+                        if (p != null)
+                        {
+                            frm.listBox1.Items[p.ID] = "" + p.PlayerSteamID;
+                            frm.listBox2.Items[p.ID] = "" + p.Name;
+                            players_count++;
+
+                            if (p.Hero != null)
+                            {
+                                HeroName[p.ID] = p.Hero.Name;
+                                PlayerName[p.ID] = p.Name;
+                                Repos[p.ID].SteamId = p.PlayerSteamID;
+                            }
+                        }
                     }
                 }
             }
