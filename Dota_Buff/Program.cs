@@ -495,15 +495,17 @@ namespace Dota_Buff
                             textBox1.Text += "\r\nHero: " + _HeroName[listBox1.SelectedIndex];
 
 
-                            Encoding unicode = Encoding.Unicode;
+                            Encoding cyrillic = Encoding.GetEncoding(866);
                             Encoding utf8 = Encoding.UTF8;
                             byte[] utfBytes = utf8.GetBytes(textBox1.Text);
-                            byte[] unicodeBytes = Encoding.Convert(utf8, unicode, utfBytes);
-                            textBox1.Text = unicode.GetString(unicodeBytes);
+                            byte[] cyrillicBytes = Encoding.Convert(utf8, cyrillic, utfBytes);
+                            textBox1.Text = cyrillic.GetString(cyrillicBytes);
 
                             Console.WriteLine(Console.OutputEncoding);
-                            Console.WriteLine("Кодировка: " + Console.OutputEncoding.EncodingName);
-                            Console.WriteLine("Кодировкаint: " + Console.OutputEncoding.CodePage);
+                            Console.WriteLine("BodyName: " + Console.OutputEncoding.BodyName);
+                            Console.WriteLine("HeaderName: " + Console.OutputEncoding.HeaderName);
+                            Console.WriteLine("WebName: " + Console.OutputEncoding.WebName);
+                            Console.WriteLine("CodePage: " + Console.OutputEncoding.CodePage);
                             return;
                         }
                         if (LoadedSteamID[listBox1.SelectedIndex] == listBox1.Items[listBox1.SelectedIndex].ToString())
