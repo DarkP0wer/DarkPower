@@ -152,7 +152,7 @@ namespace Dota_Buff
                 players_count = 0;
                 frm.listBox1.Items.Clear();
                 frm.listBox2.Items.Clear();
-                for (int i = 0; i < Game.MaximumClients; i++)
+                for (int i = 0; i < 10; i++)
                 {
                     frm.listBox1.Items.Add("Loading...");
                     frm.listBox2.Items.Add("Loading...");
@@ -168,7 +168,7 @@ namespace Dota_Buff
                     Repos[frm.listBox1.SelectedIndex].SteamId = enemy.Player.PlayerSteamID;
                 }
             }
-            if (players_count < Game.MaximumClients)
+            if (players_count < 10)
             {
                 if (ObjectMgr.LocalPlayer != null)
                 {
