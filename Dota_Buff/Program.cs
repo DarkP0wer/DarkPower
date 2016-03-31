@@ -502,7 +502,8 @@ namespace Dota_Buff
                             textBox1.Text = unicode.GetString(unicodeBytes);
 
                             Console.WriteLine(Console.OutputEncoding);
-                            Console.WriteLine("Кодировка: " + Console.OutputEncoding);
+                            Console.WriteLine("Кодировка: " + Console.OutputEncoding.EncodingName);
+                            Console.WriteLine("Кодировкаint: " + Console.OutputEncoding.CodePage);
                             return;
                         }
                         if (LoadedSteamID[listBox1.SelectedIndex] == listBox1.Items[listBox1.SelectedIndex].ToString())
