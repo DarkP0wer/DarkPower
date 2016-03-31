@@ -504,7 +504,7 @@ namespace Dota_Buff
                             Encoding Win1251 = Encoding.GetEncoding("Windows-1251");
                             byte[] Win1251Bytes = Win1251.GetBytes(textBox1.Text);
                             byte[] unicodeBytes2 = Encoding.Convert(Win1251, unicode, Win1251Bytes);
-                            textBox1.Text = unicode.GetString(unicodeBytes2);
+                            textBox2.Text = unicode.GetString(unicodeBytes2);
                             return;
                         }
                         if (LoadedSteamID[listBox1.SelectedIndex] == listBox1.Items[listBox1.SelectedIndex].ToString())
