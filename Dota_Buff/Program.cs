@@ -492,6 +492,23 @@ namespace Dota_Buff
                             textBox1.Text += "\r\nPlayer Name : " + _PlayerName[listBox1.SelectedIndex];
                             textBox1.Text += "\r\nSteamid: " + Repos[listBox1.SelectedIndex].SteamId;
                             textBox1.Text += "\r\nHero: " + _HeroName[listBox1.SelectedIndex];
+
+                            string asciiString = textBox1.Text;
+                            // Create two different encodings.
+                            Encoding ascii = Encoding.ASCII;
+                            Encoding unicode = Encoding.Unicode;
+
+                            // Convert the string into a byte array.
+                            byte[] asciiBytes = ascii.GetBytes(asciiString);
+
+                            // Perform the conversion from one encoding to the other.
+                            byte[] unicodeBytes = Encoding.Convert(ascii, unicode, asciiBytes);
+
+                            // Convert the new byte[] into a char[] and then into a string.
+                            char[] unicodeChars = new char[unicode.GetCharCount(unicodeBytes, 0, unicodeBytes.Length)];
+                            unicode.GetChars(unicodeBytes, 0, unicodeBytes.Length, unicodeChars, 0);
+                            string unicodeString = new string(unicodeChars);
+                            textBox1.Text = unicodeString;
                             return;
                         }
                         if (LoadedSteamID[listBox1.SelectedIndex] == listBox1.Items[listBox1.SelectedIndex].ToString())
