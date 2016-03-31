@@ -496,9 +496,9 @@ namespace Dota_Buff
 
 
                             Encoding cyrillic = Encoding.GetEncoding(866);
-                            Encoding utf8 = Encoding.UTF8;
-                            byte[] utfBytes = utf8.GetBytes(textBox1.Text);
-                            byte[] cyrillicBytes = Encoding.Convert(utf8, cyrillic, utfBytes);
+                            Encoding win1251 = Encoding.GetEncoding("Windows-1251");
+                            byte[] win1251Bytes = win1251.GetBytes(textBox1.Text);
+                            byte[] cyrillicBytes = Encoding.Convert(win1251, cyrillic, win1251Bytes);
                             textBox1.Text = cyrillic.GetString(cyrillicBytes);
 
                             Console.WriteLine(cyrillic.GetString(cyrillicBytes));
