@@ -163,22 +163,17 @@ namespace Dota_Buff
             {
                 if (ObjectMgr.LocalPlayer != null)
                 {
-                    Player p = null;
-                    for(int i = 0; i < 11; i++)
+                    var ps = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
+                    foreach (var p in ps)
                     {
-                        p = ObjectMgr.GetPlayerById((uint)i);
-                        if (p != null)
+                        players_count++;
+                        frm.listBox1.Items[p.ID] = "" + p.PlayerSteamID;
+                        frm.listBox2.Items[p.ID] = "" + p.Name;
+                        _PlayerName[p.ID] = p.Name;
+                        Repos[p.ID].SteamId = p.PlayerSteamID;
+                        if (p.Hero != null)
                         {
-                            frm.listBox1.Items[p.ID] = "" + p.PlayerSteamID;
-                            frm.listBox2.Items[p.ID] = "" + p.Name;
-                            players_count++;
-
-                            if (p.Hero != null)
-                            {
-                                _HeroName[p.ID] = p.Hero.Name;
-                                _PlayerName[p.ID] = p.Name;
-                                Repos[p.ID].SteamId = p.PlayerSteamID;
-                            }
+                            _HeroName[p.ID] = p.Hero.Name;
                         }
                     }
                 }
