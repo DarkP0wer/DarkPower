@@ -171,11 +171,8 @@ namespace Dota_Buff
                         frm.listBox2.Items[p.ID] = "" + p.Name;
                         _PlayerName[p.ID] = p.Name;
                         Repos[p.ID].SteamId = p.PlayerSteamID;
-                        try
-                        {
+                        if(p.Hero != null)
                             _HeroName[p.ID] = p.Hero.Name;
-                        }
-                        catch { };
                     }
                 }
             }
