@@ -1348,7 +1348,7 @@ namespace HOST_HACKS
 	                    s = s.Substring(8);
 	                    exp = Convert.ToInt32(s, 16);
 	                    
-	                    frm.label1.Text = "Added 1000 EXP at: " + Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x5a0, 0x1170 }, false, exp+1000).Value.ToString("X");
+	                    frm.label1.Text = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x5a0, 0x1170 }, false, exp+1000).Value.ToString("X");
 	                }
 	                catch { }
                     }
