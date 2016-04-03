@@ -155,7 +155,7 @@ namespace HOST_HACKS
 	    SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("RKey", "Restore Health/Mana Key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("RH", "Resotre Helath").SetValue(true));
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("RM", "Resotre Mana").SetValue(true));
-            SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("EXPKey", "Add 1000 EXP").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
+            SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("EXPKey", "Set 500,000 EXP").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
             SubMenu.AddToMainMenu();
             aTimer = new System.Timers.Timer(1000);
             aTimer.Elapsed += OnTimedEvent;
