@@ -155,6 +155,7 @@ namespace HOST_HACKS
 	    SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("RKey", "Restore Health/Mana Key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("RH", "Resotre Helath").SetValue(true));
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("RM", "Resotre Mana").SetValue(true));
+            SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("EXPKey", "Add 1000 EXP").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
             SubMenu.AddToMainMenu();
             aTimer = new System.Timers.Timer(1000);
             aTimer.Elapsed += OnTimedEvent;
@@ -162,9 +163,9 @@ namespace HOST_HACKS
             Game.OnWndProc += Game_OnGameWndProc;
         }
 
-        static string OffsetGoldR = "server.dll+1CF6D50";
-        static string OffsetGoldD = "server.dll+1CF6D58";
-	static string OffsetPlayer = "server.dll+1D03650";
+        static string OffsetGoldR = "server.dll+1CF7E50";
+        static string OffsetGoldD = "server.dll+1CF7E58";
+	static string OffsetPlayer = "server.dll+01D04750";
 
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
@@ -1335,6 +1336,21 @@ namespace HOST_HACKS
                         }
                         frm.Width = 613; frm.Height = 235;
                         frm.Show();
+                    }
+                    else if (args.WParam == SubMenu.Item("EXPKey").GetValue<Ensage.Common.Menu.KeyBind>().Key)
+                    {
+                    	var player = ObjectMgr.LocalHero;
+                        if (!Game.IsInGame || player == null) return;
+                        String s = ""; int exp = 0;
+	                try
+	                {
+	                    s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x5a0, 0x1170 }, true, 1).Value.ToString("X");
+	                    s = s.Substring(8);
+	                    exp = Convert.ToInt32(s, 16);
+	                    
+	                    label1.Text = "Added 1000 EXP at: " + Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0x5a0, 0x1170 }, false, exp+1000).Value.ToString("X");
+	                }
+	                catch { }
                     }
                     else if (args.WParam == SubMenu.Item("TPKey").GetValue<Ensage.Common.Menu.KeyBind>().Key)
                     {
