@@ -1341,6 +1341,8 @@ namespace HOST_HACKS
                     {
                     	var player = ObjectMgr.LocalHero;
                         if (!Game.IsInGame || player == null) return;
+                        Process[] P = Process.GetProcessesByName("dota2");
+                        if (P.Length == 0) return;
                         String s = ""; int exp = 0;
 	                try
 	                {
