@@ -173,12 +173,6 @@ namespace Dota_Buff
                     else
                         _HeroName[p.ID] = "null";
                 }
-
-                var hs = ObjectManager.GetEntities<Hero>().Where(enemy => enemy != null).ToList();
-                foreach (var h in hs)
-                {
-                    _HeroName[h.Player.PlayerSteamID] = p.Hero.Name;
-                }
                 #endregion
                 #region if (ObjectManager.LocalPlayer.Hero == null)
                 if (ObjectManager.LocalPlayer.Hero == null)
