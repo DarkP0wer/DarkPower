@@ -18,7 +18,7 @@ namespace Dota_Buff
         public const int HT_CAPTION = 0x2;
 
         #region CFG
-        private static String version = "v1.4";
+        private static String version = "v1.5";
         private static readonly Ensage.Common.Menu.Menu SubMenu = new Ensage.Common.Menu.Menu("Dota Buff " + version, "DOTA BUFF", true);
         private static Boolean IsPlayersLoad;
         private static String filename = "Dota_Buff.ini";
@@ -29,7 +29,6 @@ namespace Dota_Buff
         private static String[] _HeroName = new String[20];
         private static String[] _PlayerName = new String[20];
         private static String GameIp;
-        private static int players_count;
         public struct Repo
         {
             public String RepoM;
@@ -116,8 +115,7 @@ namespace Dota_Buff
             SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("DBKey", "Menu hot key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
             SubMenu.AddToMainMenu();
             IsFormClose = false;
-            frm.comboBox2.SelectedIndex = 0;
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 11; i++)
             {
                 RWA[i] = "NULL";
             }
@@ -146,10 +144,10 @@ namespace Dota_Buff
 
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
+            #region if (GameIp != Game.IPAddress)
             if (GameIp != Game.IPAddress)
             {
                 GameIp = Game.IPAddress;
-                players_count = 0;
                 frm.listBox1.Items.Clear();
                 frm.listBox2.Items.Clear();
                 for (int i = 0; i < 10; i++)
@@ -158,104 +156,114 @@ namespace Dota_Buff
                     frm.listBox2.Items.Add("Loading...");
                 }
             }
-
-            if (players_count < 11)
+            #endregion
+            #region if (ObjectManager.LocalPlayer != null) ... if(ObjectManager.LocalPlayer != null && ObjectManager.LocalHero != null && IsPlayersLoad)
+            if (ObjectManager.LocalPlayer != null)
             {
-                if (ObjectManager.LocalPlayer != null)
+                var ps = ObjectManager.GetEntities<Player>().Where(enemy => enemy != null).ToList();
+                #region foreach (var p in ps)
+                foreach (var p in ps)
                 {
-                    var ps = ObjectManager.GetEntities<Player>().Where(enemy => enemy != null).ToList();
-                    foreach (var p in ps)
-                    {
-                        players_count++;
-                        frm.listBox1.Items[p.ID] = "" + p.PlayerSteamID;
-                        frm.listBox2.Items[p.ID] = "" + p.Name;
-                        _PlayerName[p.ID] = p.Name;
-                        Repos[p.ID].SteamId = p.PlayerSteamID;
-                        if(p.Hero != null)
-                            _HeroName[p.ID] = p.Hero.Name;
-                    }
+                    frm.listBox1.Items[p.ID] = "" + p.PlayerSteamID;
+                    frm.listBox2.Items[p.ID] = "" + p.Name;
+                    _PlayerName[p.ID] = p.Name;
+                    Repos[p.ID].SteamId = p.PlayerSteamID;
+                    if (p.Hero != null)
+                        _HeroName[p.ID] = p.Hero.Name;
                 }
-            }
-
-            if (ObjectManager.LocalPlayer != null && ObjectManager.LocalPlayer.Hero == null)
-            {
-                IsPlayersLoad = true;
-                for (int i = 0; i < 20; i++)
+                #endregion
+                #region if (ObjectManager.LocalPlayer.Hero == null)
+                if (ObjectManager.LocalPlayer.Hero == null)
                 {
-                    Player p = null;
-                    p = ObjectManager.GetPlayerById((uint)i);
-                    if (p == null)
+                    IsPlayersLoad = true;
+                    #region for (int i = 0; i < 20; i++)
+                    for (int i = 0; i < 20; i++)
                     {
-                        RWA[i] = "Loading...";
-                        Repos[i].RepoM = "-";
-                        continue;
-                    }
-                    if (RWA[i] == "NULL")
-                    {
-                        if (System.IO.File.Exists(filename))
+                        Player p = null;
+                        p = ObjectManager.GetPlayerByID((uint)i);
+                        #region if (p == null)
+                        if (p == null)
                         {
-                            var IniFile = new IniFile(filename);
-                            if (IniFile.KeyExists("Mark", "" + p.PlayerSteamID))
+                            RWA[i] = "Loading...";
+                            Repos[i].RepoM = "-";
+                            continue;
+                        }
+                        #endregion
+                        #region if (RWA[i] == "NULL")
+                        if (RWA[i] == "NULL")
+                        {
+                            if (System.IO.File.Exists(filename))
                             {
-                                var Mark = IniFile.Read("Mark", "" + p.PlayerSteamID);
-                                var RepoText = IniFile.Read("RepoText", "" + p.PlayerSteamID);
-                                var GamesPlayed = IniFile.Read("GamesPlayed", "" + p.PlayerSteamID);
-                                Repos[i].SteamId = p.PlayerSteamID;
-                                Repos[i].RepoM = Mark;
-                                Repos[i].RepoT = RepoText;
-                                Repos[i].GamesPlayed = Convert.ToInt32(GamesPlayed) + 1;
+                                var IniFile = new IniFile(filename);
+                                #region if (IniFile.KeyExists("Mark", "" + p.PlayerSteamID))
+                                if (IniFile.KeyExists("Mark", "" + p.PlayerSteamID))
+                                {
+                                    var Mark = IniFile.Read("Mark", "" + p.PlayerSteamID);
+                                    var RepoText = IniFile.Read("RepoText", "" + p.PlayerSteamID);
+                                    var GamesPlayed = IniFile.Read("GamesPlayed", "" + p.PlayerSteamID);
+                                    Repos[i].SteamId = p.PlayerSteamID;
+                                    Repos[i].RepoM = Mark;
+                                    Repos[i].RepoT = RepoText;
+                                    Repos[i].GamesPlayed = Convert.ToInt32(GamesPlayed) + 1;
 
-                                IniFile.Write("GamesPlayed", Repos[i].GamesPlayed.ToString(), "" + p.PlayerSteamID);
+                                    IniFile.Write("GamesPlayed", Repos[i].GamesPlayed.ToString(), "" + p.PlayerSteamID);
+                                }
+                                #endregion
+                                #region else
+                                else
+                                {
+                                    Repos[i].RepoM = "-";
+                                    Repos[i].GamesPlayed = 0;
+                                    IniFile.Write("Mark", "Played", "" + p.PlayerSteamID);
+                                    IniFile.Write("RepoText", "None", "" + p.PlayerSteamID);
+                                    IniFile.Write("GamesPlayed", "1", "" + p.PlayerSteamID);
+                                }
+                                #endregion
                             }
-                            else
+                            else Repos[i].RepoM = "-";
+                            RWA[i] = "Loading inf...";
+                            String text = "";
+                            var webRequest = WebRequest.Create("http://www.dotabuff.com/players/" + p.PlayerSteamID + "/matches?date=patch_6.86s&hero=&skill_bracket=&lobby_type=ranked_matchmaking&game_mode=&region=&faction=&duration=&timezone=Etc%2FUTC");
+                            ((HttpWebRequest)webRequest).UserAgent = ".NET Framework Example Client";
+                            webRequest.Method = "GET";
+                            using (var response = webRequest.GetResponse())
+                            using (var content = response.GetResponseStream())
+                            using (var reader = new System.IO.StreamReader(content))
                             {
-                                Repos[i].RepoM = "-";
-                                Repos[i].GamesPlayed = 0;
-                                IniFile.Write("Mark", "Played", "" + p.PlayerSteamID);
-                                IniFile.Write("RepoText", "None", "" + p.PlayerSteamID);
-                                IniFile.Write("GamesPlayed", "1", "" + p.PlayerSteamID);
+                                var strContent = reader.ReadToEnd();
+                                text = strContent;
+                            }
+                            int startpos = text.IndexOf("r-stats-grid r-stats-grid-padded");
+                            if (startpos == -1)
+                            {
+                                RWA[p.ID] = "NONE";
+                            }
+                            else if (startpos > -1)
+                            {
+                                int finishpos = text.IndexOf("/article", startpos);
+                                text = text.Substring(startpos, finishpos - startpos);
+                                int NextPos = text.IndexOf("Matches</small></div><div class=\"kv\"><span class=\"color-stat-win\">", 0);
+                                RWA[p.ID] = text.Substring(NextPos + 66, text.IndexOf("<", NextPos) - NextPos - 66);
                             }
                         }
-                        else Repos[i].RepoM = "-";
-                        RWA[i] = "Loading inf...";
-                        String text = "";
-                        var webRequest = WebRequest.Create("http://www.dotabuff.com/players/" + p.PlayerSteamID + "/matches?date=patch_6.86s&hero=&skill_bracket=&lobby_type=ranked_matchmaking&game_mode=&region=&faction=&duration=&timezone=Etc%2FUTC");
-                        ((HttpWebRequest)webRequest).UserAgent = ".NET Framework Example Client";
-                        webRequest.Method = "GET";
-                        using (var response = webRequest.GetResponse())
-                        using (var content = response.GetResponseStream())
-                        using (var reader = new System.IO.StreamReader(content))
+                        #endregion
+                        #region else if (RWA[i] == "Loading...")
+                        else if (RWA[i] == "Loading...")
                         {
-                            var strContent = reader.ReadToEnd();
-                            text = strContent;
+                            RWA[i] = "NULL";
                         }
-                        int startpos = text.IndexOf("r-stats-grid r-stats-grid-padded");
-                        if (startpos == -1)
-                        {
-                            RWA[p.ID] = "NONE";
-                        }
-                        else if (startpos > -1)
-                        {
-                            int finishpos = text.IndexOf("/article", startpos);
-                            text = text.Substring(startpos, finishpos - startpos);
-                            int NextPos = text.IndexOf("Matches</small></div><div class=\"kv\"><span class=\"color-stat-win\">", 0);
-                            RWA[p.ID] = text.Substring(NextPos + 66, text.IndexOf("<", NextPos) - NextPos - 66);
-                        }
+                        #endregion
                     }
-                    else if (RWA[i] == "Loading...")
-                    {
-                        RWA[i] = "NULL";
-                    }
+                    #endregion
                 }
+#endregion
             }
-            else
+            if(ObjectManager.LocalPlayer != null && ObjectManager.LocalHero != null && IsPlayersLoad)
             {
-                if (IsPlayersLoad)
-                {
-                    for (int i = 0; i < 20; i++) RWA[i] = "NULL";
-                    IsPlayersLoad = false;
-                }
+                for (int i = 0; i < 20; i++) RWA[i] = "NULL";
+                IsPlayersLoad = false;
             }
+            #endregion
         }
 
         private static void Drawing_OnPostReset(EventArgs args)
@@ -485,6 +493,7 @@ namespace Dota_Buff
                     if (radioButton1.Checked)
                     {
                         textBox2.Text = _HeroName[listBox1.SelectedIndex];
+                        #region if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...")
                         if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...")
                         {
                             textBox1.Text = "This persson not loaded or disconnected!";
@@ -493,10 +502,12 @@ namespace Dota_Buff
                             textBox1.Text += "\r\nHero: " + _HeroName[listBox1.SelectedIndex];
                             return;
                         }
+                        #endregion
                         if (LoadedSteamID[listBox1.SelectedIndex] == listBox1.Items[listBox1.SelectedIndex].ToString())
                         {
                             textBox1.Text = LoadedInformation[listBox1.SelectedIndex];
                         }
+                        #region else
                         else
                         {
 
@@ -609,6 +620,7 @@ namespace Dota_Buff
                             LoadedSteamID[listBox1.SelectedIndex] = listBox1.Items[listBox1.SelectedIndex].ToString();
 
                         }
+                        #endregion
                     }
                     else
                     {
