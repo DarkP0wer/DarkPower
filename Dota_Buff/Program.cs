@@ -161,9 +161,9 @@ namespace Dota_Buff
 
             if (players_count < 11)
             {
-                if (ObjectMgr.LocalPlayer != null)
+                if (ObjectManager.LocalPlayer != null)
                 {
-                    var ps = ObjectMgr.GetEntities<Player>().Where(enemy => enemy != null).ToList();
+                    var ps = ObjectManager.GetEntities<Player>().Where(enemy => enemy != null).ToList();
                     foreach (var p in ps)
                     {
                         players_count++;
@@ -177,13 +177,13 @@ namespace Dota_Buff
                 }
             }
 
-            if (ObjectMgr.LocalPlayer != null && ObjectMgr.LocalPlayer.Hero == null)
+            if (ObjectManager.LocalPlayer != null && ObjectManager.LocalPlayer.Hero == null)
             {
                 IsPlayersLoad = true;
                 for (int i = 0; i < 20; i++)
                 {
                     Player p = null;
-                    p = ObjectMgr.GetPlayerById((uint)i);
+                    p = ObjectManager.GetPlayerById((uint)i);
                     if (p == null)
                     {
                         RWA[i] = "Loading...";
@@ -648,7 +648,7 @@ namespace Dota_Buff
                 if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...")
                 {
                     Win32.PrintEncolored("Dota_Buff: Player not loaded...", ConsoleColor.Red);
-                    var enemies = ObjectMgr.GetEntities<Hero>().Where(enemy => enemy != null).ToList();
+                    var enemies = ObjectManager.GetEntities<Hero>().Where(enemy => enemy != null).ToList();
                     foreach (var enemy in enemies)
                     {
                         if (_HeroName[listBox1.SelectedIndex] == enemy.Name && enemy.Player == null)
