@@ -45,7 +45,6 @@ namespace echo_sabre
                     Console.WriteLine(item.Name);
                     me.PickUpItem(item, true);
                     me.Attack(Game.MousePosition, true);
-                    IsWork = false;
                 }
             }
 
