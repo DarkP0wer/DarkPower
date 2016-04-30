@@ -14,8 +14,8 @@ namespace echo_sabre
 
         static void Main(string[] args)
         {
-            Menu.AddItem(new Ensage.Common.Menu.MenuItem("MyKey228", "HoldKey").SetValue(new KeyBind('K', KeyBindType.Press)));
-            Menu.AddItem(new Ensage.Common.Menu.MenuItem("MyKey1337", "RefreshKey").SetValue(new KeyBind('K', KeyBindType.Press)));
+            Menu.AddItem(new Ensage.Common.Menu.MenuItem("MyKey228", "HoldKey").SetValue(new KeyBind('3', KeyBindType.Press)));
+            Menu.AddItem(new Ensage.Common.Menu.MenuItem("MyKey1337", "RefreshKey").SetValue(new KeyBind('4', KeyBindType.Press)));
             Menu.AddToMainMenu();
             Game.OnUpdate += Game_OnUpdate;
         }
