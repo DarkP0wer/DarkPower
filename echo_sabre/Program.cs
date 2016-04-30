@@ -14,8 +14,8 @@ namespace echo_sabre
 
         static void Main(string[] args)
         {
-            Menu.AddItem(new Ensage.Common.Menu.MenuItem("MyKey228", "HoldKey").SetValue(new KeyBind('3', KeyBindType.Press)));
-            Menu.AddItem(new Ensage.Common.Menu.MenuItem("MyKey1337", "RefreshKey").SetValue(new KeyBind('4', KeyBindType.Press)));
+            Menu.AddItem(new Ensage.Common.Menu.MenuItem("HoldKey228", "HoldKey").SetValue(new KeyBind('K', KeyBindType.Press)));
+            Menu.AddItem(new Ensage.Common.Menu.MenuItem("RefreshKey228", "RefreshKey").SetValue(new KeyBind('K', KeyBindType.Press)));
             Menu.AddToMainMenu();
             Game.OnUpdate += Game_OnUpdate;
         }
@@ -24,7 +24,7 @@ namespace echo_sabre
 
         private static void Game_OnUpdate(EventArgs args)
         {
-            if (Game.IsKeyDown(Menu.Item("MyKey228").GetValue<KeyBind>().Key))
+            if (Game.IsKeyDown(Menu.Item("HoldKey228").GetValue<KeyBind>().Key))
             {
                 if (ObjectManager.LocalHero == null) return;
                 var me = ObjectManager.LocalHero;
@@ -47,6 +47,11 @@ namespace echo_sabre
                     me.Attack(Game.MousePosition, true);
                     IsWork = false;
                 }
+            }
+
+            else if (Game.IsKeyDown(Menu.Item("RefreshKey228").GetValue<KeyBind>().Key))
+            {
+                IsWork = false;
             }
         }
     }
