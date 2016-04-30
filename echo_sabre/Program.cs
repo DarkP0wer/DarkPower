@@ -48,7 +48,7 @@ namespace echo_sabre
                 }
             }
 
-            else if (Game.IsKeyDown(Menu.Item("RefreshKey228").GetValue<KeyBind>().Key))
+            if (Game.IsKeyDown(Menu.Item("RefreshKey228").GetValue<KeyBind>().Key))
             {
                 IsWork = false;
             }
