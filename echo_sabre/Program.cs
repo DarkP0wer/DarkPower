@@ -10,7 +10,7 @@ namespace echo_sabre
 {
     class Program
     {
-        private static readonly Ensage.Common.Menu.Menu Menu = new Ensage.Common.Menu.Menu("Fast attack with echo_sabre", "test", true);
+        private static readonly Ensage.Common.Menu.Menu Menu = new Ensage.Common.Menu.Menu("Echo_Sabre abuse", "Echo_Sabre", true);
 
         static void Main(string[] args)
         {
