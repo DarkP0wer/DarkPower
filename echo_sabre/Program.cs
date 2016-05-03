@@ -42,7 +42,6 @@ namespace echo_sabre
                 var droppedItems = ObjectManager.GetEntities<PhysicalItem>().Where(x => x.Distance2D(me) < 200).Reverse().ToList();
                 foreach (var item in droppedItems)
                 {
-                    Console.WriteLine(item.Name);
                     me.PickUpItem(item, true);
                     me.Attack(Game.MousePosition, true);
                 }
