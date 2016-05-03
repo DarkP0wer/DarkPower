@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using Ensage.Common.Menu;
-using System.Threading;
 using Ensage.Common;
 using Ensage;
 using Ensage.Common.Extensions;
@@ -14,43 +13,35 @@ namespace echo_sabre
 
         static void Main(string[] args)
         {
-            Menu.AddItem(new Ensage.Common.Menu.MenuItem("HoldKey228", "HoldKey").SetValue(new KeyBind('K', KeyBindType.Press)));
-            Menu.AddItem(new Ensage.Common.Menu.MenuItem("RefreshKey228", "RefreshKey").SetValue(new KeyBind('K', KeyBindType.Press)));
+            Menu.AddItem(new Ensage.Common.Menu.MenuItem("Key228", "Double Tap this key.").SetValue(new KeyBind('K', KeyBindType.Press)));
             Menu.AddToMainMenu();
-            Game.OnUpdate += Game_OnUpdate;
+            Game.OnWndProc += Game_OnGameWndProc;
         }
 
-        private static Boolean IsWork = false;
-
-        private static void Game_OnUpdate(EventArgs args)
+        public static void Game_OnGameWndProc(WndEventArgs args)
         {
-            if (Game.IsKeyDown(Menu.Item("HoldKey228").GetValue<KeyBind>().Key))
+            if (Game.IsChatOpen || Game.IsWatchingGame) return;
+            try
             {
-                if (ObjectManager.LocalHero == null) return;
-                var me = ObjectManager.LocalHero;
-                if (!IsWork)
+                if (args.Msg == 0x0101 && args.WParam == Menu.Item("Key228").GetValue<Ensage.Common.Menu.KeyBind>().Key)
                 {
+                    if (ObjectManager.LocalHero == null) return;
+                    var me = ObjectManager.LocalHero;
                     var items = me.Inventory.Items;
                     foreach (var item in items.Where(item => item.Name == "item_echo_sabre"))
                     {
                         me.DropItem(item, me.NetworkPosition, false);
-                        IsWork = true;
                     }
-                    Thread.Sleep(1);
-                };
 
-                var droppedItems = ObjectManager.GetEntities<PhysicalItem>().Where(x => x.Distance2D(me) < 200).Reverse().ToList();
-                foreach (var item in droppedItems)
-                {
-                    me.PickUpItem(item, true);
-                    me.Attack(Game.MousePosition, true);
+                    var droppedItems = ObjectManager.GetEntities<PhysicalItem>().Where(x => x.Distance2D(me) < 250 && x.Item.Name == "item_echo_sabre").Reverse().ToList();
+                    foreach (var item in droppedItems)
+                    {
+                        me.PickUpItem(item, false);
+                        me.Attack(Game.MousePosition, false);
+                    }
                 }
             }
-
-            if (Game.IsKeyDown(Menu.Item("RefreshKey228").GetValue<KeyBind>().Key))
-            {
-                IsWork = false;
-            }
+            catch{ }
         }
     }
 }
