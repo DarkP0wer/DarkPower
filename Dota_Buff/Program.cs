@@ -746,46 +746,40 @@ namespace Dota_Buff
 
         private static void Drawing_OnEndScene(EventArgs args)
         {
-            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed)
+            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed || Game.IsInGame) return;
+            for (int i = 0; i < 10; i++)
             {
-                return;
-            }
-            if (IsPlayersLoad)
-            {
-                for (int i = 0; i < 10; i++)
+                var text = string.Format("RWinRate: {1} | Games: {2}", i, RWA[i], Repos[i].GamesPlayed);
+                Color text_color;
+                switch (Repos[i].RepoM)
                 {
-                    var text = string.Format("RWinRate: {1} | Games: {2}", i, RWA[i], Repos[i].GamesPlayed);
-                    Color text_color;
-                    switch (Repos[i].RepoM)
-                    {
-                        case "GoodGuy":
-                            {
-                                text_color = Color.Green;
-                                break;
-                            }
-                        case "BadGuy":
-                            {
-                                text_color = Color.Red;
-                                break;
-                            }
-                        case "Played":
-                            {
-                                text_color = Color.Yellow;
-                                break;
-                            }
-                        default:
-                            text_color = Color.Blue;
+                    case "GoodGuy":
+                        {
+                            text_color = Color.Green;
                             break;
-                    }
-
-                    FontArray.DrawText(null, text, Drawing.Width - 475, (Drawing.Height / 17) * 3 + (int)(Drawing.Height / 22.58) *
-                        (
-                            (i > 4)
-                            ? (i + 1)
-                            : i
-                        )
-                        , text_color);
+                        }
+                    case "BadGuy":
+                        {
+                            text_color = Color.Red;
+                            break;
+                        }
+                    case "Played":
+                        {
+                            text_color = Color.Yellow;
+                            break;
+                        }
+                    default:
+                        text_color = Color.Blue;
+                        break;
                 }
+
+                FontArray.DrawText(null, text, Drawing.Width - 475, (Drawing.Height / 17) * 3 + (int)(Drawing.Height / 22.58) *
+                    (
+                        (i > 4)
+                        ? (i + 1)
+                        : i
+                    )
+                    , text_color);
             }
         }
 
