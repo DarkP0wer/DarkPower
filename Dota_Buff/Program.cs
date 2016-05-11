@@ -157,7 +157,7 @@ namespace Dota_Buff
                 }
             }
             #endregion
-            #region if (ObjectManager.LocalPlayer != null) ... if(ObjectManager.LocalPlayer != null && ObjectManager.LocalHero != null && IsPlayersLoad)
+            #region if (ObjectManager.LocalPlayer != null) ... if(ObjectManager.LocalPlayer != null && Game.IsInGame && IsPlayersLoad)
             if (ObjectManager.LocalPlayer != null)
             {
                 var ps = ObjectManager.GetEntities<Player>().Where(enemy => enemy != null).ToList();
@@ -260,7 +260,7 @@ namespace Dota_Buff
                 }
 #endregion
             }
-            if(ObjectManager.LocalPlayer != null && Game.IsInGame != null && IsPlayersLoad)
+            if(ObjectManager.LocalPlayer != null && Game.IsInGame && IsPlayersLoad)
             {
                 for (int i = 0; i < 20; i++) RWA[i] = "NULL";
                 IsPlayersLoad = false;
@@ -746,7 +746,7 @@ namespace Dota_Buff
 
         private static void Drawing_OnEndScene(EventArgs args)
         {
-            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed || IsPlayersLoad) return;
+            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed || !IsPlayersLoad) return;
             for (int i = 0; i < 10; i++)
             {
                 var text = string.Format("RWinRate: {1} | Games: {2}", i, RWA[i], Repos[i].GamesPlayed);
