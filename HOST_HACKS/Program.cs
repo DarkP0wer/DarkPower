@@ -24,6 +24,9 @@ namespace HOST_HACKS
             public long Value;
         }
 
+	[DllImport("kernel32.dll", SetLastError = true)]
+            public static extern bool WriteProcessMemory(IntPtr hProcess, long lpBaseAddress,
+              byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesWritten);
         public class Win32
         {
             [Flags]
@@ -1353,15 +1356,13 @@ namespace HOST_HACKS
                     {
                         var player = ObjectMgr.LocalHero;
                         if (!Game.IsInGame || player == null) return;
-                        Process[] P = Process.GetProcessesByName("dota2");
-                        if (P.Length == 0) return;
                         int bytesWritten; byte[] buffer; String s;
                         try
                         {
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Game.MousePosition.X);
                             s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0xD8 }, true, 1).Adress.ToString("X");
-                            Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
+                            WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
                         }
                         catch { }
 
@@ -1370,7 +1371,7 @@ namespace HOST_HACKS
                             bytesWritten = 0;
                             buffer = BitConverter.GetBytes(Game.MousePosition.Y);
                             s = Pointer("dota2", OffsetPlayer, new int[] { 0, 0x0, 0x48, 0xDC }, true, 1).Adress.ToString("X");
-                            Win32.WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
+                            WriteProcessMemory(P[0].Handle, long.Parse(s, NumberStyles.HexNumber), buffer, buffer.Length, ref bytesWritten);
 
                         }
                         catch { }
