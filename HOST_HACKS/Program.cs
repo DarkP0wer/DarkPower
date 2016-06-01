@@ -88,8 +88,8 @@ namespace HOST_HACKS
             long BaseAddy = -1;
             AdressAndValue res = new AdressAndValue();
 
-            //Process[] P = Process.GetProcessesByName(ProcessName);
-            //if (P.Length == 0)
+            Process[] P = Process.GetProcessesByName(ProcessName);
+            if (P.Length == 0)
             {
                 res.Adress = -1;
                 res.Value = -1;
