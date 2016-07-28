@@ -39,6 +39,7 @@ namespace Translate
             frm.comboBox1.SelectedIndex = 0;
             frm.comboBox2.SelectedIndex = 8;
             Game.OnWndProc += Game_OnGameWndProc;
+            Game.OnMessage += Game_OnMessage;
             ExitGUI = false;
         }
 
@@ -303,7 +304,6 @@ namespace Translate
                 {
                     if (checkBox1.Checked) Game.ExecuteCommand(((IsSayTeam)?"say_team ":"say ") + textBox3.Text);
                     else Game.ExecuteCommand(((IsSayTeam) ? "say_team " : "say ") + textBox2.Text);
-                    
                     if (checkBox3.Checked)
                     {
                         label1_Click(sender, e);
@@ -434,6 +434,12 @@ namespace Translate
         }
 
         static Form1 frm = new Form1();
+
+        public static void Game_OnMessage(MessageEventArgs args)
+        {
+            if (args.MessageType == 0)
+                Console.WriteLine("MSG: {0} Process: {1}", args.Message, args.Process);
+        }
 
         public static void Game_OnGameWndProc(WndEventArgs args)
         {
