@@ -99,7 +99,8 @@ namespace DotaPicker
             Game.OnWndProc += Game_OnGameWndProc;
             IsMenuOpen = false;
             Menu_Label1(30, 50, "SHOW WebBrowser", Color.Red, 150, 20, 17);
-            for (int i = 0; i < 10; i++) HeroNames[i] = "NULL";      
+            for (int i = 0; i < 10; i++) HeroNames[i] = "NULL"; 
+            frm.Opacity = oldOpacity;
         }
 
         private static double oldOpacity = 1.0;
