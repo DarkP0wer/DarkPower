@@ -227,7 +227,7 @@ namespace Dota_Buff
                             else Repos[i].RepoM = "-";
                             RWA[i] = "Loading inf...";
                             String text = "";
-                            var webRequest = WebRequest.Create("http://www.dotabuff.com/players/" + p.PlayerSteamID + "/matches?date=patch_6.86s&hero=&skill_bracket=&lobby_type=ranked_matchmaking&game_mode=&region=&faction=&duration=&timezone=Etc%2FUTC");
+                            var webRequest = WebRequest.Create("http://www.dotabuff.com/players/" + p.PlayerSteamID + "/matches?date=month&lobby_type=ranked_matchmaking&timezone=Etc%2FUTC");
                             ((HttpWebRequest)webRequest).UserAgent = ".NET Framework Example Client";
                             webRequest.Method = "GET";
                             using (var response = webRequest.GetResponse())
