@@ -704,7 +704,6 @@ namespace DotaPicker
                     HeroNames[player.ID] = "NULL";
                     continue;
                 }
-                Console.WriteLine("ID:{0} PlayerName:{1}", player.SelectedHeroID, player.Name);
                 RootObject tmp = JsonConvert.DeserializeObject<RootObject>(json);
                 string localized_name = tmp.heroes.Where(h => h.id == player.SelectedHeroID).Select(h => h.localized_name).FirstOrDefault();
                 string str_hero = ((player.Team != me.Team) ? ("E_") : ("T_")) + localized_name;
