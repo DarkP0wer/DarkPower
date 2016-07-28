@@ -437,8 +437,7 @@ namespace Translate
 
         public static void Game_OnMessage(MessageEventArgs args)
         {
-            if (args.MessageType == 0)
-                Console.WriteLine("MSG: {0} Process: {1}", args.Message, args.Process);
+            Console.WriteLine("MSG: {0} Process: {1} Type:{2}", args.Message, args.Process, args.MessageType);
         }
 
         public static void Game_OnGameWndProc(WndEventArgs args)
