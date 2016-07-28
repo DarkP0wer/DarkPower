@@ -28,7 +28,8 @@ namespace Dota_Buff
 
         private static String[] _HeroName = new String[20];
         private static String[] _PlayerName = new String[20];
-        private static String GameIp;
+        //private static String GameIp;
+        private static ulong MatchId;
         public struct Repo
         {
             public String RepoM;
@@ -144,10 +145,11 @@ namespace Dota_Buff
 
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
-            #region if (GameIp != Game.IPAddress)
-            if (GameIp != Game.IPAddress)
+            #region if (MatchId != Game.MatchID)
+            Console.WriteLine("Match: {0}", Game.MatchID);
+            if (MatchId != Game.MatchID)
             {
-                GameIp = Game.IPAddress;
+                MatchId = Game.MatchID;
                 frm.listBox1.Items.Clear();
                 frm.listBox2.Items.Clear();
                 for (int i = 0; i < 10; i++)
@@ -157,7 +159,7 @@ namespace Dota_Buff
                 }
             }
             #endregion
-            #region if (ObjectManager.LocalPlayer != null) ... if(ObjectManager.LocalPlayer != null && Game.IsInGame && IsPlayersLoad)
+            #region if (ObjectManager.LocalPlayer != null) ... if(ObjectManager.LocalPlayer != null && ObjectManager.LocalHero != null && IsPlayersLoad)
             if (ObjectManager.LocalPlayer != null)
             {
                 var ps = ObjectManager.GetEntities<Player>().Where(enemy => enemy != null).ToList();
@@ -175,7 +177,7 @@ namespace Dota_Buff
                 }
                 #endregion
                 #region if (ObjectManager.LocalPlayer.Hero == null)
-                if (!Game.IsInGame)
+                if (ObjectManager.LocalPlayer.Hero == null)
                 {
                     IsPlayersLoad = true;
                     #region for (int i = 0; i < 20; i++)
@@ -260,7 +262,7 @@ namespace Dota_Buff
                 }
 #endregion
             }
-            if(ObjectManager.LocalPlayer != null && Game.IsInGame && IsPlayersLoad)
+            if(ObjectManager.LocalPlayer != null && ObjectManager.LocalHero != null && IsPlayersLoad)
             {
                 for (int i = 0; i < 20; i++) RWA[i] = "NULL";
                 IsPlayersLoad = false;
@@ -746,40 +748,46 @@ namespace Dota_Buff
 
         private static void Drawing_OnEndScene(EventArgs args)
         {
-            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed || !IsPlayersLoad) return;
-            for (int i = 0; i < 10; i++)
+            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed)
             {
-                var text = string.Format("RWinRate: {1} | Games: {2}", i, RWA[i], Repos[i].GamesPlayed);
-                Color text_color;
-                switch (Repos[i].RepoM)
+                return;
+            }
+            if (IsPlayersLoad)
+            {
+                for (int i = 0; i < 10; i++)
                 {
-                    case "GoodGuy":
-                        {
-                            text_color = Color.Green;
+                    var text = string.Format("RWinRate: {1} | Games: {2}", i, RWA[i], Repos[i].GamesPlayed);
+                    Color text_color;
+                    switch (Repos[i].RepoM)
+                    {
+                        case "GoodGuy":
+                            {
+                                text_color = Color.Green;
+                                break;
+                            }
+                        case "BadGuy":
+                            {
+                                text_color = Color.Red;
+                                break;
+                            }
+                        case "Played":
+                            {
+                                text_color = Color.Yellow;
+                                break;
+                            }
+                        default:
+                            text_color = Color.Blue;
                             break;
-                        }
-                    case "BadGuy":
-                        {
-                            text_color = Color.Red;
-                            break;
-                        }
-                    case "Played":
-                        {
-                            text_color = Color.Yellow;
-                            break;
-                        }
-                    default:
-                        text_color = Color.Blue;
-                        break;
-                }
+                    }
 
-                FontArray.DrawText(null, text, Drawing.Width - 475, (Drawing.Height / 17) * 3 + (int)(Drawing.Height / 22.58) *
-                    (
-                        (i > 4)
-                        ? (i + 1)
-                        : i
-                    )
-                    , text_color);
+                    FontArray.DrawText(null, text, Drawing.Width - 475, (Drawing.Height / 17) * 3 + (int)(Drawing.Height / 22.58) *
+                        (
+                            (i > 4)
+                            ? (i + 1)
+                            : i
+                        )
+                        , text_color);
+                }
             }
         }
 
