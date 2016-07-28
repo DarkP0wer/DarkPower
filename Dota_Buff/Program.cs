@@ -146,7 +146,7 @@ namespace Dota_Buff
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
             #region if (MatchId != Game.MatchID && Game.MatchID > 0)
-            if (MatchId != Game.MatchID)
+            if (MatchId != Game.MatchID && Game.MatchID > 0)
             {
                 MatchId = Game.MatchID;
                 frm.listBox1.Items.Clear();
