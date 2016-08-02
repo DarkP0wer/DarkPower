@@ -1,47 +1,207 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Ensage;
 using Ensage.Common;
-using System.Windows.Forms;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Net;
 using SharpDX;
 using SharpDX.Direct3D9;
+using Ensage.Common.Objects;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Net;
 
-namespace Dota_Buff
+namespace DotaBuff_Overlay
 {
     class Program
     {
-        public const int WM_NCLBUTTONDOWN = 0xA1;
-        public const int HT_CAPTION = 0x2;
+        #region OVERLAY
+        private static readonly DotaTexture DecreaseArrow = Textures.GetTexture("materials/ensage_ui/other/arrow_usual");
+        private static readonly DotaTexture IncreaseArrow = Textures.GetTexture("materials/ensage_ui/other/arrow_usual_left");
+        private static DotaTexture _texture = Textures.GetTexture("materials/ensage_ui/other/disa");
+        private static bool DisplayOverlay { get; set; }
 
-        #region CFG
-        private static String version = "v1.5";
-        private static readonly Ensage.Common.Menu.Menu SubMenu = new Ensage.Common.Menu.Menu("Dota Buff " + version, "DOTA BUFF", true);
-        private static Boolean IsPlayersLoad;
+
+        private static readonly Vector2 OverlaySize = new Vector2(800, 400);
+        private static Vector2 OverlayPosition;
+        private static Boolean OverlayDrag { get; set; }
+        private static Vector2 OverlayDragHeler;
+
+        private static Vector2 arrowRectangleSize;
+        private static Vector2 PlayerTextSize;
+        private static Vector2 PlayerCaptionTextSize;
+
+        private static int SelectedPlayer = 0;
+        private static int SelectedPlayerByMouse = 0;
+        #endregion
+
+        private static readonly Ensage.Common.Menu.Menu SubMenu = new Ensage.Common.Menu.Menu("Dota Buff Overlay", "DOTA BUFF", true);
         private static String filename = "Dota_Buff.ini";
-        private static String[] LoadedInformation = new String[20];
-        private static String[] LoadedSteamID = new String[20];
-        private static String[] RWA = new String[20];
 
-        private static String[] _HeroName = new String[20];
-        private static String[] _PlayerName = new String[20];
-        //private static String GameIp;
+        public static Repo[] Repos = new Repo[20];
+        private static List<String> PlayersList_HeroName = new List<String>();
+        private static List<String> PlayersList_RWA = new List<String>();
+        private static List<String> [] PlayersList_LoadedInformation = new List<String> [10];
+        private static List<String> PlayersInformation = new List<String>();
+        private static List<String> PlayersList_LoadedSteamID = new List<String>();
+        private static List<String> PlayersList_PlayerName = new List<String>();
         private static ulong MatchId;
+        private static Font FontText18 = new Font( Drawing.Direct3DDevice9, new FontDescription { FaceName = "Arial", Height = 18, OutputPrecision = FontPrecision.Default,Quality = FontQuality.Default});
+        private static Font FontText16 = new Font(Drawing.Direct3DDevice9, new FontDescription { FaceName = "Arial", Height = 16, OutputPrecision = FontPrecision.Default, Quality = FontQuality.Default });
+        private static Font FontText14 = new Font(Drawing.Direct3DDevice9, new FontDescription { FaceName = "Arial", Height = 14, OutputPrecision = FontPrecision.Default, Quality = FontQuality.Default });
+        private static Font FontText12 = new Font(Drawing.Direct3DDevice9, new FontDescription { FaceName = "Arial", Height = 12, OutputPrecision = FontPrecision.Default, Quality = FontQuality.Default });
+
         public struct Repo
         {
             public String RepoM;
-            public String RepoT;
+            //public String RepoT;
             public int GamesPlayed;
             public uint SteamId;
         }
-        public static Repo[] Repos = new Repo[20];
-        private static Boolean IsFormClose;
-        private static Font FontArray;
+
         private static System.Timers.Timer aTimer;
-        #endregion
+
+        private static void GetInformation(int PID)
+        {
+            PlayersInformation.Clear();
+            PlayersInformation.Add(PlayersList_HeroName[PID]);
+            if (PlayersList_LoadedSteamID[PID].ToString() == "Loading...")
+            {
+                PlayersInformation.Clear();
+                PlayersInformation.Add("This persson not loaded or disconnected!");
+                PlayersInformation.Add("Player Name : " + PlayersList_PlayerName[PID]);
+                PlayersInformation.Add("Steamid: " + Repos[PID].SteamId);
+                PlayersInformation.Add("Hero: " + PlayersList_HeroName[PID]);
+                return;
+            }
+
+            if (PlayersList_LoadedInformation[PID].Count > 0 && PlayersList_LoadedInformation[PID][0] == PlayersList_LoadedSteamID[PID])
+            {
+                PlayersInformation.Clear();
+                for(int i = 0; i < PlayersList_LoadedInformation[PID].Count-1; i++)
+                    PlayersInformation.Add(PlayersList_LoadedInformation[PID][i]);
+            }
+            else
+            {
+                PlayersInformation.Clear();
+                PlayersInformation.Add("Loading...");
+                String result = "";
+                string steamid = PlayersList_LoadedSteamID[PID];
+                if (Convert.ToInt32(PlayersList_LoadedSteamID[PID]) < 10) steamid = "346713680";
+                var webRequest = WebRequest.Create("http://www.dotabuff.com/players/" + steamid);
+                ((HttpWebRequest)webRequest).UserAgent = ".NET Framework";
+                using (var response = webRequest.GetResponse())
+                using (var content = response.GetResponseStream())
+                using (var reader = new System.IO.StreamReader(content))
+                {
+                    var strContent = reader.ReadToEnd();
+                    result = strContent;
+                }
+                String result2 = result;
+                int startpos = result.IndexOf("<div class=\"r-table r-only-mobile-5 heroes-overview\">");
+                if (startpos == -1)
+                {
+                    PlayersInformation.Clear();
+                    PlayersInformation.Add("THIS PROFILE IS PRIVATE");
+                }
+                else if (startpos > -1)
+                {
+                    int finishpos = result.IndexOf("/article", startpos);
+                    result = result.Substring(startpos, finishpos - startpos);
+                    int NextPos = result.IndexOf("matches?hero=", 0);
+                    PlayersInformation.Clear();
+                    PlayersInformation.Add(PlayersList_LoadedSteamID[PID]);
+                    PlayersInformation.Add("Hero                Matches            WinRate            KDA");
+                    while (NextPos > -1)
+                    {
+                        String HeroName = result.Substring(NextPos + 13, result.IndexOf("\"", NextPos) - NextPos - 13);
+                        String line1 = HeroName;
+                        //NextPos = ;
+                        int Matchespos = result.IndexOf("Matches Played</div><div class=\"r-body\">", NextPos);
+                        String Matches = result.Substring(Matchespos + 40, result.IndexOf("<", Matchespos + 40) - Matchespos - 40);
+                        line1 += ((HeroName.Length > 9) ? ("            ") : ("                ")) + Matches ;
+
+                        int WinRatepos = result.IndexOf("Win Rate</div><div class=\"r-body\">", NextPos);
+                        String WinRate = result.Substring(WinRatepos + 34, result.IndexOf("<", WinRatepos + 34) - WinRatepos - 34);
+                        line1 += "            " + WinRate;
+
+                        int KDApos = result.IndexOf("KDA Ratio</div><div class=\"r-body\">", NextPos);
+                        String KDA = result.Substring(KDApos + 35, result.IndexOf("<", KDApos + 35) - KDApos - 35);
+                        line1 += "            " + KDA;
+
+                        PlayersInformation.Add(line1);
+                        NextPos = result.IndexOf("matches?hero=", NextPos + 630);
+                    }
+
+                    int startpos2 = result2.IndexOf("<div class=\"r-table r-only-mobile-5 performances-overview\">");
+                    if (startpos2 == -1)
+                    {
+                        PlayersInformation.Clear();
+                        PlayersInformation.Add("THIS PROFILE IS PRIVATE");
+                    }
+                    else if (startpos2 > -1)
+                    {
+                        int finishpos2 = result2.IndexOf("</article", startpos2);
+                        result2 = result2.Substring(startpos2, finishpos2 - startpos2);
+                        int NextPos2 = result2.IndexOf("data-link-to=\"&#47;matches&#47;", 0);
+                        //textBox1.Text = result2;
+                        PlayersInformation.Add(PlayersList_LoadedSteamID[PID]);
+                        PlayersInformation.Add(" ");
+                        PlayersInformation.Add("Last Games:");
+                        PlayersInformation.Add("Hero                Result                    Type                KDA");
+                        while (NextPos2 > -1)
+                        {
+                            int HeroNamePos = result2.IndexOf("<a href=\"/heroes/", NextPos2);
+                            String HeroName = result2.Substring(HeroNamePos + 17, result2.IndexOf("\"", HeroNamePos + 17) - HeroNamePos - 17);
+                            String line1 = HeroName;
+                            int ResultPos = result2.IndexOf("Result</div><div class=\"r-body\"><a class=\"", NextPos2);
+                            String Result = result2.Substring(ResultPos + 42, result2.IndexOf("\"", ResultPos + 42) - ResultPos - 42);
+                            line1 += ((HeroName.Length > 9) ? ("            ") : ("                ")) + Result;
+
+                            int ResultDPos = result2.IndexOf("<time datetime=\"", NextPos2);
+                            String ResultD = result2.Substring(ResultDPos + 16, result2.IndexOf("\"", ResultDPos + 16) - ResultDPos - 16);
+                            line1 += "(" + ResultD + ")";
+
+                            int TypePos = result2.IndexOf("Type</div><div class=\"r-body\">", NextPos2);
+                            String TypeG = result2.Substring(TypePos + 30, result2.IndexOf("<", TypePos + 30) - TypePos - 30);
+                            line1 += "        " + TypeG;
+
+                            int GameModePos = result2.IndexOf("<div class=\"subtext\">", TypePos);
+                            String GameMode = result2.Substring(GameModePos + 21, result2.IndexOf("<", GameModePos + 21) - GameModePos - 21);
+                            line1 += "(" + GameMode + ")";
+
+                            int KDApos = result2.IndexOf("\"kda-record\">", NextPos2);
+                            String KDA = result2.Substring(KDApos + 13, result2.IndexOf("</span></span><div class=\"bar bar-default\"", KDApos + 13) - KDApos - 13);
+                            for (int i = 0; i < 3; i++)
+                            {
+                                String substr = "<span class=\"value\">";
+                                int n = KDA.IndexOf(substr);
+                                KDA = KDA.Remove(n, substr.Length);
+                            }
+                            for (int i = 0; i < 2; i++)
+                            {
+                                String substr = "</span>";
+                                int n = KDA.IndexOf(substr);
+                                KDA = KDA.Remove(n, substr.Length);
+                            }
+                            line1 += "            " + KDA;
+
+                            PlayersInformation.Add(line1);
+                            NextPos2 = result2.IndexOf("data-link-to=\"&#47;matches&#47;", NextPos2 + 630);
+
+                        }
+                    }
+                }
+                if (Repos[PID].RepoM != "-")
+                {
+                    PlayersInformation.Add("SteamID: " + Repos[PID].SteamId);
+                    PlayersInformation.Add("Mark: " + Repos[PID].RepoM);
+                }
+                PlayersList_LoadedInformation[PID].Clear();
+                for (int i = 0; i < PlayersInformation.Count - 1; i++)
+                  PlayersList_LoadedInformation[PID].Add(PlayersInformation[i]);
+            }
+        }
 
 
         class IniFile
@@ -87,730 +247,475 @@ namespace Dota_Buff
             }
         }
 
-        public class Win32
+        static void Main()
         {
-            [DllImportAttribute("user32.dll")]
-            public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-            [DllImportAttribute("user32.dll")]
-            public static extern bool ReleaseCapture();
-            /*[System.Runtime.InteropServices.DllImport("user32.dll")]
-            public static extern bool GetCursorPos(out Point lpPoint);*/
-            [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
-            public static extern IntPtr FindWindow(string lpClassName,
-                string lpWindowName);
-            [DllImport("user32.dll")]
-            public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-            [DllImport("user32.dll")]
-            public static extern bool SetForegroundWindow(IntPtr hWnd);
-            public static void PrintEncolored(string text, ConsoleColor color, params object[] arguments)
+            Drawing.OnDraw += Drawing_OnDraw;
+            PlayerTextSize = Drawing.MeasureText("Вася Petro", "Arial", new Vector2(14), FontFlags.None);
+            PlayerCaptionTextSize = Drawing.MeasureText("Players: ", "Arial", new Vector2(14), FontFlags.None);
+            arrowRectangleSize = new Vector2(20);
+            OverlayDrag = false;
+            Game.OnWndProc += Game_OnWndProc;
+            /*Events.OnClose += (sender, args) =>
             {
-                var clr = Console.ForegroundColor;
-                Console.ForegroundColor = color;
-                Console.WriteLine(text, arguments);
-                Console.ForegroundColor = clr;
-            }
-        }
+                Drawing.OnEndScene -= Drawing_OnDraw;
+                Game.OnWndProc -= Game_OnWndProc;
+            };*/
 
-        static void Main(string[] args)
-        {
-            SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("DBKey", "Menu hot key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
-            SubMenu.AddToMainMenu();
-            IsFormClose = false;
-            for (int i = 0; i < 11; i++)
+            for (int i = 0; i < 10; i++)
             {
-                RWA[i] = "NULL";
+                PlayersList_HeroName.Add("NONE");
+                PlayersList_LoadedInformation[i] = new List<String>();
+                PlayersList_LoadedInformation[i].Add("NONE");
+                PlayersList_LoadedSteamID.Add("NONE");
+                PlayersList_PlayerName.Add("NONE");
+                PlayersList_RWA.Add("NONE");
+                PlayersList_PlayerName.Add("NONE");
             }
+            SelectedPlayer = 0;
+
+            SubMenu.AddItem(new Ensage.Common.Menu.MenuItem("DBKey", "Menu Hot Key").SetValue(new Ensage.Common.Menu.KeyBind(96, Ensage.Common.Menu.KeyBindType.Press)));
+            SubMenu.AddToMainMenu();
+            DisplayOverlay = true;
             if (!System.IO.File.Exists(filename))
             {
                 var IniFile = new IniFile(filename);
-                IniFile.Write("TEST", "1", "TEST");
             }
-            FontArray = new Font(
-                Drawing.Direct3DDevice9,
-                new FontDescription
-                {
-                    FaceName = "Tahoma",
-                    Height = 12,
-                    OutputPrecision = FontPrecision.Default,
-                    Quality = FontQuality.Default
-                });
+
             Drawing.OnPreReset += Drawing_OnPreReset;
             Drawing.OnPostReset += Drawing_OnPostReset;
             Drawing.OnEndScene += Drawing_OnEndScene;
-            Game.OnWndProc += Game_OnGameWndProc;
+
             aTimer = new System.Timers.Timer(2500);
             aTimer.Elapsed += OnTimedEvent;
             aTimer.Enabled = true;
         }
 
-        private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
-        {
-            #region if (MatchId != Game.MatchID && Game.MatchID > 0)
-            if (MatchId != Game.MatchID && Game.MatchID > 0)
-            {
-                MatchId = Game.MatchID;
-                frm.listBox1.Items.Clear();
-                frm.listBox2.Items.Clear();
-                for (int i = 0; i < 10; i++)
-                {
-                    frm.listBox1.Items.Add("Loading...");
-                    frm.listBox2.Items.Add("Loading...");
-                }
-            }
-            #endregion
-            #region if (ObjectManager.LocalPlayer != null) ... if(ObjectManager.LocalPlayer != null && ObjectManager.LocalHero != null && IsPlayersLoad)
-            if (ObjectManager.LocalPlayer != null)
-            {
-                var ps = ObjectManager.GetEntities<Player>().Where(enemy => enemy != null).ToList();
-                #region foreach (var p in ps)
-                foreach (var p in ps)
-                {
-                    frm.listBox1.Items[p.ID] = "" + p.PlayerSteamID;
-                    frm.listBox2.Items[p.ID] = "" + p.Name;
-                    _PlayerName[p.ID] = p.Name;
-                    Repos[p.ID].SteamId = p.PlayerSteamID;
-                    if (p.Hero != null)
-                        _HeroName[p.ID] = p.Hero.Name;
-                    else
-                        _HeroName[p.ID] = "null";
-                }
-                #endregion
-                #region if (ObjectManager.LocalPlayer.Hero == null)
-                if (ObjectManager.LocalPlayer.Hero == null)
-                {
-                    IsPlayersLoad = true;
-                    #region for (int i = 0; i < 20; i++)
-                    for (int i = 0; i < 20; i++)
-                    {
-                        Player p = null;
-                        p = ObjectManager.GetPlayerByID((uint)i);
-                        #region if (p == null)
-                        if (p == null)
-                        {
-                            RWA[i] = "Loading...";
-                            Repos[i].RepoM = "-";
-                            continue;
-                        }
-                        #endregion
-                        #region if (RWA[i] == "NULL")
-                        if (RWA[i] == "NULL")
-                        {
-                            if (System.IO.File.Exists(filename))
-                            {
-                                var IniFile = new IniFile(filename);
-                                #region if (IniFile.KeyExists("Mark", "" + p.PlayerSteamID))
-                                if (IniFile.KeyExists("Mark", "" + p.PlayerSteamID))
-                                {
-                                    var Mark = IniFile.Read("Mark", "" + p.PlayerSteamID);
-                                    var RepoText = IniFile.Read("RepoText", "" + p.PlayerSteamID);
-                                    var GamesPlayed = IniFile.Read("GamesPlayed", "" + p.PlayerSteamID);
-                                    Repos[i].SteamId = p.PlayerSteamID;
-                                    Repos[i].RepoM = Mark;
-                                    Repos[i].RepoT = RepoText;
-                                    Repos[i].GamesPlayed = Convert.ToInt32(GamesPlayed) + 1;
-
-                                    IniFile.Write("GamesPlayed", Repos[i].GamesPlayed.ToString(), "" + p.PlayerSteamID);
-                                }
-                                #endregion
-                                #region else
-                                else
-                                {
-                                    Repos[i].RepoM = "-";
-                                    Repos[i].GamesPlayed = 0;
-                                    IniFile.Write("Mark", "Played", "" + p.PlayerSteamID);
-                                    IniFile.Write("RepoText", "None", "" + p.PlayerSteamID);
-                                    IniFile.Write("GamesPlayed", "1", "" + p.PlayerSteamID);
-                                }
-                                #endregion
-                            }
-                            else Repos[i].RepoM = "-";
-                            RWA[i] = "Loading inf...";
-                            String text = "";
-                            var webRequest = WebRequest.Create("http://www.dotabuff.com/players/" + p.PlayerSteamID + "/matches?date=month&lobby_type=ranked_matchmaking&timezone=Etc%2FUTC");
-                            ((HttpWebRequest)webRequest).UserAgent = ".NET Framework Example Client";
-                            webRequest.Method = "GET";
-                            using (var response = webRequest.GetResponse())
-                            using (var content = response.GetResponseStream())
-                            using (var reader = new System.IO.StreamReader(content))
-                            {
-                                var strContent = reader.ReadToEnd();
-                                text = strContent;
-                            }
-                            int startpos = text.IndexOf("r-stats-grid r-stats-grid-padded");
-                            if (startpos == -1)
-                            {
-                                RWA[p.ID] = "NONE";
-                            }
-                            else if (startpos > -1)
-                            {
-                                int finishpos = text.IndexOf("/article", startpos);
-                                text = text.Substring(startpos, finishpos - startpos);
-                                int NextPos = text.IndexOf("Matches</small></div><div class=\"kv\"><span class=\"color-stat-win\">", 0);
-                                RWA[p.ID] = text.Substring(NextPos + 66, text.IndexOf("<", NextPos) - NextPos - 66);
-                            }
-                        }
-                        #endregion
-                        #region else if (RWA[i] == "Loading...")
-                        else if (RWA[i] == "Loading...")
-                        {
-                            RWA[i] = "NULL";
-                        }
-                        #endregion
-                    }
-                    #endregion
-                }
-#endregion
-            }
-            if(ObjectManager.LocalPlayer != null && ObjectManager.LocalHero != null && IsPlayersLoad)
-            {
-                for (int i = 0; i < 20; i++) RWA[i] = "NULL";
-                IsPlayersLoad = false;
-            }
-            #endregion
-        }
-
         private static void Drawing_OnPostReset(EventArgs args)
         {
-            for (var i = 0; i <= 20; i++)
-                if (FontArray != null)
-                    FontArray.OnLostDevice();
+            if (FontText16 != null)
+                FontText16.OnLostDevice();
+            if (FontText18 != null)
+                FontText18.OnLostDevice();
+            if (FontText14 != null)
+                FontText14.OnLostDevice();
         }
 
         private static void Drawing_OnPreReset(EventArgs args)
         {
-            for (var i = 0; i <= 20; i++)
-                if (FontArray != null)
-                    FontArray.OnLostDevice();
+            if (FontText16 != null)
+                FontText16.OnLostDevice();
+            if (FontText18 != null)
+                FontText18.OnLostDevice();
+            if (FontText14 != null)
+                FontText14.OnLostDevice();
         }
 
-        public partial class Form1 : Form
+        private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
-            public Form1()
+            if (MatchId != Game.MatchID)
             {
-                InitializeComponent();
-            }
-
-            private void InitializeComponent()
-            {
-                listBox1 = new System.Windows.Forms.ListBox();
-                listBox2 = new System.Windows.Forms.ListBox();
-                button1 = new System.Windows.Forms.Button();
-                linkLabel1 = new System.Windows.Forms.LinkLabel();
-                linkLabel2 = new System.Windows.Forms.LinkLabel();
-                button2 = new System.Windows.Forms.Button();
-                radioButton1 = new System.Windows.Forms.RadioButton();
-                radioButton3 = new System.Windows.Forms.RadioButton();
-                textBox1 = new System.Windows.Forms.TextBox();
-                this.button3 = new System.Windows.Forms.Button();
-                this.comboBox2 = new System.Windows.Forms.ComboBox();
-                this.textBox2 = new System.Windows.Forms.TextBox();
-                SuspendLayout();
-                // 
-                // listBox1
-                // 
-                listBox1.Enabled = false;
-                listBox1.FormattingEnabled = true;
-                listBox1.Location = new System.Drawing.Point(12, 44);
-                listBox1.Name = "listBox1";
-                listBox1.Size = new System.Drawing.Size(149, 108);
-                listBox1.TabIndex = 0;
-                listBox1.SelectedIndexChanged += new System.EventHandler(listBox1_SelectedIndexChanged);
-                // 
-                // textBox1
-                // 
-                textBox1.Location = new System.Drawing.Point(167, 44);
-                textBox1.Multiline = true;
-                textBox1.Name = "textBox1";
-                textBox1.Size = new System.Drawing.Size(621, 344);
-                textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-                textBox1.TabIndex = 14;
-                // 
-                // listBox2
-                // 
-                listBox2.FormattingEnabled = true;
-                listBox2.Location = new System.Drawing.Point(12, 158);
-                listBox2.Name = "listBox2";
-                listBox2.Size = new System.Drawing.Size(149, 108);
-                listBox2.TabIndex = 3;
-                listBox2.SelectedIndexChanged += new System.EventHandler(listBox2_SelectedIndexChanged);
-                //
-                // button1
-                // 
-                button1.BackColor = System.Drawing.SystemColors.ControlLightLight;
-                button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-                button1.Location = new System.Drawing.Point(2, 2);
-                button1.Name = "button1";
-                button1.Size = new System.Drawing.Size(80, 21);
-                button1.TabIndex = 4;
-                button1.Text = "DB HIDE";
-                button1.UseVisualStyleBackColor = true;
-                button1.Click += new System.EventHandler(button1_Click);
-                // 
-                // linkLabel1
-                // 
-                linkLabel1.AutoSize = true;
-                linkLabel1.LinkColor = System.Drawing.Color.White;
-                linkLabel1.Location = new System.Drawing.Point(9, 316);
-                linkLabel1.Name = "linkLabel1";
-                linkLabel1.Size = new System.Drawing.Size(73, 13);
-                linkLabel1.TabIndex = 6;
-                linkLabel1.TabStop = true;
-                linkLabel1.Text = "Forum Thread";
-                linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(linkLabel1_LinkClicked);
-                // 
-                // linkLabel2
-                // 
-                linkLabel2.AutoSize = true;
-                linkLabel2.LinkColor = System.Drawing.Color.White;
-                linkLabel2.Location = new System.Drawing.Point(9, 338);
-                linkLabel2.Name = "linkLabel2";
-                linkLabel2.Size = new System.Drawing.Size(89, 13);
-                linkLabel2.TabIndex = 7;
-                linkLabel2.TabStop = true;
-                linkLabel2.Text = "GitHub Darp0wer";
-                linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(linkLabel2_LinkClicked);
-                // 
-                // button2
-                //
-                button2.BackColor = System.Drawing.SystemColors.ControlLightLight;
-                button2.Location = new System.Drawing.Point(12, 364);
-                button2.Name = "button2";
-                button2.Size = new System.Drawing.Size(86, 24);
-                button2.TabIndex = 8;
-                button2.Text = "Close";
-                button2.UseVisualStyleBackColor = true;
-                button2.Click += new System.EventHandler(this.button2_Click);
-                // 
-                // radioButton1
-                // 
-                radioButton1.AutoSize = true;
-                radioButton1.Checked = true;
-                radioButton1.Location = new System.Drawing.Point(167, 6);
-                radioButton1.Name = "radioButton1";
-                radioButton1.Size = new System.Drawing.Size(197, 17);
-                radioButton1.TabIndex = 15;
-                radioButton1.TabStop = true;
-                radioButton1.Text = "Parse Mode (only Most Played Hero)";
-                radioButton1.UseVisualStyleBackColor = true;
-                radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
-                // 
-                // radioButton3
-                // 
-                radioButton3.AutoSize = true;
-                radioButton3.Location = new System.Drawing.Point(370, 4);
-                radioButton3.Name = "radioButton3";
-                radioButton3.Size = new System.Drawing.Size(119, 17);
-                radioButton3.TabIndex = 17;
-                radioButton3.Text = "Use default browser";
-                radioButton3.UseVisualStyleBackColor = true;
-                radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
-                // 
-                // button3
-                // 
-                button3.Location = new System.Drawing.Point(495, 1);
-                button3.Name = "button3";
-                button3.Size = new System.Drawing.Size(70, 20);
-                button3.TabIndex = 19;
-                button3.Text = "Mark";
-                button3.UseVisualStyleBackColor = true;
-                button3.Click += new System.EventHandler(this.button3_Click);
-                // 
-                // comboBox2
-                // 
-                comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-                comboBox2.FormattingEnabled = true;
-                comboBox2.Items.AddRange(new object[] {
-            "BadGuy",
-            "GoodGuy",
-            "Played",
-            "NONE"});
-                comboBox2.Location = new System.Drawing.Point(495, 21);
-                comboBox2.Name = "comboBox2";
-                comboBox2.Size = new System.Drawing.Size(70, 21);
-                comboBox2.TabIndex = 20;
-                // 
-                // textBox2
-                // 
-                textBox2.Location = new System.Drawing.Point(571, 12);
-                textBox2.Name = "textBox2";
-                textBox2.Size = new System.Drawing.Size(217, 20);
-                textBox2.TabIndex = 21;
-                textBox2.Text = "Some text";
-                textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-                // 
-                // Form1
-                // 
-                AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-                AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-                BackColor = System.Drawing.SystemColors.Highlight;
-                ClientSize = new System.Drawing.Size(800, 400);
-                ControlBox = false;
-                Controls.Add(textBox2);
-                Controls.Add(comboBox2);
-                Controls.Add(button3);
-                Controls.Add(linkLabel2);
-                Controls.Add(linkLabel1);
-                Controls.Add(button1);
-                Controls.Add(listBox2);
-                Controls.Add(listBox1);
-                Controls.Add(radioButton3);
-                Controls.Add(radioButton1);
-                Controls.Add(textBox1);
-                Controls.Add(button2);
-                FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-                Name = "Form1";
-                ShowIcon = false;
-                Text = "DotaBuff by DarkPower";
-                TopMost = true;
-                this.Opacity = 0.85D;
-                Load += new System.EventHandler(Form1_Load);
-                MouseDown += new System.Windows.Forms.MouseEventHandler(Form1_MouseDown);
-                FormClosed += new System.Windows.Forms.FormClosedEventHandler(Form1_FormClosed);
-                ResumeLayout(false);
-                PerformLayout();
-            }
-
-            public System.Windows.Forms.ListBox listBox1;
-            public System.Windows.Forms.ListBox listBox2;
-            private System.Windows.Forms.Button button1;
-            private System.Windows.Forms.LinkLabel linkLabel1;
-            private System.Windows.Forms.LinkLabel linkLabel2;
-            private System.Windows.Forms.Button button2;
-            private System.Windows.Forms.RadioButton radioButton1;
-            private System.Windows.Forms.RadioButton radioButton3;
-            private System.Windows.Forms.TextBox textBox1;
-            private System.Windows.Forms.Button button3;
-            public System.Windows.Forms.ComboBox comboBox2;
-            public System.Windows.Forms.TextBox textBox2;
-
-            private void Form1_Load(object sender, EventArgs e)
-            {
-                Width = 800; Height = 400;
-                IsFormClose = false;
-            }
-
-            private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-            {
-                try
+                for (int i = 0; i < 10; i++) PlayersList_LoadedSteamID[i] = "Loading...";
+                if(Game.MatchID > 0)
                 {
-                    if (radioButton1.Checked)
+                    MatchId = Game.MatchID;
+                    for (int i = 0; i < 10; i++)
                     {
-                        textBox2.Text = _HeroName[listBox1.SelectedIndex];
-                        #region if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...")
-                        if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...")
-                        {
-                            textBox1.Text = "This persson not loaded or disconnected!";
-                            textBox1.Text += "\r\nPlayer Name : " + _PlayerName[listBox1.SelectedIndex];
-                            textBox1.Text += "\r\nSteamid: " + Repos[listBox1.SelectedIndex].SteamId;
-                            textBox1.Text += "\r\nHero: " + _HeroName[listBox1.SelectedIndex];
-                            return;
-                        }
-                        #endregion
-                        if (LoadedSteamID[listBox1.SelectedIndex] == listBox1.Items[listBox1.SelectedIndex].ToString())
-                        {
-                            textBox1.Text = LoadedInformation[listBox1.SelectedIndex];
-                        }
-                        #region else
-                        else
-                        {
-
-                            textBox1.Text = "Loading...";
-                            String result = "";
-
-                            var webRequest = WebRequest.Create("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
-                            ((HttpWebRequest)webRequest).UserAgent = ".NET Framework Example Client";
-                            using (var response = webRequest.GetResponse())
-                            using (var content = response.GetResponseStream())
-                            using (var reader = new System.IO.StreamReader(content))
-                            {
-                                var strContent = reader.ReadToEnd();
-                                result = strContent;
-                            }
-                            String result2 = result;
-                            int startpos = result.IndexOf("<div class=\"r-table r-only-mobile-5 heroes-overview\">");
-                            if (startpos == -1)
-                            {
-                                textBox1.Text = "THIS PROFILE IS PRIVATE";
-                            }
-                            else if (startpos > -1)
-                            {
-                                int finishpos = result.IndexOf("/article", startpos);
-                                result = result.Substring(startpos, finishpos - startpos);
-                                int NextPos = result.IndexOf("matches?hero=", 0);
-                                textBox1.Text = "Hero\t\t\tMatches\t\tWinRate\t\tKDA\r\n";
-                                while (NextPos > -1)
-                                {
-                                    String HeroName = result.Substring(NextPos + 13, result.IndexOf("\"", NextPos) - NextPos - 13);
-                                    textBox1.Text += HeroName;
-                                    //NextPos = ;
-                                    int Matchespos = result.IndexOf("Matches Played</div><div class=\"r-body\">", NextPos);
-                                    String Matches = result.Substring(Matchespos + 40, result.IndexOf("<", Matchespos + 40) - Matchespos - 40);
-                                    textBox1.Text += ((HeroName.Length > 9) ? ("\t\t") : ("\t\t\t")) + Matches;
-
-                                    int WinRatepos = result.IndexOf("Win Rate</div><div class=\"r-body\">", NextPos);
-                                    String WinRate = result.Substring(WinRatepos + 34, result.IndexOf("<", WinRatepos + 34) - WinRatepos - 34);
-                                    textBox1.Text += "\t\t" + WinRate;
-
-                                    int KDApos = result.IndexOf("KDA Ratio</div><div class=\"r-body\">", NextPos);
-                                    String KDA = result.Substring(KDApos + 35, result.IndexOf("<", KDApos + 35) - KDApos - 35);
-                                    textBox1.Text += "\t\t" + KDA + "\r\n";
-
-                                    NextPos = result.IndexOf("matches?hero=", NextPos + 630);
-
-                                }
-
-                                int startpos2 = result2.IndexOf("<div class=\"r-table r-only-mobile-5 performances-overview\">");
-                                if (startpos2 == -1)
-                                {
-                                    textBox1.Text += "THIS PROFILE IS PRIVATE";
-                                }
-                                else if (startpos2 > -1)
-                                {
-                                    int finishpos2 = result2.IndexOf("</article", startpos2);
-                                    result2 = result2.Substring(startpos2, finishpos2 - startpos2);
-                                    int NextPos2 = result2.IndexOf("data-link-to=\"&#47;matches&#47;", 0);
-                                    //textBox1.Text = result2;
-                                    textBox1.Text += "Last Games:\r\nHero\t\t\tResult\t\t\t\tType\t\t\tKDA\r\n";
-                                    while (NextPos2 > -1)
-                                    {
-                                        int HeroNamePos = result2.IndexOf("<a href=\"/heroes/", NextPos2);
-                                        String HeroName = result2.Substring(HeroNamePos + 17, result2.IndexOf("\"", HeroNamePos + 17) - HeroNamePos - 17);
-                                        textBox1.Text += HeroName;
-                                        int ResultPos = result2.IndexOf("Result</div><div class=\"r-body\"><a class=\"", NextPos2);
-                                        String Result = result2.Substring(ResultPos + 42, result2.IndexOf("\"", ResultPos + 42) - ResultPos - 42);
-                                        textBox1.Text += ((HeroName.Length > 9) ? ("\t\t") : ("\t\t\t")) + Result;
-
-                                        int ResultDPos = result2.IndexOf("<time datetime=\"", NextPos2);
-                                        String ResultD = result2.Substring(ResultDPos + 16, result2.IndexOf("\"", ResultDPos + 16) - ResultDPos - 16);
-                                        textBox1.Text += "(" + ResultD + ")";
-
-                                        int TypePos = result2.IndexOf("Type</div><div class=\"r-body\">", NextPos2);
-                                        String TypeG = result2.Substring(TypePos + 30, result2.IndexOf("<", TypePos + 30) - TypePos - 30);
-                                        textBox1.Text += "\t" + TypeG;
-
-                                        int GameModePos = result2.IndexOf("<div class=\"subtext\">", TypePos);
-                                        String GameMode = result2.Substring(GameModePos + 21, result2.IndexOf("<", GameModePos + 21) - GameModePos - 21);
-                                        textBox1.Text += "(" + GameMode + ")";
-
-                                        int KDApos = result2.IndexOf("\"kda-record\">", NextPos2);
-                                        String KDA = result2.Substring(KDApos + 13, result2.IndexOf("</span></span><div class=\"bar bar-default\"", KDApos + 13) - KDApos - 13);
-                                        for (int i = 0; i < 3; i++)
-                                        {
-                                            String substr = "<span class=\"value\">";
-                                            int n = KDA.IndexOf(substr);
-                                            KDA = KDA.Remove(n, substr.Length);
-                                        }
-                                        for (int i = 0; i < 2; i++)
-                                        {
-                                            String substr = "</span>";
-                                            int n = KDA.IndexOf(substr);
-                                            KDA = KDA.Remove(n, substr.Length);
-                                        }
-                                        textBox1.Text += "\t\t" + KDA + "\r\n";
-
-                                        NextPos2 = result2.IndexOf("data-link-to=\"&#47;matches&#47;", NextPos2 + 630);
-
-                                    }
-                                }
-                            }
-                            if (Repos[listBox1.SelectedIndex].RepoM != "-")
-                            {
-                                textBox1.Text += "\r\nSteamID: " + Repos[listBox1.SelectedIndex].SteamId;
-                                textBox1.Text += "\r\nMark: " + Repos[listBox1.SelectedIndex].RepoM;
-                                textBox1.Text += "\r\nText About: " + Repos[listBox1.SelectedIndex].RepoT;
-                            }
-                            LoadedInformation[listBox1.SelectedIndex] = textBox1.Text;
-                            LoadedSteamID[listBox1.SelectedIndex] = listBox1.Items[listBox1.SelectedIndex].ToString();
-
-                        }
-                        #endregion
-                    }
-                    else
-                    {
-                        System.Diagnostics.Process.Start("http://www.dotabuff.com/players/" + listBox1.Items[listBox1.SelectedIndex].ToString());
+                        PlayersList_PlayerName[i] = "Loading...";
+                        PlayersList_RWA[i] = "NULL";
+                        Repos[i].RepoM = "-";
                     }
                 }
-                catch (Exception e2)
-                {
-                    if (e2.Source != null)
-                        Win32.PrintEncolored("Dota_Buff Error: " + e2.Source, ConsoleColor.Red);
-                    throw;
-                }
             }
 
-            private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
-            {
-                listBox1.SelectedIndex = listBox2.SelectedIndex;
-            }
+            if (ObjectManager.LocalPlayer == null) return;
 
-            private void button1_Click(object sender, EventArgs e)
+            foreach (var p in ObjectManager.GetEntities<Player>().Where(enemy => enemy != null).ToList())
             {
-                if (Width != 800)
-                {
-                    Width = 800; Height = 400;
-                }
+                if(p.ID > 9) continue;
+                PlayersList_LoadedSteamID[p.ID] = "" + p.PlayerSteamID;
+                PlayersList_PlayerName[p.ID] = "" + p.Name;
+                Repos[p.ID].SteamId = p.PlayerSteamID;
+                if (p.Hero != null)
+                    PlayersList_HeroName[p.ID] = p.Hero.Name;
                 else
-                {
-                    Width = 1; Height = 1;
-                    Win32.ShowWindow(Win32.FindWindow(null, "Dota 2"), 10);
-                    Win32.ShowWindow(Win32.FindWindow(null, "Dota 2"), 5);
-                    Win32.SetForegroundWindow(Win32.FindWindow(null, "Dota 2"));
-                }
-            }
+                   PlayersList_HeroName[p.ID] = "null";
 
-            private void button3_Click(object sender, EventArgs e)
-            {
-                if (listBox1.Items[listBox1.SelectedIndex].ToString() == "Loading...")
-                {
-                    Win32.PrintEncolored("Dota_Buff: Player not loaded...", ConsoleColor.Red);
-                    var enemies = ObjectManager.GetEntities<Hero>().Where(enemy => enemy != null).ToList();
-                    foreach (var enemy in enemies)
-                    {
-                        if ( (_HeroName[listBox1.SelectedIndex] == enemy.Name) && enemy.Player == null)
-                        {
-                            if (System.IO.File.Exists(filename))
-                            {
-                                var IniFile = new IniFile(filename);
-                                IniFile.Write("Mark", comboBox2.Items[comboBox2.SelectedIndex].ToString(), Repos[listBox1.SelectedIndex].SteamId.ToString());
-                                IniFile.Write("RepoText", frm.textBox2.Text, Repos[listBox1.SelectedIndex].SteamId.ToString());
-                                Repos[listBox1.SelectedIndex].RepoM = comboBox2.Items[comboBox2.SelectedIndex].ToString();
-                                Repos[listBox1.SelectedIndex].RepoT = frm.textBox2.Text;
-                            }
-                            else
-                            {
-                                Win32.PrintEncolored("Dota_Buff: File " + filename + " not founded!", ConsoleColor.Red);
-                            }
-                        }
-                    }
-                }
-                else
+                if (PlayersList_RWA[p.ID] == "NULL")
                 {
                     if (System.IO.File.Exists(filename))
                     {
                         var IniFile = new IniFile(filename);
-                        IniFile.Write("Mark", comboBox2.Items[comboBox2.SelectedIndex].ToString(), listBox1.Items[listBox1.SelectedIndex].ToString());
-                        IniFile.Write("RepoText", frm.textBox2.Text, listBox1.Items[listBox1.SelectedIndex].ToString());
-                        Repos[listBox1.SelectedIndex].RepoM = comboBox2.Items[comboBox2.SelectedIndex].ToString();
-                        Repos[listBox1.SelectedIndex].RepoT = frm.textBox2.Text;
+                        if (IniFile.KeyExists("Mark", "" + p.PlayerSteamID))
+                        {
+                            var Mark = IniFile.Read("Mark", "" + p.PlayerSteamID);
+                            var GamesPlayed = IniFile.Read("GamesPlayed", "" + p.PlayerSteamID);
+                            Repos[p.ID].SteamId = p.PlayerSteamID;
+                            Repos[p.ID].RepoM = Mark;
+                            Repos[p.ID].GamesPlayed = Convert.ToInt32(GamesPlayed) + 1;
+
+                            IniFile.Write("GamesPlayed", Repos[p.ID].GamesPlayed.ToString(), "" + p.PlayerSteamID);
+                        }
+                        else
+                        {
+                            Repos[p.ID].RepoM = "-";
+                            Repos[p.ID].GamesPlayed = 0;
+                            IniFile.Write("Mark", "Played", "" + p.PlayerSteamID);
+                            IniFile.Write("GamesPlayed", "1", "" + p.PlayerSteamID);
+                        }
                     }
-                    else
+                    else Repos[p.ID].RepoM = "-";
+                    String text = "";
+                    string steamid = p.PlayerSteamID.ToString();
+                    if (p.PlayerSteamID < 10) steamid = "346713680";
+                    var webRequest = WebRequest.Create("http://www.dotabuff.com/players/" + steamid + "/matches?date=3month&lobby_type=ranked_matchmaking&timezone=Etc%2FUTC");
+                    ((HttpWebRequest)webRequest).UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0)";
+                    webRequest.Method = "GET";
+                    using (var response = webRequest.GetResponse())
+                    using (var content = response.GetResponseStream())
+                    using (var reader = new System.IO.StreamReader(content))
                     {
-                        Win32.PrintEncolored("Dota_Buff: File " + filename + " not founded!", ConsoleColor.Red);
+                        var strContent = reader.ReadToEnd();
+                        text = strContent;
+                    }
+                    Console.WriteLine("Load SID{0} PID:{1}", steamid, p.ID);
+                    int startpos = text.IndexOf("r-stats-grid r-stats-grid-padded");
+                    if (startpos == -1)
+                    {
+                        PlayersList_RWA[p.ID] = "NONE";
+                    }
+                    else if (startpos > -1)
+                    {
+                        int finishpos = text.IndexOf("/article", startpos);
+                        text = text.Substring(startpos, finishpos - startpos);
+                        int NextPos = text.IndexOf("Matches</small></div><div class=\"kv\"><span class=\"color-stat-win\">", 0);
+                        PlayersList_RWA[p.ID] = text.Substring(NextPos + 66, text.IndexOf("<", NextPos + 66) - NextPos - 66);
+                        Console.WriteLine("Loaded SID{0} PID:{1} RWA: {2}", steamid, p.ID, PlayersList_RWA[p.ID]);
                     }
                 }
             }
-
-            private void button2_Click(object sender, EventArgs e)
-            {
-                IsFormClose = true;
-                Close();
-            }
-
-            private void Form1_FormClosed(object sender, FormClosedEventArgs e)
-            {
-                IsFormClose = true;
-            }
-
-            private void Form1_MouseDown(object sender, MouseEventArgs e)
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    Win32.ReleaseCapture();
-                    Win32.SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-                }
-            }
-
-            private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-            {
-                System.Diagnostics.Process.Start("https://github.com/DarkP0wer/DarkPower");
-            }
-
-            private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-            {
-                System.Diagnostics.Process.Start("https://www.joduska.me/forum/topic/137479-dota-buff/");
-            }
-
-            private void radioButton1_CheckedChanged(object sender, EventArgs e)
-            {
-                textBox1.Visible = true;
-            }
-
-            private void radioButton3_CheckedChanged(object sender, EventArgs e)
-            {
-                textBox1.Visible = false;
-            }
-
         }
 
+        private static bool IsUnderBox()
+        {
+            return Utils.IsUnderRectangle(
+                Game.MouseScreenPosition,
+                OverlayPosition.X,
+                OverlayPosition.Y,
+                OverlaySize.X + 1,
+                OverlaySize.Y + 1);
+        }
 
-        static Form1 frm = new Form1();
+        private static int PlayerSelected()
+        {
+            for(int i = 0; i < 10; i++)
+            {
+                if(Utils.IsUnderRectangle(Game.MouseScreenPosition,OverlayPosition.X + 1, OverlayPosition.Y + 55 + i * 20, 180, 20))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private static bool IsUnderClose()
+        {
+            return Utils.IsUnderRectangle(
+                Game.MouseScreenPosition,
+                OverlayPosition.X + OverlaySize.X - 20,
+                OverlayPosition.Y + 5,
+                21,
+                21);
+        }
+
+        private static bool IsUnderCaption()
+        {
+            return Utils.IsUnderRectangle(
+                Game.MouseScreenPosition,
+                OverlayPosition.X,
+                OverlayPosition.Y,
+                OverlaySize.X + 1,
+                30 + 1);
+        }
+
+        private static bool IsUnderDecreaseArrow()
+        {
+           return Utils.IsUnderRectangle(
+                    Game.MouseScreenPosition,
+                    OverlayPosition.X + PlayerCaptionTextSize.X + 23,
+                    OverlayPosition.Y + 32, 
+                    arrowRectangleSize.X,
+                    arrowRectangleSize.Y);
+        }
+
+        private static bool IsUnderIncreaseArrow()
+        {
+            return Utils.IsUnderRectangle(
+                    Game.MouseScreenPosition,
+                    OverlayPosition.X + PlayerCaptionTextSize.X + arrowRectangleSize.X + 40,
+                    OverlayPosition.Y + 32,
+                    arrowRectangleSize.X,
+                    arrowRectangleSize.Y);
+        }
 
         private static void Drawing_OnEndScene(EventArgs args)
         {
-            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed)
+            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed || (ObjectManager.LocalHero != null && ObjectManager.LocalHero.IsAlive))
             {
                 return;
             }
-            if (IsPlayersLoad)
+            if (ObjectManager.LocalPlayer != null && ObjectManager.LocalHero == null)
             {
                 for (int i = 0; i < 10; i++)
                 {
-                    var text = string.Format("RWinRate: {1} | Games: {2}", i, RWA[i], Repos[i].GamesPlayed);
+                    var text = string.Format("RWinRate: {1} | Games: {2}", i, PlayersList_RWA[i], Repos[i].GamesPlayed);
                     Color text_color;
                     switch (Repos[i].RepoM)
                     {
-                        case "GoodGuy":
-                            {
-                                text_color = Color.Green;
-                                break;
-                            }
-                        case "BadGuy":
-                            {
-                                text_color = Color.Red;
-                                break;
-                            }
-                        case "Played":
-                            {
-                                text_color = Color.Yellow;
-                                break;
-                            }
-                        default:
-                            text_color = Color.Blue;
-                            break;
+                        case "GoodGuy": { text_color = Color.Green; break; }
+                        case "BadGuy": { text_color = Color.Red; break; }
+                        case "Played": { text_color = Color.Yellow; break; }
+                        default: text_color = Color.Blue; break;
                     }
 
-                    FontArray.DrawText(null, text, Drawing.Width - 475, (Drawing.Height / 17) * 3 + (int)(Drawing.Height / 22.58) *
+                    FontText14.DrawText(null, text, Drawing.Width - 475, (Drawing.Height / 17) * 3 + (int)(Drawing.Height / 22.58) *
                         (
                             (i > 4)
                             ? (i + 1)
                             : i
-                        )
-                        , text_color);
+                        ), text_color);
                 }
+            }
+            if (!DisplayOverlay)  return;
+            if (OverlayPosition.IsZero) OverlayPosition = new Vector2(50, 50);
+            Color nameColor = !IsUnderBox() ? Color.Yellow : Color.White;
+
+            Color nameColorAlpha = new Color((int)nameColor.R, nameColor.G, nameColor.B, 200);
+            
+            FontText18.DrawText(null, "DotaBuff", (int)OverlayPosition.X + 10, (int)OverlayPosition.Y + 5, nameColorAlpha);
+            if (!IsUnderBox()) { return; }
+            FontText16.DrawText(null, "Players: ", (int)OverlayPosition.X + 10, (int)OverlayPosition.Y + 30 + 5, Color.White);
+            FontText18.DrawText(null, "X", (int)OverlayPosition.X + (int)OverlaySize.X - 20, (int)OverlayPosition.Y + 5, Color.Red);
+            for (int i = 9; i >= 0; i--)
+            {
+                if(i == SelectedPlayer || SelectedPlayerByMouse == i)
+                    FontText16.DrawText(null, PlayersList_PlayerName[i], (int)OverlayPosition.X + 10, (int)OverlayPosition.Y + 55 + i * 20 + 5, Color.White);
+                else FontText14.DrawText(null, PlayersList_PlayerName[i], (int)OverlayPosition.X + 10, (int)OverlayPosition.Y + 55 + i * 20 + 5, Color.DarkGreen);
+            }
+            for (int i = 0; i < PlayersList_LoadedInformation[SelectedPlayer].Count-1; i++)
+            {
+                FontText12.DrawText(null, PlayersList_LoadedInformation[SelectedPlayer][i], (int)OverlayPosition.X + 5 + 180, (int)OverlayPosition.Y + 55 + i * 10 + 5, Color.White);
             }
         }
 
-        public static void Game_OnGameWndProc(WndEventArgs args)
+        private static void Drawing_OnDraw(EventArgs args)
         {
-            if (Game.IsChatOpen || Game.IsWatchingGame) return;
-            try
+            if (!DisplayOverlay)
             {
-                if (args.Msg == 0x0101 && args.WParam == SubMenu.Item("DBKey").GetValue<Ensage.Common.Menu.KeyBind>().Key)
-                {
-                    if (IsFormClose)
-                    {
-                        Win32.PrintEncolored("Dota_Buff: You close form! Reload script for openning!", ConsoleColor.Red);
-                        return;
-                    }
-                    frm.Width = 800; frm.Height = 400;
-                    frm.Show();
-                }
+                return;
             }
-            catch (Exception e)
+
+            if (OverlayPosition.IsZero) OverlayPosition = new Vector2(50,50);
+
+            //FullBox
+            Drawing.DrawRect(
+                OverlayPosition,
+                OverlaySize,
+                new Color(20, 20, 20, !IsUnderBox() ? 50 : 100));
+
+            //border
+            Drawing.DrawRect(
+                OverlayPosition,
+                OverlaySize + new Vector2(1),
+                !IsUnderBox() ? new Color(0, 0, 0, 100) : new Color(0, 0, 250, 255),
+                true);
+
+            //Caption
+            Drawing.DrawRect(
+                OverlayPosition,
+                new Vector2(OverlaySize.X, 30),
+                !IsUnderBox() ? new Color(20, 20, 20, 100) : new Color(0, 0, 200, 150));
+
+            Color nameColor = !IsUnderBox() ? Color.Yellow : Color.White;
+
+            Color nameColorAlpha = new Color((int)nameColor.R, nameColor.G, nameColor.B, 200);
+            //TextCaption
+            Drawing.DrawText(
+                "DotaBuff",
+                new Vector2(OverlayPosition.X + 10, OverlayPosition.Y + 5),
+                new Vector2(18),
+                nameColorAlpha,
+                FontFlags.None);
+
+            //Close
+            Drawing.DrawRect(
+                OverlayPosition + new Vector2(OverlaySize.X - 20, 5),
+                IsUnderClose() ? new Vector2(20) : new Vector2(18),
+                _texture);
+
+            if (!IsUnderBox())
             {
-                if (e.Source != null)
-                    Win32.PrintEncolored("Dota_Buff Error: " + e.Source, ConsoleColor.Red);
-                throw;
+                return;
+            }
+
+            //Tables
+            Drawing.DrawRect(
+                OverlayPosition + new Vector2(1,30),
+                new Vector2(180, 25),
+                new Color(255, 255, 255, 50),
+                true);
+            Drawing.DrawRect(
+                OverlayPosition + new Vector2(180, 30),
+                new Vector2(OverlaySize.X-180, 25),
+                new Color(255, 255, 255, 50),
+                true);
+            Drawing.DrawRect(
+                OverlayPosition + new Vector2(1, 54),
+                new Vector2(180, OverlaySize.Y-54),
+                new Color(255, 255, 255, 50),
+                true);
+
+            for (int i = 9; i >= 0; i--)
+            {
+                Drawing.DrawText(
+                    PlayersList_PlayerName[i],
+                    new Vector2(OverlayPosition.X + 10, OverlayPosition.Y + 55 + i*20+5),
+                    (i == SelectedPlayer || SelectedPlayerByMouse == i) ? new Vector2(16) : new Vector2(14),
+                    (i == SelectedPlayer || SelectedPlayerByMouse == i) ? Color.White : Color.DarkGreen,
+                    FontFlags.None);
+            }
+            for (int i = 0; i < PlayersList_LoadedInformation[SelectedPlayer].Count - 1; i++)
+            {
+                Drawing.DrawText(
+                    PlayersList_LoadedInformation[SelectedPlayer][i],
+                    new Vector2(OverlayPosition.X + 5 + 180, OverlayPosition.Y + 55 + i * 10 + 5),
+                    new Vector2(12),
+                    (SelectedPlayerByMouse == SelectedPlayer) ? Color.DarkOrange : Color.White,
+                    FontFlags.None);
+            }
+            Drawing.DrawRect(
+                new Vector2(OverlayPosition.X + 1, OverlayPosition.Y + 55 + SelectedPlayer * 20),
+                new Vector2(180, 20),
+                new Color(0, 0, 200, 100));
+            // 3rd line
+
+            Drawing.DrawText(
+                "Players: ",
+                new Vector2(OverlayPosition.X + 10, OverlayPosition.Y + 30 + 5),
+                new Vector2(16),
+                Color.White,
+                FontFlags.None);
+
+            var alphaDecArrow = IsUnderDecreaseArrow() ? 25 : -25;
+
+            RoundedRectangle(
+                OverlayPosition.X + PlayerCaptionTextSize.X + 23,
+                OverlayPosition.Y + 32,
+                arrowRectangleSize.X,
+                arrowRectangleSize.Y,
+                4,
+                new Color(100 + alphaDecArrow, 100 + alphaDecArrow, 100 + alphaDecArrow, 200 + alphaDecArrow / 2));
+
+            Drawing.DrawRect(
+                OverlayPosition + new Vector2(PlayerCaptionTextSize.X + 25, 35),
+                new Vector2(16, 16),
+                DecreaseArrow);
+
+            Drawing.DrawText(
+                SelectedPlayer.ToString(),
+                OverlayPosition + new Vector2(PlayerCaptionTextSize.X + arrowRectangleSize.X + 30, 34),
+                new Vector2(16),
+                Color.White,
+                FontFlags.None);
+
+            var alphaIncArrow = IsUnderIncreaseArrow() ? 25 : -25;
+
+            RoundedRectangle(
+                OverlayPosition.X + PlayerCaptionTextSize.X + arrowRectangleSize.X + 40,
+                OverlayPosition.Y + 32,
+                arrowRectangleSize.X,
+                arrowRectangleSize.Y,
+                3,
+                new Color(100 + alphaIncArrow, 100 + alphaIncArrow, 100 + alphaIncArrow, 200 + alphaIncArrow / 2));
+
+            Drawing.DrawRect(
+                OverlayPosition + new Vector2(PlayerCaptionTextSize.X + arrowRectangleSize.X + 43, 35),
+                new Vector2(16, 16),
+                IncreaseArrow);
+        }
+
+        public static void RoundedRectangle(float x, float y, float w, float h, int iSmooth, Color color)
+        {
+            var pt = new Vector2[4];
+
+            // Get all corners 
+            pt[0].X = x + (w - iSmooth);
+            pt[0].Y = y + (h - iSmooth);
+
+            pt[1].X = x + iSmooth;
+            pt[1].Y = y + (h - iSmooth);
+
+            pt[2].X = x + iSmooth;
+            pt[2].Y = y + iSmooth;
+
+            pt[3].X = x + w - iSmooth;
+            pt[3].Y = y + iSmooth;
+
+            // Draw cross 
+            Drawing.DrawRect(new Vector2(x, y + iSmooth), new Vector2(w, h - (iSmooth * 2)), color);
+
+            Drawing.DrawRect(new Vector2(x + iSmooth, y), new Vector2(w - (iSmooth * 2), h), color);
+
+            float fDegree = 0;
+
+            for (var i = 0; i < 4; i++)
+            {
+                for (var k = fDegree; k < fDegree + ((Math.PI * 2) / 4f); k += (float)(1 * (Math.PI / 180.0f)))
+                {
+                    // Draw quarter circles on every corner
+                    Drawing.DrawLine(
+                        new Vector2(pt[i].X, pt[i].Y),
+                        new Vector2(pt[i].X + (float)(Math.Cos(k) * iSmooth), pt[i].Y + (float)(Math.Sin(k) * iSmooth)),
+                        color);
+                }
+
+                fDegree += (float)(Math.PI * 2) / 4; // quarter circle offset 
+            }
+        }
+
+        private static void Game_OnWndProc(WndEventArgs args)
+        {
+            if (!Game.IsChatOpen && args.Msg == (ulong)Utils.WindowsMessages.WM_KEYDOWN && args.WParam == SubMenu.Item("DBKey").GetValue<Ensage.Common.Menu.KeyBind>().Key)
+                DisplayOverlay = !DisplayOverlay;
+            if (!DisplayOverlay)  return;
+            if (args.Msg == (ulong)Utils.WindowsMessages.WM_LBUTTONUP)
+            {
+                if (OverlayDrag) { OverlayDrag = false; }
+            }
+            else if (args.Msg == (ulong)Utils.WindowsMessages.WM_MOUSEMOVE)
+            {
+                if (OverlayDrag) OverlayPosition = Game.MouseScreenPosition - OverlayDragHeler;
+                if (IsUnderBox()) SelectedPlayerByMouse = PlayerSelected();
+            }
+            else if (args.Msg == (ulong)Utils.WindowsMessages.WM_LBUTTONDOWN)
+            {
+                if (IsUnderCaption()) { OverlayDragHeler = Game.MouseScreenPosition - OverlayPosition; OverlayDrag = !IsUnderClose(); DisplayOverlay = !IsUnderClose(); }
+                else if (SelectedPlayerByMouse >= 0) { SelectedPlayer = SelectedPlayerByMouse; GetInformation(SelectedPlayer); }
+                else if (IsUnderIncreaseArrow())
+                {
+                    SelectedPlayer++;
+                    if (SelectedPlayer > 9) SelectedPlayer = 0;
+                    GetInformation(SelectedPlayer);
+                    for (int i = 0; i < PlayersList_LoadedInformation[SelectedPlayer].Count - 1; i++)
+                        Console.WriteLine("Line{0}: {1}",i,PlayersList_LoadedInformation[SelectedPlayer][i]);
+                }
+                else if (IsUnderDecreaseArrow())
+                {
+                    SelectedPlayer--;
+                    if (SelectedPlayer < 0) SelectedPlayer = 9;
+                    GetInformation(SelectedPlayer);
+                    for (int i = 0; i < PlayersList_LoadedInformation[SelectedPlayer].Count - 1; i++)
+                        Console.WriteLine("Line{0}: {1}", i, PlayersList_LoadedInformation[SelectedPlayer][i]);
+                }
             }
         }
     }
