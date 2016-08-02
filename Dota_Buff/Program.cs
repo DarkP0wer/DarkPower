@@ -11,7 +11,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Net;
 
-namespace DotaBuff
+namespace DotaBuff_Overlay
 {
     class Program
     {
@@ -41,8 +41,8 @@ namespace DotaBuff
         public static Repo[] Repos = new Repo[20];
         private static List<String> PlayersList_HeroName = new List<String>();
         private static List<String> PlayersList_RWA = new List<String>();
-        private static List<String> [] PlayersList_LoadedInformation = new List<String> [10];
-        private static List<String> PlayersInformation = new List<String>();
+        private static List<String> [] PlayersList_LoadedInformation = new List<String> [40];
+        private static List<String> [] PlayersInformation = new List<String>[4];
         private static List<String> PlayersList_LoadedSteamID = new List<String>();
         private static List<String> PlayersList_PlayerName = new List<String>();
         private static ulong MatchId;
@@ -63,28 +63,28 @@ namespace DotaBuff
 
         private static void GetInformation(int PID)
         {
-            PlayersInformation.Clear();
-            PlayersInformation.Add(PlayersList_HeroName[PID]);
+            PlayersInformation[0].Clear(); PlayersInformation[1].Clear(); PlayersInformation[2].Clear(); PlayersInformation[3].Clear();
+            PlayersInformation[0].Add(PlayersList_HeroName[PID]);
             if (PlayersList_LoadedSteamID[PID].ToString() == "Loading...")
             {
-                PlayersInformation.Clear();
-                PlayersInformation.Add("This persson not loaded or disconnected!");
-                PlayersInformation.Add("Player Name : " + PlayersList_PlayerName[PID]);
-                PlayersInformation.Add("Steamid: " + Repos[PID].SteamId);
-                PlayersInformation.Add("Hero: " + PlayersList_HeroName[PID]);
+                PlayersInformation[0].Clear();
+                PlayersInformation[0].Add("This persson not loaded or disconnected!");
+                PlayersInformation[0].Add("Player Name : " + PlayersList_PlayerName[PID]);
+                PlayersInformation[0].Add("Steamid: " + Repos[PID].SteamId);
+                PlayersInformation[0].Add("Hero: " + PlayersList_HeroName[PID]);
                 return;
             }
 
             if (PlayersList_LoadedInformation[PID].Count > 0 && PlayersList_LoadedInformation[PID][0] == PlayersList_LoadedSteamID[PID])
             {
-                PlayersInformation.Clear();
+                PlayersInformation[0].Clear();
                 for(int i = 0; i < PlayersList_LoadedInformation[PID].Count-1; i++)
-                    PlayersInformation.Add(PlayersList_LoadedInformation[PID][i]);
+                    PlayersInformation[0].Add(PlayersList_LoadedInformation[PID][i]);
             }
             else
             {
-                PlayersInformation.Clear();
-                PlayersInformation.Add("Loading...");
+                PlayersInformation[0].Clear();
+                PlayersInformation[0].Add("Loading...");
                 String result = "";
                 string steamid = PlayersList_LoadedSteamID[PID];
                 if (Convert.ToInt32(PlayersList_LoadedSteamID[PID]) < 10) steamid = "346713680";
@@ -101,43 +101,41 @@ namespace DotaBuff
                 int startpos = result.IndexOf("<div class=\"r-table r-only-mobile-5 heroes-overview\">");
                 if (startpos == -1)
                 {
-                    PlayersInformation.Clear();
-                    PlayersInformation.Add("THIS PROFILE IS PRIVATE");
+                    PlayersInformation[0].Clear();
+                    PlayersInformation[0].Add("THIS PROFILE IS PRIVATE");
                 }
                 else if (startpos > -1)
                 {
                     int finishpos = result.IndexOf("/article", startpos);
                     result = result.Substring(startpos, finishpos - startpos);
                     int NextPos = result.IndexOf("matches?hero=", 0);
-                    PlayersInformation.Clear();
-                    PlayersInformation.Add(PlayersList_LoadedSteamID[PID]);
-                    PlayersInformation.Add("Hero                Matches            WinRate            KDA");
+                    PlayersInformation[0].Clear();
+                    PlayersInformation[0].Add(PlayersList_LoadedSteamID[PID]);
+                    PlayersInformation[0].Add("Hero"); PlayersInformation[1].Add("Matches"); PlayersInformation[2].Add("WinRate"); PlayersInformation[3].Add("KDA");
                     while (NextPos > -1)
                     {
                         String HeroName = result.Substring(NextPos + 13, result.IndexOf("\"", NextPos) - NextPos - 13);
-                        String line1 = HeroName;
+                        PlayersInformation[0].Add(HeroName);
                         //NextPos = ;
                         int Matchespos = result.IndexOf("Matches Played</div><div class=\"r-body\">", NextPos);
                         String Matches = result.Substring(Matchespos + 40, result.IndexOf("<", Matchespos + 40) - Matchespos - 40);
-                        line1 += ((HeroName.Length > 9) ? ("            ") : ("                ")) + Matches ;
+                        PlayersInformation[1].Add(Matches);
 
                         int WinRatepos = result.IndexOf("Win Rate</div><div class=\"r-body\">", NextPos);
                         String WinRate = result.Substring(WinRatepos + 34, result.IndexOf("<", WinRatepos + 34) - WinRatepos - 34);
-                        line1 += "            " + WinRate;
+                        PlayersInformation[2].Add(WinRate);
 
                         int KDApos = result.IndexOf("KDA Ratio</div><div class=\"r-body\">", NextPos);
                         String KDA = result.Substring(KDApos + 35, result.IndexOf("<", KDApos + 35) - KDApos - 35);
-                        line1 += "            " + KDA;
-
-                        PlayersInformation.Add(line1);
+                        PlayersInformation[3].Add(KDA);
                         NextPos = result.IndexOf("matches?hero=", NextPos + 630);
                     }
 
                     int startpos2 = result2.IndexOf("<div class=\"r-table r-only-mobile-5 performances-overview\">");
                     if (startpos2 == -1)
                     {
-                        PlayersInformation.Clear();
-                        PlayersInformation.Add("THIS PROFILE IS PRIVATE");
+                        PlayersInformation[0].Clear();
+                        PlayersInformation[0].Add("THIS PROFILE IS PRIVATE");
                     }
                     else if (startpos2 > -1)
                     {
@@ -145,30 +143,31 @@ namespace DotaBuff
                         result2 = result2.Substring(startpos2, finishpos2 - startpos2);
                         int NextPos2 = result2.IndexOf("data-link-to=\"&#47;matches&#47;", 0);
                         //textBox1.Text = result2;
-                        PlayersInformation.Add(PlayersList_LoadedSteamID[PID]);
-                        PlayersInformation.Add(" ");
-                        PlayersInformation.Add("Last Games:");
-                        PlayersInformation.Add("Hero                Result                    Type                KDA");
+                        PlayersInformation[0].Add(PlayersList_LoadedSteamID[PID]);
+                        PlayersInformation[0].Add(" ");
+                        PlayersInformation[0].Add("Last Games:");
+                        PlayersInformation[0].Add("Hero"); PlayersInformation[1].Add("Result"); PlayersInformation[2].Add("Type"); PlayersInformation[3].Add("KDA");
                         while (NextPos2 > -1)
                         {
                             int HeroNamePos = result2.IndexOf("<a href=\"/heroes/", NextPos2);
                             String HeroName = result2.Substring(HeroNamePos + 17, result2.IndexOf("\"", HeroNamePos + 17) - HeroNamePos - 17);
-                            String line1 = HeroName;
+                            PlayersInformation[0].Add(HeroName);
+
                             int ResultPos = result2.IndexOf("Result</div><div class=\"r-body\"><a class=\"", NextPos2);
                             String Result = result2.Substring(ResultPos + 42, result2.IndexOf("\"", ResultPos + 42) - ResultPos - 42);
-                            line1 += ((HeroName.Length > 9) ? ("            ") : ("                ")) + Result;
+                            PlayersInformation[1].Add(Result); 
 
                             int ResultDPos = result2.IndexOf("<time datetime=\"", NextPos2);
                             String ResultD = result2.Substring(ResultDPos + 16, result2.IndexOf("\"", ResultDPos + 16) - ResultDPos - 16);
-                            line1 += "(" + ResultD + ")";
+                            PlayersInformation[1][PlayersInformation[1].Count-1] += "(" + ResultD + ")";
 
                             int TypePos = result2.IndexOf("Type</div><div class=\"r-body\">", NextPos2);
                             String TypeG = result2.Substring(TypePos + 30, result2.IndexOf("<", TypePos + 30) - TypePos - 30);
-                            line1 += "        " + TypeG;
+                            PlayersInformation[2].Add(TypeG);
 
                             int GameModePos = result2.IndexOf("<div class=\"subtext\">", TypePos);
                             String GameMode = result2.Substring(GameModePos + 21, result2.IndexOf("<", GameModePos + 21) - GameModePos - 21);
-                            line1 += "(" + GameMode + ")";
+                            PlayersInformation[2][PlayersInformation[2].Count - 1] += "(" + GameMode + ")";
 
                             int KDApos = result2.IndexOf("\"kda-record\">", NextPos2);
                             String KDA = result2.Substring(KDApos + 13, result2.IndexOf("</span></span><div class=\"bar bar-default\"", KDApos + 13) - KDApos - 13);
@@ -184,9 +183,8 @@ namespace DotaBuff
                                 int n = KDA.IndexOf(substr);
                                 KDA = KDA.Remove(n, substr.Length);
                             }
-                            line1 += "            " + KDA;
+                            PlayersInformation[3].Add(KDA);
 
-                            PlayersInformation.Add(line1);
                             NextPos2 = result2.IndexOf("data-link-to=\"&#47;matches&#47;", NextPos2 + 630);
 
                         }
@@ -194,12 +192,20 @@ namespace DotaBuff
                 }
                 if (Repos[PID].RepoM != "-")
                 {
-                    PlayersInformation.Add("SteamID: " + Repos[PID].SteamId);
-                    PlayersInformation.Add("Mark: " + Repos[PID].RepoM);
+                    PlayersInformation[0].Add("SteamID: " + Repos[PID].SteamId);
+                    PlayersInformation[0].Add("Mark: " + Repos[PID].RepoM);
                 }
-                PlayersList_LoadedInformation[PID].Clear();
-                for (int i = 0; i < PlayersInformation.Count - 1; i++)
-                  PlayersList_LoadedInformation[PID].Add(PlayersInformation[i]);
+                PlayersList_LoadedInformation[PID].Clear(); PlayersList_LoadedInformation[PID + 10].Clear(); 
+                PlayersList_LoadedInformation[PID + 20].Clear(); PlayersList_LoadedInformation[PID + 30].Clear();
+
+                for (int i = 0; i < PlayersInformation[0].Count - 1; i++)
+                  PlayersList_LoadedInformation[PID].Add(PlayersInformation[0][i]);
+                for (int i = 0; i < PlayersInformation[1].Count - 1; i++)
+                    PlayersList_LoadedInformation[PID+10].Add(PlayersInformation[1][i]);
+                for (int i = 0; i < PlayersInformation[2].Count - 1; i++)
+                    PlayersList_LoadedInformation[PID + 20].Add(PlayersInformation[2][i]);
+                for (int i = 0; i < PlayersInformation[3].Count - 1; i++)
+                    PlayersList_LoadedInformation[PID + 30].Add(PlayersInformation[3][i]);
             }
         }
 
@@ -260,12 +266,20 @@ namespace DotaBuff
                 Drawing.OnEndScene -= Drawing_OnDraw;
                 Game.OnWndProc -= Game_OnWndProc;
             };*/
+            for (int i = 0; i < 40; i++)
+            {
+                PlayersList_LoadedInformation[i] = new List<String>();
+                PlayersList_LoadedInformation[i].Add("NONE");
+                if(i < 4)
+                {
+                    PlayersInformation[i] = new List<String>();
+                    PlayersInformation[i].Add("NONE");
+                }
+            }
 
             for (int i = 0; i < 10; i++)
             {
                 PlayersList_HeroName.Add("NONE");
-                PlayersList_LoadedInformation[i] = new List<String>();
-                PlayersList_LoadedInformation[i].Add("NONE");
                 PlayersList_LoadedSteamID.Add("NONE");
                 PlayersList_PlayerName.Add("NONE");
                 PlayersList_RWA.Add("NONE");
@@ -505,6 +519,18 @@ namespace DotaBuff
             {
                 FontText12.DrawText(null, PlayersList_LoadedInformation[SelectedPlayer][i], (int)OverlayPosition.X + 5 + 180, (int)OverlayPosition.Y + 55 + i * 10 + 5, Color.White);
             }
+            for (int i = 0; i < PlayersList_LoadedInformation[SelectedPlayer+10].Count - 1; i++)
+            {
+                FontText12.DrawText(null, PlayersList_LoadedInformation[SelectedPlayer+10][i], (int)OverlayPosition.X + 5 + 180+90, (int)OverlayPosition.Y + 55 + i * 10 + 5, Color.White);
+            }
+            for (int i = 0; i < PlayersList_LoadedInformation[SelectedPlayer + 20].Count - 1; i++)
+            {
+                FontText12.DrawText(null, PlayersList_LoadedInformation[SelectedPlayer + 20][i], (int)OverlayPosition.X + 5 + 180 + 90+180, (int)OverlayPosition.Y + 55 + i * 10 + 5, Color.White);
+            }
+            for (int i = 0; i < PlayersList_LoadedInformation[SelectedPlayer + 30].Count - 1; i++)
+            {
+                FontText12.DrawText(null, PlayersList_LoadedInformation[SelectedPlayer + 30][i], (int)OverlayPosition.X + 5 + 180 + 90 + 180+90, (int)OverlayPosition.Y + 55 + i * 10 + 5, Color.White);
+            }
         }
 
         private static void Drawing_OnDraw(EventArgs args)
@@ -588,6 +614,33 @@ namespace DotaBuff
                 Drawing.DrawText(
                     PlayersList_LoadedInformation[SelectedPlayer][i],
                     new Vector2(OverlayPosition.X + 5 + 180, OverlayPosition.Y + 55 + i * 10 + 5),
+                    new Vector2(12),
+                    (SelectedPlayerByMouse == SelectedPlayer) ? Color.DarkOrange : Color.White,
+                    FontFlags.None);
+            }
+            for (int i = 0; i < PlayersList_LoadedInformation[SelectedPlayer+10].Count - 1; i++)
+            {
+                Drawing.DrawText(
+                    PlayersList_LoadedInformation[SelectedPlayer+10][i],
+                    new Vector2(OverlayPosition.X + 5 + 180+90, OverlayPosition.Y + 55 + i * 10 + 5),
+                    new Vector2(12),
+                    (SelectedPlayerByMouse == SelectedPlayer) ? Color.DarkOrange : Color.White,
+                    FontFlags.None);
+            }
+            for (int i = 0; i < PlayersList_LoadedInformation[SelectedPlayer + 20].Count - 1; i++)
+            {
+                Drawing.DrawText(
+                    PlayersList_LoadedInformation[SelectedPlayer + 20][i],
+                    new Vector2(OverlayPosition.X + 5 + 180 + 90+180, OverlayPosition.Y + 55 + i * 10 + 5),
+                    new Vector2(12),
+                    (SelectedPlayerByMouse == SelectedPlayer) ? Color.DarkOrange : Color.White,
+                    FontFlags.None);
+            }
+            for (int i = 0; i < PlayersList_LoadedInformation[SelectedPlayer + 30].Count - 1; i++)
+            {
+                Drawing.DrawText(
+                    PlayersList_LoadedInformation[SelectedPlayer + 30][i],
+                    new Vector2(OverlayPosition.X + 5 + 180 + 90 + 180+0, OverlayPosition.Y + 55 + i * 10 + 5),
                     new Vector2(12),
                     (SelectedPlayerByMouse == SelectedPlayer) ? Color.DarkOrange : Color.White,
                     FontFlags.None);
