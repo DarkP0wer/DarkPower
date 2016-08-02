@@ -11,7 +11,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Net;
 
-namespace DotaBuff_Overlay
+namespace DotaBuff
 {
     class Program
     {
