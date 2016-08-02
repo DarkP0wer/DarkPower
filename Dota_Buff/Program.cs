@@ -651,7 +651,7 @@ namespace DotaBuff_Overlay
             {
                 Drawing.DrawText(
                     PlayersList_LoadedInformation[SelectedPlayer + 30][i],
-                    new Vector2(OverlayPosition.X + 5 + 180 + 90 + 180+0, OverlayPosition.Y + 55 + i * 10 + 5),
+                    new Vector2(OverlayPosition.X + 5 + 180 + 90 + 180+90, OverlayPosition.Y + 55 + i * 10 + 5),
                     new Vector2(12),
                     (SelectedPlayerByMouse == SelectedPlayer) ? Color.DarkOrange : Color.White,
                     FontFlags.None);
