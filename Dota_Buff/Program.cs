@@ -509,7 +509,33 @@ namespace DotaBuff_Overlay
                         ), text_color);
                 }
             }
+
             if (!DisplayOverlay)  return;
+
+            //FullBox
+            DrawFilledBox(OverlayPosition.X, OverlayPosition.Y - 30, OverlaySize.X, OverlaySize.Y, new ColorBGRA(20, 20, 20, !IsUnderBox() ? 50 : 100));
+
+            //border
+            DrawFilledBox(OverlayPosition.X, OverlayPosition.Y - 30, OverlaySize.X + 1, OverlaySize.Y + 1, !IsUnderBox() ? new ColorBGRA(0, 0, 0, 100) : new ColorBGRA(0, 0, 250, 255));
+
+            /*//Caption
+            Drawing.DrawRect(
+                OverlayPosition,
+                new Vector2(OverlaySize.X, 30),
+                !IsUnderBox() ? new Color(20, 20, 20, 100) : new Color(0, 0, 200, 150));
+
+            Color nameColor = !IsUnderBox() ? Color.Yellow : Color.White;
+
+            Color nameColorAlpha = new Color((int)nameColor.R, nameColor.G, nameColor.B, 200);
+
+            //Close
+            Drawing.DrawRect(
+                OverlayPosition + new Vector2(OverlaySize.X - 20, 5),
+                IsUnderClose() ? new Vector2(20) : new Vector2(18),
+                _texture);*/
+
+            if (!IsUnderBox()) return;
+
             if (OverlayPosition.IsZero) OverlayPosition = new Vector2(50, 50);
             Color nameColor = !IsUnderBox() ? Color.Yellow : Color.White;
 
@@ -560,7 +586,6 @@ namespace DotaBuff_Overlay
                 DrawLine(Game.MouseScreenPosition,  left_arrow,                         w,Color.White);
                 DrawLine(left_arrow,                left_arrow + new Vector2(6, -6),    w, Color.White);
                 DrawLine(left_arrow,                left_arrow + new Vector2(6, 6),     w, Color.White);
-                DrawFilledBox(Game.MouseScreenPosition.X-30, Game.MouseScreenPosition.Y-30, 60, 60, new ColorBGRA(255, 0, 0, 255));
             }
         }
 
@@ -596,10 +621,7 @@ namespace DotaBuff_Overlay
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (!DisplayOverlay)
-            {
-                return;
-            }
+            if (!DisplayOverlay)  return;
 
             if (OverlayPosition.IsZero) OverlayPosition = new Vector2(50,50);
             if (OverlayPosition.X < 0) OverlayPosition.X = 5; 
