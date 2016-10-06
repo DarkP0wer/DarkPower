@@ -626,20 +626,20 @@ namespace DotaBuff_Overlay
             Drawing.DrawRect(
                 OverlayPosition,
                 OverlaySize,
-                new Color(20, 20, 20, !IsUnderBox() ? 50 : 100));
+                new Color(20, 20, 20, 10));
 
             //border
             Drawing.DrawRect(
                 OverlayPosition,
                 OverlaySize + new Vector2(1),
-                !IsUnderBox() ? new Color(0, 0, 0, 100) : new Color(0, 0, 250, 255),
+                !IsUnderBox() ? new Color(0, 0, 0, 10) : new Color(0, 0, 250, 10),
                 true);
 
             //Caption
             Drawing.DrawRect(
                 OverlayPosition,
                 new Vector2(OverlaySize.X, 30),
-                !IsUnderBox() ? new Color(20, 20, 20, 100) : new Color(0, 0, 200, 150));
+                !IsUnderBox() ? new Color(20, 20, 20, 10) : new Color(0, 0, 200, 10));
 
             Color nameColor = !IsUnderBox() ? Color.Yellow : Color.White;
 
