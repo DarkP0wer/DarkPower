@@ -50,7 +50,7 @@ namespace DotaBuff_Overlay
         private static Font FontText16 = new Font(Drawing.Direct3DDevice9, new FontDescription { FaceName = "Arial", Height = 16, OutputPrecision = FontPrecision.Default, Quality = FontQuality.Default });
         private static Font FontText14 = new Font(Drawing.Direct3DDevice9, new FontDescription { FaceName = "Arial", Height = 14, OutputPrecision = FontPrecision.Default, Quality = FontQuality.Default });
         private static Font FontText12 = new Font(Drawing.Direct3DDevice9, new FontDescription { FaceName = "Arial", Height = 12, OutputPrecision = FontPrecision.Default, Quality = FontQuality.Default });
-
+        private static Line line = new Line(Drawing.Direct3DDevice9);
         public struct Repo
         {
             public String RepoM;
@@ -219,7 +219,6 @@ namespace DotaBuff_Overlay
                     PlayersList_LoadedInformation[PID + 30].Add(PlayersInformation[3][i]);
             }
         }
-
 
         class IniFile
         {
@@ -542,6 +541,38 @@ namespace DotaBuff_Overlay
             {
                 FontText12.DrawText(null, PlayersList_LoadedInformation[SelectedPlayer + 30][i], (int)OverlayPosition.X + 5 + 180 + 90 + 180+90, (int)OverlayPosition.Y + 55 + i * 10 + 5, Color.White);
             }
+
+            //DragLines
+            if (IsUnderCaption())
+            {
+                Vector2 up_arrow = Game.MouseScreenPosition + new Vector2(0, -25);
+                DrawLine(Game.MouseScreenPosition, up_arrow, 2, new ColorBGRA(255, 255, 255, 255));
+                DrawLine(Game.MouseScreenPosition, up_arrow + new Vector2(6, 6), 2, new ColorBGRA(255, 255, 255, 255));
+                DrawLine(Game.MouseScreenPosition, up_arrow + new Vector2(-6, 6), 2, new ColorBGRA(255, 255, 255, 255));
+
+                Vector2 right_arrow = Game.MouseScreenPosition + new Vector2(25, 0);
+                DrawLine(Game.MouseScreenPosition, right_arrow, 2, Color.White);
+                DrawLine(right_arrow, right_arrow + new Vector2(-6, -6),2, Color.White);
+                DrawLine(right_arrow, right_arrow + new Vector2(-6, 6),2, Color.White);
+
+                Vector2 left_arrow = Game.MouseScreenPosition + new Vector2(-25, 0);
+                DrawLine(Game.MouseScreenPosition, left_arrow, 2,Color.White);
+                DrawLine(left_arrow, left_arrow + new Vector2(6, -6), 2, Color.White);
+                DrawLine(left_arrow, left_arrow + new Vector2(6, 6), 2, Color.White);
+            }
+        }
+
+        public static void DrawLine(Vector2 v1, Vector2 v2, float w, ColorBGRA Color)
+        {
+            Vector2[] vLine = new Vector2[2] { v1, v2 };
+
+            line.GLLines = true;
+            line.Antialias = true;
+            line.Width = w;
+
+            line.Begin();
+            line.Draw(vLine, Color);
+            line.End();
         }
 
         private static void Drawing_OnDraw(EventArgs args)
@@ -615,14 +646,14 @@ namespace DotaBuff_Overlay
             {
                 Drawing.DrawText(
                     "+",
-                    new Vector2(OverlayPosition.X+180 - 8 - 30, OverlayPosition.Y + 55 + i * 20 + 5),
+                    new Vector2(OverlayPosition.X+180 - 50, OverlayPosition.Y + 55 + i * 20 + 5),
                     (Repos[i].RepoM == "GoodGuy" || SelectedPlayerByMouse == i) ? new Vector2(16) : new Vector2(14),
                     Color.Green,
                     FontFlags.None);
 
                 Drawing.DrawText(
                     "-",
-                    new Vector2(OverlayPosition.X+180 - 8, OverlayPosition.Y + 55 + i * 20 + 5),
+                    new Vector2(OverlayPosition.X+180 - 20, OverlayPosition.Y + 55 + i * 20 + 5),
                     (Repos[i].RepoM == "BadGuy" || SelectedPlayerByMouse == i) ? new Vector2(16) : new Vector2(14),
                     Color.Red,
                     FontFlags.None);
@@ -637,7 +668,7 @@ namespace DotaBuff_Overlay
 
             Drawing.DrawText(
                     "Like/Ban",
-                    new Vector2(OverlayPosition.X + 180 - 45 - 5, OverlayPosition.Y + 30 + 5),
+                    new Vector2(OverlayPosition.X + 180 - 60, OverlayPosition.Y + 30 + 5),
                     new Vector2(16),
                     Color.White,
                     FontFlags.None);
