@@ -594,13 +594,6 @@ namespace DotaBuff_Overlay
                 return;
             }
 			
-			//DragLines
-			if(IsUnderCaption())
-			{
-			    Drawing.DrawLine(Game.MouseScreenPosition, Game.MouseScreenPosition+new Vector2(0,25), Color.White);
-                //Drawing.DrawLine(Game.MouseScreenPosition + new Vector2(0, 21), Game.MouseScreenPosition + new Vector2(0, 21), Color.Blue);
-			}
-			
             //Tables
             Drawing.DrawRect(
                 OverlayPosition + new Vector2(1,30),
@@ -734,6 +727,15 @@ namespace DotaBuff_Overlay
                 OverlayPosition + new Vector2(PlayerCaptionTextSize.X + arrowRectangleSize.X + 43, 35),
                 new Vector2(16, 16),
                 IncreaseArrow);
+
+            //DragLines
+            if (IsUnderCaption())
+            {
+                Vector2 up_arrow = Game.MouseScreenPosition + new Vector2(0, -25);
+                Drawing.DrawLine(Game.MouseScreenPosition, up_arrow, Color.White);
+                Drawing.DrawLine(up_arrow, up_arrow+ new Vector2(6, 6), Color.White);
+                Drawing.DrawLine(up_arrow, up_arrow+ new Vector2(-6, 6), Color.White);
+            }
         }
 
         public static void RoundedRectangle(float x, float y, float w, float h, int iSmooth, Color color)
