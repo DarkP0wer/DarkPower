@@ -587,13 +587,20 @@ namespace DotaBuff_Overlay
             Drawing.DrawRect(
                 OverlayPosition + new Vector2(OverlaySize.X - 20, 5),
                 IsUnderClose() ? new Vector2(20) : new Vector2(18),
-                _texture);
+                _texture);	
 
             if (!IsUnderBox())
             {
                 return;
             }
-
+			
+			//DragLines
+			if(IsUnderCaption())
+			{
+			    Drawing.DrawLine(Game.MouseScreenPosition, Game.MouseScreenPosition+new Vector2(0,21),Color.Blue);
+                //Drawing.DrawLine(Game.MouseScreenPosition + new Vector2(0, 21), Game.MouseScreenPosition + new Vector2(0, 21), Color.Blue);
+			}
+			
             //Tables
             Drawing.DrawRect(
                 OverlayPosition + new Vector2(1,30),
@@ -779,7 +786,7 @@ namespace DotaBuff_Overlay
             }
             else if (args.Msg == (ulong)Utils.WindowsMessages.WM_MOUSEMOVE)
             {
-                if (OverlayDrag) OverlayPosition = Game.MouseScreenPosition - OverlayDragHeler;
+                if (OverlayDrag) { OverlayPosition = Game.MouseScreenPosition - OverlayDragHeler; if(OverlayPosition.X < 0) OverlayPosition.X = 1;}
                 if (IsUnderBox()) SelectedPlayerByMouse = PlayerSelected();
             }
             else if (args.Msg == (ulong)Utils.WindowsMessages.WM_LBUTTONDOWN)
