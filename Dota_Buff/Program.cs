@@ -547,19 +547,19 @@ namespace DotaBuff_Overlay
             {
                 int w = 1;
                 Vector2 up_arrow = Game.MouseScreenPosition + new Vector2(0, -21);
-                DrawLine(Game.MouseScreenPosition, up_arrow, w, new ColorBGRA(255, 255, 255, 255));
-                DrawLine(up_arrow, up_arrow + new Vector2(6, 6), w, new ColorBGRA(255, 255, 255, 255));
-                DrawLine(up_arrow, up_arrow + new Vector2(-6, 6), w, new ColorBGRA(255, 255, 255, 255));
+                DrawLine(Game.MouseScreenPosition,  up_arrow,                       w, new ColorBGRA(255, 255, 255, 255));
+                DrawLine(up_arrow,                  up_arrow + new Vector2(6, 6),   w, new ColorBGRA(255, 255, 255, 255));
+                DrawLine(up_arrow,                  up_arrow + new Vector2(-6, 6),  w, new ColorBGRA(255, 255, 255, 255));
 
                 Vector2 right_arrow = Game.MouseScreenPosition + new Vector2(21, 0);
-                DrawLine(Game.MouseScreenPosition, right_arrow, 2, Color.White);
-                DrawLine(right_arrow, right_arrow + new Vector2(-6, -6), w, Color.White);
-                DrawLine(right_arrow, right_arrow + new Vector2(-6, 6), w, Color.White);
+                DrawLine(Game.MouseScreenPosition,  right_arrow,                        w, Color.White);
+                DrawLine(right_arrow,               right_arrow + new Vector2(-6, -6),  w, Color.White);
+                DrawLine(right_arrow,               right_arrow + new Vector2(-6, 6),   w, Color.White);
 
                 Vector2 left_arrow = Game.MouseScreenPosition + new Vector2(-21, 0);
-                DrawLine(Game.MouseScreenPosition, left_arrow, w,Color.White);
-                DrawLine(left_arrow, left_arrow + new Vector2(6, -6), w, Color.White);
-                DrawLine(left_arrow, left_arrow + new Vector2(6, 6), w, Color.White);
+                DrawLine(Game.MouseScreenPosition,  left_arrow,                         w,Color.White);
+                DrawLine(left_arrow,                left_arrow + new Vector2(6, -6),    w, Color.White);
+                DrawLine(left_arrow,                left_arrow + new Vector2(6, 6),     w, Color.White);
                 DrawFilledBox(Game.MouseScreenPosition.X-30, Game.MouseScreenPosition.Y-30, 60, 60, new ColorBGRA(255, 0, 0, 255));
             }
         }
