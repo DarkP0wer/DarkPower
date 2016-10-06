@@ -489,6 +489,7 @@ namespace DotaBuff_Overlay
             }
             if (ObjectManager.LocalPlayer != null && ObjectManager.LocalHero == null)
             {
+                Console.WriteLine("NAME = " + ObjectManager.LocalPlayer.StoredName());
                 for (int i = 0; i < 10; i++)
                 {
                     var text = string.Format("RWinRate: {1} | Games: {2}", i, PlayersList_RWA[i], Repos[i].GamesPlayed);
@@ -514,7 +515,6 @@ namespace DotaBuff_Overlay
 
             //FullBox
             DrawFilledBox(OverlayPosition.X, OverlayPosition.Y - 30, OverlaySize.X, OverlaySize.Y, new ColorBGRA(20, 20, 20, !IsUnderBox() ? 0 : 10));
-
 
             //Close
             DrawFilledBox(OverlayPosition.X + OverlaySize.X - 20, OverlayPosition.Y + 5, 20, 20, new ColorBGRA(20, 20, 20, !IsUnderClose() ? 10 : 50));
