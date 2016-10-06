@@ -513,23 +513,13 @@ namespace DotaBuff_Overlay
             if (!DisplayOverlay)  return;
 
             //FullBox
-            DrawFilledBox(OverlayPosition.X, OverlayPosition.Y - 30, OverlaySize.X, OverlaySize.Y, new ColorBGRA(20, 20, 20, !IsUnderBox() ? 50 : 100));
+            DrawFilledBox(OverlayPosition.X, OverlayPosition.Y - 30, OverlaySize.X, OverlaySize.Y, new ColorBGRA(20, 20, 20, !IsUnderBox() ? 0 : 10));
 
             //border
-            DrawFilledBox(OverlayPosition.X, OverlayPosition.Y - 30, OverlaySize.X + 1, OverlaySize.Y + 1, !IsUnderBox() ? new ColorBGRA(0, 0, 0, 100) : new ColorBGRA(0, 0, 250, 255));
+            //DrawFilledBox(OverlayPosition.X, OverlayPosition.Y - 30, OverlaySize.X + 1, OverlaySize.Y + 1, !IsUnderBox() ? new ColorBGRA(0, 0, 0, 10) : new ColorBGRA(0, 0, 250, 50));
 
-            /*//Caption
-            Drawing.DrawRect(
-                OverlayPosition,
-                new Vector2(OverlaySize.X, 30),
-                !IsUnderBox() ? new Color(20, 20, 20, 100) : new Color(0, 0, 200, 150));
-
-            Color nameColor = !IsUnderBox() ? Color.Yellow : Color.White;
-
-            Color nameColorAlpha = new Color((int)nameColor.R, nameColor.G, nameColor.B, 200);
-            */
             //Close
-            DrawFilledBox(OverlayPosition.X + OverlaySize.X - 20, OverlayPosition.Y + 5, 20, 20, new ColorBGRA(20, 20, 20, !IsUnderClose() ? 40 : 800));
+            DrawFilledBox(OverlayPosition.X + OverlaySize.X - 20, OverlayPosition.Y + 5, 20, 20, new ColorBGRA(20, 20, 20, !IsUnderClose() ? 10 : 50));
 
             if (!IsUnderBox()) return;
 
@@ -626,20 +616,20 @@ namespace DotaBuff_Overlay
             Drawing.DrawRect(
                 OverlayPosition,
                 OverlaySize,
-                new Color(20, 20, 20, 10));
+                new Color(20, 20, 20, !IsUnderBox() ? 50 : 100));
 
             //border
             Drawing.DrawRect(
                 OverlayPosition,
                 OverlaySize + new Vector2(1),
-                !IsUnderBox() ? new Color(0, 0, 0, 10) : new Color(0, 0, 250, 10),
+                !IsUnderBox() ? new Color(0, 0, 0, 100) : new Color(0, 0, 250, 255),
                 true);
 
             //Caption
             Drawing.DrawRect(
                 OverlayPosition,
                 new Vector2(OverlaySize.X, 30),
-                !IsUnderBox() ? new Color(20, 20, 20, 10) : new Color(0, 0, 200, 10));
+                !IsUnderBox() ? new Color(20, 20, 20, 100) : new Color(0, 0, 200, 150));
 
             Color nameColor = !IsUnderBox() ? Color.Yellow : Color.White;
 
