@@ -545,17 +545,17 @@ namespace DotaBuff_Overlay
             //DragLines
             if (IsUnderCaption())
             {
-                Vector2 up_arrow = Game.MouseScreenPosition + new Vector2(0, -25);
+                Vector2 up_arrow = Game.MouseScreenPosition + new Vector2(0, -21);
                 DrawLine(Game.MouseScreenPosition, up_arrow, 2, new ColorBGRA(255, 255, 255, 255));
                 DrawLine(Game.MouseScreenPosition, up_arrow + new Vector2(6, 6), 2, new ColorBGRA(255, 255, 255, 255));
                 DrawLine(Game.MouseScreenPosition, up_arrow + new Vector2(-6, 6), 2, new ColorBGRA(255, 255, 255, 255));
 
-                Vector2 right_arrow = Game.MouseScreenPosition + new Vector2(25, 0);
+                Vector2 right_arrow = Game.MouseScreenPosition + new Vector2(21, 0);
                 DrawLine(Game.MouseScreenPosition, right_arrow, 2, Color.White);
                 DrawLine(right_arrow, right_arrow + new Vector2(-6, -6),2, Color.White);
                 DrawLine(right_arrow, right_arrow + new Vector2(-6, 6),2, Color.White);
 
-                Vector2 left_arrow = Game.MouseScreenPosition + new Vector2(-25, 0);
+                Vector2 left_arrow = Game.MouseScreenPosition + new Vector2(-21, 0);
                 DrawLine(Game.MouseScreenPosition, left_arrow, 2,Color.White);
                 DrawLine(left_arrow, left_arrow + new Vector2(6, -6), 2, Color.White);
                 DrawLine(left_arrow, left_arrow + new Vector2(6, 6), 2, Color.White);
@@ -762,17 +762,17 @@ namespace DotaBuff_Overlay
             //DragLines
             if (IsUnderCaption())
             {
-                Vector2 up_arrow = Game.MouseScreenPosition + new Vector2(0, -25);
+                Vector2 up_arrow = Game.MouseScreenPosition + new Vector2(0, -21);
                 Drawing.DrawLine(Game.MouseScreenPosition, up_arrow, Color.White);
                 Drawing.DrawLine(up_arrow, up_arrow+ new Vector2(6, 6), Color.White);
                 Drawing.DrawLine(up_arrow, up_arrow+ new Vector2(-6, 6), Color.White);
 
-                Vector2 right_arrow = Game.MouseScreenPosition + new Vector2(25, 0);
+                Vector2 right_arrow = Game.MouseScreenPosition + new Vector2(21, 0);
                 Drawing.DrawLine(Game.MouseScreenPosition, right_arrow, Color.White);
                 Drawing.DrawLine(right_arrow, right_arrow + new Vector2(-6, -6), Color.White);
                 Drawing.DrawLine(right_arrow, right_arrow + new Vector2(-6, 6), Color.White);
 
-                Vector2 left_arrow = Game.MouseScreenPosition + new Vector2(-25, 0);
+                Vector2 left_arrow = Game.MouseScreenPosition + new Vector2(-21, 0);
                 Drawing.DrawLine(Game.MouseScreenPosition, left_arrow, Color.White);
                 Drawing.DrawLine(left_arrow, left_arrow + new Vector2(6, -6), Color.White);
                 Drawing.DrawLine(left_arrow, left_arrow + new Vector2(6, 6), Color.White);
@@ -829,7 +829,7 @@ namespace DotaBuff_Overlay
             }
             else if (args.Msg == (ulong)Utils.WindowsMessages.WM_MOUSEMOVE)
             {
-                if (OverlayDrag) { OverlayPosition = Game.MouseScreenPosition - OverlayDragHeler; }
+                if (OverlayDrag) { OverlayPosition = Game.MouseScreenPosition - OverlayDragHeler; OverlayPosition.X = (OverlayPosition.X < 0) ? OverlayPosition.X - 0 : OverlayPosition.X; }
                 if (IsUnderBox()) SelectedPlayerByMouse = PlayerSelected();
             }
             else if (args.Msg == (ulong)Utils.WindowsMessages.WM_LBUTTONDOWN)
