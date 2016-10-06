@@ -515,6 +515,7 @@ namespace DotaBuff_Overlay
             //FullBox
             DrawFilledBox(OverlayPosition.X, OverlayPosition.Y - 30, OverlaySize.X, OverlaySize.Y, new ColorBGRA(20, 20, 20, !IsUnderBox() ? 0 : 10));
 
+
             //Close
             DrawFilledBox(OverlayPosition.X + OverlaySize.X - 20, OverlayPosition.Y + 5, 20, 20, new ColorBGRA(20, 20, 20, !IsUnderClose() ? 10 : 50));
 
@@ -525,7 +526,7 @@ namespace DotaBuff_Overlay
 
             Color nameColorAlpha = new Color((int)nameColor.R, nameColor.G, nameColor.B, 200);
             
-            FontText18.DrawText(null, "DotaBuff", (int)OverlayPosition.X + 10, (int)OverlayPosition.Y + 5, nameColorAlpha);
+            FontText18.DrawText(null, "DotaBuff ", (int)OverlayPosition.X + 10, (int)OverlayPosition.Y + 5, nameColorAlpha);
             if (!IsUnderBox()) { return; }
             FontText16.DrawText(null, "Players: ", (int)OverlayPosition.X + 10, (int)OverlayPosition.Y + 30 + 5, Color.White);
             FontText18.DrawText(null, "X", (int)OverlayPosition.X + (int)OverlaySize.X - 20, (int)OverlayPosition.Y + 5, Color.Red);
