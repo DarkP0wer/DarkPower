@@ -515,9 +515,6 @@ namespace DotaBuff_Overlay
             //FullBox
             DrawFilledBox(OverlayPosition.X, OverlayPosition.Y - 30, OverlaySize.X, OverlaySize.Y, new ColorBGRA(20, 20, 20, !IsUnderBox() ? 0 : 10));
 
-            //border
-            //DrawFilledBox(OverlayPosition.X, OverlayPosition.Y - 30, OverlaySize.X + 1, OverlaySize.Y + 1, !IsUnderBox() ? new ColorBGRA(0, 0, 0, 10) : new ColorBGRA(0, 0, 250, 50));
-
             //Close
             DrawFilledBox(OverlayPosition.X + OverlaySize.X - 20, OverlayPosition.Y + 5, 20, 20, new ColorBGRA(20, 20, 20, !IsUnderClose() ? 10 : 50));
 
