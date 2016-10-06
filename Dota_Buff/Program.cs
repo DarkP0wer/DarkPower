@@ -644,7 +644,7 @@ namespace DotaBuff_Overlay
 
             Drawing.DrawText(
                     "Like/Ban",
-                    new Vector2(OverlayPosition + 180 - 45 - 5, OverlayPosition.Y + 30 + 5),
+                    new Vector2(OverlayPosition.X + 180 - 45 - 5, OverlayPosition.Y + 30 + 5),
                     new Vector2(16),
                     Color.White,
                     FontFlags.None);
