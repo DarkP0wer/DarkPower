@@ -560,9 +560,27 @@ namespace DotaBuff_Overlay
                 DrawLine(Game.MouseScreenPosition, left_arrow, w,Color.White);
                 DrawLine(left_arrow, left_arrow + new Vector2(6, -6), w, Color.White);
                 DrawLine(left_arrow, left_arrow + new Vector2(6, 6), w, Color.White);
+                DrawFilledBox(Game.MouseScreenPosition.X-30, Game.MouseScreenPosition.Y-30, 60, 60, new ColorBGRA(255, 0, 0, 255));
             }
         }
 
+        public static void DrawFilledBox(float x, float y, float w, float h, ColorBGRA Color)
+        {
+            Vector2[] vLine = new Vector2[2];
+
+            line.GLLines = true;
+            line.Antialias = false;
+            line.Width = w;
+
+            vLine[0].X = x + w / 2;
+            vLine[0].Y = y;
+            vLine[1].X = x + w / 2;
+            vLine[1].Y = y + h;
+
+            line.Begin();
+            line.Draw(vLine, Color);
+            line.End();
+        }
         public static void DrawLine(Vector2 v1, Vector2 v2, float w, ColorBGRA Color)
         {
             Vector2[] vLine = new Vector2[2] { v1, v2 };
@@ -584,7 +602,7 @@ namespace DotaBuff_Overlay
             }
 
             if (OverlayPosition.IsZero) OverlayPosition = new Vector2(50,50);
-
+            if (OverlayPosition.X < 0) OverlayPosition.X = 5; 
             //FullBox
             Drawing.DrawRect(
                 OverlayPosition,
@@ -830,7 +848,7 @@ namespace DotaBuff_Overlay
             }
             else if (args.Msg == (ulong)Utils.WindowsMessages.WM_MOUSEMOVE)
             {
-                if (OverlayDrag) { OverlayPosition = Game.MouseScreenPosition - OverlayDragHeler; OverlayPosition.X = (OverlayPosition.X < 0) ? OverlayPosition.X - 0 : OverlayPosition.X; }
+                if (OverlayDrag) { OverlayPosition = Game.MouseScreenPosition - OverlayDragHeler; OverlayPosition.X = (OverlayPosition.X < 0) ? 5 : OverlayPosition.X; }
                 if (IsUnderBox()) SelectedPlayerByMouse = PlayerSelected();
             }
             else if (args.Msg == (ulong)Utils.WindowsMessages.WM_LBUTTONDOWN)
