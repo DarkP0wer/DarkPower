@@ -735,6 +735,16 @@ namespace DotaBuff_Overlay
                 Drawing.DrawLine(Game.MouseScreenPosition, up_arrow, Color.White);
                 Drawing.DrawLine(up_arrow, up_arrow+ new Vector2(6, 6), Color.White);
                 Drawing.DrawLine(up_arrow, up_arrow+ new Vector2(-6, 6), Color.White);
+
+                Vector2 right_arrow = Game.MouseScreenPosition + new Vector2(25, 0);
+                Drawing.DrawLine(Game.MouseScreenPosition, right_arrow, Color.White);
+                Drawing.DrawLine(right_arrow, right_arrow + new Vector2(-6, -6), Color.White);
+                Drawing.DrawLine(right_arrow, right_arrow + new Vector2(-6, 6), Color.White);
+
+                Vector2 left_arrow = Game.MouseScreenPosition + new Vector2(-25, 0);
+                Drawing.DrawLine(Game.MouseScreenPosition, left_arrow, Color.White);
+                Drawing.DrawLine(left_arrow, left_arrow + new Vector2(6, -6), Color.White);
+                Drawing.DrawLine(left_arrow, left_arrow + new Vector2(6, 6), Color.White);
             }
         }
 
