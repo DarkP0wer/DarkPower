@@ -597,7 +597,7 @@ namespace DotaBuff_Overlay
 			//DragLines
 			if(IsUnderCaption())
 			{
-			    Drawing.DrawLine(Game.MouseScreenPosition, Game.MouseScreenPosition+new Vector2(0,21),Color.Blue);
+			    Drawing.DrawLine(Game.MouseScreenPosition, Game.MouseScreenPosition+new Vector2(0,25), Color.White);
                 //Drawing.DrawLine(Game.MouseScreenPosition + new Vector2(0, 21), Game.MouseScreenPosition + new Vector2(0, 21), Color.Blue);
 			}
 			
@@ -622,14 +622,14 @@ namespace DotaBuff_Overlay
             {
                 Drawing.DrawText(
                     "+",
-                    new Vector2(180-8-10, OverlayPosition.Y + 55 + i * 20 + 5),
+                    new Vector2(OverlayPosition.X+180 - 8 - 30, OverlayPosition.Y + 55 + i * 20 + 5),
                     (Repos[i].RepoM == "GoodGuy" || SelectedPlayerByMouse == i) ? new Vector2(16) : new Vector2(14),
                     Color.Green,
                     FontFlags.None);
 
                 Drawing.DrawText(
                     "-",
-                    new Vector2(180-8, OverlayPosition.Y + 55 + i * 20 + 5),
+                    new Vector2(OverlayPosition.X+180 - 8, OverlayPosition.Y + 55 + i * 20 + 5),
                     (Repos[i].RepoM == "BadGuy" || SelectedPlayerByMouse == i) ? new Vector2(16) : new Vector2(14),
                     Color.Red,
                     FontFlags.None);
@@ -644,7 +644,7 @@ namespace DotaBuff_Overlay
 
             Drawing.DrawText(
                     "Like/Ban",
-                    new Vector2(180 - 45 - 5, OverlayPosition.Y + 30+5),
+                    new Vector2(OverlayPosition + 180 - 45 - 5, OverlayPosition.Y + 30 + 5),
                     new Vector2(16),
                     Color.White,
                     FontFlags.None);
@@ -786,7 +786,7 @@ namespace DotaBuff_Overlay
             }
             else if (args.Msg == (ulong)Utils.WindowsMessages.WM_MOUSEMOVE)
             {
-                if (OverlayDrag) { OverlayPosition = Game.MouseScreenPosition - OverlayDragHeler; if(OverlayPosition.X < 0) OverlayPosition.X = 1;}
+                if (OverlayDrag) { OverlayPosition = Game.MouseScreenPosition - OverlayDragHeler; }
                 if (IsUnderBox()) SelectedPlayerByMouse = PlayerSelected();
             }
             else if (args.Msg == (ulong)Utils.WindowsMessages.WM_LBUTTONDOWN)
