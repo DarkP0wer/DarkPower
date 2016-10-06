@@ -9,7 +9,7 @@ using SharpDX.Direct3D9;
 using Ensage.Common.Objects;
 using System.IO;
 using System.Runtime.InteropServices;
-//using System.Net;
+using System.Net;
 
 namespace DotaBuff_Overlay
 {
