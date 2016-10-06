@@ -527,12 +527,9 @@ namespace DotaBuff_Overlay
             Color nameColor = !IsUnderBox() ? Color.Yellow : Color.White;
 
             Color nameColorAlpha = new Color((int)nameColor.R, nameColor.G, nameColor.B, 200);
-
+            */
             //Close
-            Drawing.DrawRect(
-                OverlayPosition + new Vector2(OverlaySize.X - 20, 5),
-                IsUnderClose() ? new Vector2(20) : new Vector2(18),
-                _texture);*/
+            DrawFilledBox(OverlayPosition.X + OverlaySize.X - 20, OverlayPosition.Y + 5, 20, 20, new ColorBGRA(20, 20, 20, !IsUnderClose() ? 40 : 800));
 
             if (!IsUnderBox()) return;
 
